@@ -1,8 +1,3 @@
-import React, { useState, useEffect, useRef } from 'react';
-// import { TextField } from '@material-ui';
-
-const ForgotPassword = () => (
-  
-);
-
+/* eslint-disable react/react-in-jsx-scope */
+const ForgotPassword = () => (<div> Forgot password </div>);
 export default ForgotPassword;
