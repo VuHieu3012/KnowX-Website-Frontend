@@ -4,11 +4,12 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState } from "react";
-import { TextField, Button } from "@material-ui/core";
+// eslint-disable-next-line object-curly-newline
+import { TextField, Button, Box, Stack } from "@material-ui/core";
 import { Container } from "reactstrap";
 import { Link, Redirect } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-import "./styles.scss";
+import "./signin.scss";
 import AuthRight from "../../../../components/AuthRight";
 import knowX_logo from "./knowX_logo.png";
 
@@ -34,11 +35,12 @@ const Signin = () => {
       <Container className="themed-container mt-2" fluid="sm">
         <ThemeProvider theme={theme}>
           <div className="wrapper">
-            <img src={knowX_logo} alt="logo" />
-            <div className="text-center">
-              <div className="text-color">Sign in with</div>
-              <div className="hr" />
+            <div className="logo">
+              <img src={knowX_logo} alt="logo" />
             </div>
+            <Box sx={{ textAlign: "center", m: 1, fontSize: 22 }}>
+              Sign in with
+            </Box>
             <div className="signin-wrapper">
               <TextField
                 label="Email"
@@ -59,27 +61,27 @@ const Signin = () => {
                   onChange={onChangeHandler}
                 />
               </div>
-              <p to="/sign-up" className="dont-have-txt ">
-                <Link to="/forgot" className="signup-txt ">
+              <p to="/forgot" className="dont-have-txt ">
+                <Link to="/auth/forgot" className="forgot-txt ">
                   Forgot password?
                 </Link>
               </p>
-              <Button
-                variant="contained"
-                // color="primary"
-                // onClick={onSubmitHandler}
-                // disabled={!loginData.email || !loginData.password}
+              <Stack
+                width="100%"
+                direction="row"
+                justifyContent="space-between"
               >
-                SIGN UP
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                // onClick={onSubmitHandler}
-                // disabled={!loginData.email || !loginData.password}
-              >
-                SIGN IN
-              </Button>
+                <Button sx={{ p: 1, width: "45%" }} variant="outlined">
+                  SIGN UP
+                </Button>
+                <Button
+                  sx={{ p: 1, width: "45%" }}
+                  variant="contained"
+                  color="primary"
+                >
+                  SIGN IN
+                </Button>
+              </Stack>
             </div>
           </div>
         </ThemeProvider>

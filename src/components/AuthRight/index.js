@@ -5,14 +5,14 @@ import "./styles.scss";
 const AuthRight = () => (
   <div className="background content">
     <div className="description">
-      <h1>
-        WELLCOME TO
+      <h2>
+        WELL COME TO
         <br />
         KNOW
         <span>X </span>
         WEBSITE
-      </h1>
-      <h5>Share knowledge, find buddy and mentor</h5>
+      </h2>
+      <h6>Share knowledge, find buddy and mentor</h6>
     </div>
   </div>
 );

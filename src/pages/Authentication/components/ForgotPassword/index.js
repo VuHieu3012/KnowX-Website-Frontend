@@ -1,3 +1,72 @@
-/* eslint-disable react/react-in-jsx-scope */
-const ForgotPassword = () => (<div> Forgot password </div>);
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-undef */
+/* eslint-disable camelcase */
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
+import React, { useState } from "react";
+// eslint-disable-next-line object-curly-newline
+import { TextField, Button, Box, Stack } from "@material-ui/core";
+import { Container } from "reactstrap";
+import { Link, Redirect } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import "./styles.scss";
+import AuthRight from "../../../../components/AuthRight";
+import knowX_logo from "./knowX_logo.png";
+
+const ForgotPassword = () => {
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+  const onChangeHandler = (e) => {
+    const tmpLogin = { ...loginData };
+    tmpLogin[e.target.name] = e.target.value;
+    setLoginData(tmpLogin);
+  };
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: "#00358E",
+      },
+    },
+  });
+  return (
+    <>
+      <Container className="themed-container mt-2" fluid="sm">
+        <ThemeProvider theme={theme}>
+          <div className="wrapper">
+            <div className="logo">
+              <img src={knowX_logo} alt="logo" />
+            </div>
+            <div className="forgot-wrapper">
+              <TextField
+                label="Your email"
+                type="text"
+                name="email"
+                fullWidth
+                variant="outlined"
+                value={loginData.email}
+                onChange={onChangeHandler}
+              />
+              <Stack
+                width="100%"
+                direction="row"
+                justifyContent="center"
+              >
+                <Button
+                  sx={{ p: 1, width: "35%" }}
+                  variant="contained"
+                  color="primary"
+                >
+                  SEND TO THIS EMAIL
+                </Button>
+              </Stack>
+            </div>
+          </div>
+        </ThemeProvider>
+      </Container>
+      <AuthRight />
+    </>
+  );
+};
 export default ForgotPassword;

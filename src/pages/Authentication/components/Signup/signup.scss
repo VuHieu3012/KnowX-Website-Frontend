@@ -1,14 +1,13 @@
 .themed-container {
-  width: 60%;
+  width: 65%;
   display: inline-block;
 }
-.text-center {
-  margin-top: 20%;
-  font-size: 22px;
+.logo_signup {
   text-align: center;
+  margin-bottom: -70px;
 }
-.signin-wrapper {
-  width: 60%;
+.signup-wrapper {
+  width: 65%;
   margin: 0 auto;
   margin-top: 8%;
   line-height: 5;
@@ -25,15 +24,4 @@
   position: absolute;
   top: 18px;
   right: 6px;
-}
-.dont-have-txt {
-  color: #00358E;
-  float: right;
-  font-size: 12px;
-  margin-top: -30px;
-}
-.signup-txt,
-.signup-txt:hover {
-  font-weight: bold;
-  color: #00358E;
 }

@@ -4,14 +4,16 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState } from "react";
-import { TextField, Button } from "@material-ui/core";
+// eslint-disable-next-line object-curly-newline
+import { TextField, Button, Box, Stack } from "@material-ui/core";
 import { Container } from "reactstrap";
 import { Link, Redirect } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import "./styles.scss";
 import AuthRight from "../../../../components/AuthRight";
+import knowX_logo from "./knowX_logo.png";
 
-const ChangePassword = () => {
+const Signin = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -33,30 +35,37 @@ const ChangePassword = () => {
       <Container className="themed-container mt-2" fluid="sm">
         <ThemeProvider theme={theme}>
           <div className="wrapper">
-            <img src="../../../assets/images/knowX_logo.png" alt="logo" />
-            <div className="text-center">
-              <div className="text-color"> </div>
-              <div className="hr" />
+            <div className="logo">
+              <img src={knowX_logo} alt="logo" />
             </div>
-            <div className="signin-wrapper">
+            <div className="change-password-wrapper">
               <TextField
-                label="Your Email"
+                label="New password"
                 type="text"
-                name="email"
+                name="newPassword"
                 fullWidth
                 variant="outlined"
                 value={loginData.email}
                 onChange={onChangeHandler}
               />
-              <Button
-                variant="contained"
+
+              <TextField
+                label="Confirm new password"
+                name="confirmPassword"
                 fullWidth
-                color="primary"
-                // onClick={onSubmitHandler}
-                // disabled={!loginData.email || !loginData.password}
-              >
-                SEND TO EMAIL
-              </Button>
+                variant="outlined"
+                value={loginData.password}
+                onChange={onChangeHandler}
+              />
+              <Stack width="100%" direction="row" justifyContent="space-between">
+                <Button
+                  sx={{ p: 1, width: "100%" }}
+                  variant="contained"
+                  color="primary"
+                >
+                  CHANGE PASSWORD
+                </Button>
+              </Stack>
             </div>
           </div>
         </ThemeProvider>
@@ -65,4 +74,4 @@ const ChangePassword = () => {
     </>
   );
 };
-export default ChangePassword;
+export default Signin;

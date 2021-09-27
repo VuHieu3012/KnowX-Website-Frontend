@@ -4,18 +4,19 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Signin from "./components/Signin";
+import Signup from "./components/Signup";
 import Signout from "./components/Signout";
 import ForgotPassword from "./components/ForgotPassword";
 import ChangePassword from "./components/ChangePassword";
 
 function Authentication(props) {
-  // const match = props =useRouteMatch();
   const match = useRouteMatch();
+  console.log(match);
   return (
     <Switch>
       <Route exact path={match.url} component={Signin} />
-      <Route path={"${match.url}/signout"} component={Signout} />
       <Route path={"${match.url}/forgot"} component={ForgotPassword} />
+      <Route path={"${match.url}/changepassword"} component={ChangePassword} />
     </Switch>
   );
 }
