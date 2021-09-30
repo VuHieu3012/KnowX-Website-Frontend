@@ -15,8 +15,9 @@ function Authentication(props) {
   return (
     <Switch>
       <Route exact path={match.url} component={Signin} />
-      <Route path={"${match.url}/forgot"} component={ForgotPassword} />
-      <Route path={"${match.url}/changepassword"} component={ChangePassword} />
+      <Route path={`${match.url}/forgot`} component={ForgotPassword} />
+      <Route path={`${match.url}/sign-up`} component={Signup} />
+      <Route path={`${match.url}/changepassword`} component={ChangePassword} />
     </Switch>
   );
 }

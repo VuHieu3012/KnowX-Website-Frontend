@@ -11,7 +11,7 @@ import { Link, Redirect } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import "./signin.scss";
 import AuthRight from "../../../../components/AuthRight";
-import knowX_logo from "./knowX_logo.png";
+import images from "../../../../assets/images";
 
 const Signin = () => {
   const [loginData, setLoginData] = useState({
@@ -36,7 +36,7 @@ const Signin = () => {
         <ThemeProvider theme={theme}>
           <div className="wrapper">
             <div className="logo">
-              <img src={knowX_logo} alt="logo" />
+              <img src={images.knowXLogo} alt="logo" />
             </div>
             <Box sx={{ textAlign: "center", m: 1, fontSize: 22 }}>
               Sign in with
@@ -71,8 +71,14 @@ const Signin = () => {
                 direction="row"
                 justifyContent="space-between"
               >
-                <Button sx={{ p: 1, width: "45%" }} variant="outlined">
-                  SIGN UP
+                <Button
+                  sx={{ p: 1, width: "45%" }}
+                  variant="outlined"
+                  // onClick={signUp}
+                >
+                  <Link className="sign-up-txt" to="/auth/sign-up">
+                    SIGN UP
+                  </Link>
                 </Button>
                 <Button
                   sx={{ p: 1, width: "45%" }}

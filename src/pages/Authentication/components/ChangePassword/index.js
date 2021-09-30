@@ -11,7 +11,7 @@ import { Link, Redirect } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import "./styles.scss";
 import AuthRight from "../../../../components/AuthRight";
-import knowX_logo from "./knowX_logo.png";
+import images from "../../../../assets/images";
 
 const Signin = () => {
   const [loginData, setLoginData] = useState({
@@ -36,7 +36,7 @@ const Signin = () => {
         <ThemeProvider theme={theme}>
           <div className="wrapper">
             <div className="logo">
-              <img src={knowX_logo} alt="logo" />
+              <img src={images.knowXLogo} alt="logo" />
             </div>
             <div className="change-password-wrapper">
               <TextField
