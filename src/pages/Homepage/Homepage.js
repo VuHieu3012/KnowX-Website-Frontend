@@ -5,12 +5,14 @@ import SidebarLeft from "../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../components/SidebarRight/SidebarRight";
 
 const Homepage = () => (
-  <>
+  <div className="web-container">
     <Header />
-    <SidebarLeft />
-    <SidebarRight />
+    <div className="web-content">
+      <SidebarLeft />
+      <SidebarRight />
+    </div>
     <Footer />
-  </>
+  </div>
 
 );
 
