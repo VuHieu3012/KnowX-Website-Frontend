@@ -72,7 +72,9 @@ const Signin = () => {
                 justifyContent="space-between"
               >
                 <Button sx={{ p: 1, width: "45%" }} variant="outlined">
-                  SIGN UP
+                  <Link className="sign-up-txt" to="/auth/signup">
+                    SIGN UP
+                  </Link>
                 </Button>
                 <Button
                   sx={{ p: 1, width: "45%" }}

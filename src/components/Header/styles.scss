@@ -1,0 +1,92 @@
+.header-container{
+    width: 100%;
+    height: 295px;
+    position: relative;
+}
+
+.header-banner{
+    width: 100%;
+    height: 295px;
+    background-image: url(./image-header.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header-navbar{
+    width: 100%;
+    height: 60px;
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 9px 9px grey;
+}
+
+.header-navbar button{
+    margin-left: 25px;
+    border: none;
+    background-color: #fff;
+    line-height: 40px;
+    font-weight: 700;
+    width: 130px;
+}
+
+.header-navbar button i{
+    margin-left: 3px;
+}
+
+.header-navbar button:hover{
+    background-color: #3971d1;
+    color: #fff;
+}
+
+.header-search{
+    float: right;
+    margin-right: 130px;
+}
+
+.header-search i{
+    width: 50px;
+    background-color: #3971d1;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.hover-post{
+    display: none;
+    position: absolute;
+    min-width: 130px;
+    background-color: #3971d1;
+    color: #fff;
+    flex-direction: column;
+    top: 347px;
+    left: 180px; 
+    text-align: left;
+}
+
+.hover-post a, .hover-question a{
+    color: #fff;
+    text-decoration: none;
+    margin-left: 7px;
+}
+
+.post-option:hover .hover-post{
+    display: flex;
+}
+
+.hover-question{
+    display: none;
+    position: absolute;
+    min-width: 130px;
+    background-color: #3971d1;
+    color: #fff;
+    flex-direction: column;
+    top: 347px;
+    left: 335px; 
+    text-align: left;
+}
+
+.question-option:hover .hover-question{
+    display: flex;
+}

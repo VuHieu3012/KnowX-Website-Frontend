@@ -1,0 +1,89 @@
+.sidebar-right{
+  float: right;
+  height: 1100px;
+  width: 281px;
+  box-shadow: 5px 0 19px grey;
+}
+
+.sidebar-right-content{
+  display: flex;
+  height: 50px;
+  margin-left: 50px;
+  margin-top: 50px;
+  font-family: Segoe UI;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 50px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #00358E;
+  margin-bottom: 5px;
+}
+
+.sidebar-right-content i{
+  margin-right: 10px;
+  font-size: 50px;
+}
+
+.sidebar-right-search{
+  display: flex;
+  justify-content: center;
+  margin-left: 48px;
+}
+
+.sidebar-right-search i{
+  line-height: 32px;
+  padding: 0 10px;
+  border-radius: 4px;
+}
+
+.sidebar-right li{
+  list-style: none;
+}
+
+.sidebar-right-search i:hover{
+  background-color: #00358E;
+  color: #fff;
+  cursor: pointer;
+}
+
+.list-bookmark-items{
+  width: 281px;
+}
+
+.bookmark-item{
+  margin-top: 20px;
+  display: flex;
+  width: 210px;
+  height: 100px;
+}
+
+.bookmark-icon{
+  margin-right: 12px;
+  width: 25px;
+  height: 47px;
+  font-size: 30px;
+  color: #00358E;
+  font-weight: 1000;
+}
+
+.bookmark{
+  display: flex;
+  flex-direction: column;
+  width: 186px;
+}
+
+.bookmark a{
+  text-decoration: none;
+}
+
+.bookmark .title{
+  font-family: Segoe UI;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: left;
+}
