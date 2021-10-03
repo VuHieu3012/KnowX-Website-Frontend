@@ -1,7 +1,18 @@
 .web-container{
-  display: block
+  width: 100%;
 }
 
-.web-content{
-  display: flex;
+.web-content-center{
+  width: 841px;
+  background-color: #fff;
+  min-height: 1100px;
+  margin-left: 24px;
+  margin-right: 24px;
 }
+
+.web-content {
+  margin-top: -28px;
+  display: flex;
+  background-color: rgb(235, 226, 226);
+}
+

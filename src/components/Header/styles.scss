@@ -6,7 +6,7 @@
 
 .header-banner{
     width: 100%;
-    height: 295px;
+    height: 220px;
     background-image: url(./image-header.png);
     background-repeat: no-repeat;
     background-size: cover;
@@ -14,9 +14,8 @@
 
 .header-navbar{
     width: 100%;
-    height: 60px;
+    height: 42px;
     display: inline-block;
-    margin-top: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-shadow: 0 9px 9px grey;
 }
@@ -41,7 +40,11 @@
 
 .header-search{
     float: right;
-    margin-right: 130px;
+    margin-right: 70px;
+}
+
+input.MuiInput-input.MuiInputBase-input.css-1x51dt5-MuiInputBase-input-MuiInput-input {
+    margin-top: 5px;
 }
 
 .header-search i{
@@ -60,7 +63,7 @@
     background-color: #3971d1;
     color: #fff;
     flex-direction: column;
-    top: 347px;
+    top: 262px;
     left: 180px; 
     text-align: left;
 }
@@ -82,7 +85,7 @@
     background-color: #3971d1;
     color: #fff;
     flex-direction: column;
-    top: 347px;
+    top: 262px;
     left: 335px; 
     text-align: left;
 }

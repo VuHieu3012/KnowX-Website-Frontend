@@ -1,16 +1,16 @@
+/* eslint-disable import/order */
 /* eslint-disable react/button-has-type */
-/* eslint-disable import/no-unresolved */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/react-in-jsx-scope */
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-import SidebarLeft from "../../components/SidebarLeft/SidebarLeft";
-import SidebarRight from "../../components/SidebarRight/SidebarRight";
+import Header from "../../../components/Header/Header";
+import Footer from "../../../components/Footer/Footer";
+import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
+import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import "./styles.scss";
 import img from "./knowX_logo.png";
-// eslint-disable-next-line import/order
+import { Pagination } from "@material-ui/core";
 
-const Homepage = () => (
+const NewestPost = () => (
   <div className="web-container">
     <Header />
     <div className="web-content">
@@ -46,4 +46,4 @@ const Homepage = () => (
   </div>
 );
 
-export default Homepage;
+export default NewestPost;

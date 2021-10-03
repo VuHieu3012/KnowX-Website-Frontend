@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable import/no-named-as-default-member */
