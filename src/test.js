@@ -7,9 +7,12 @@ import Homepage from "./pages/Homepage/Homepage";
 import CreatePost from "./pages/Post/CreatePost/CreatePost";
 import FollowingPost from "./pages/Post/FollowingPost/FollowingPost";
 import PostDetail from "./pages/Post/PostDetail/PostDetail";
+// import CreateQuestion from "./pages/Question/CreateQuestion/CreateQuestion";
+import ViewQuestion from "./pages/Question/ViewQuestion/ViewQuestion";
+import ListQuestion from "./pages/Question/ListQuestion/ListQuestion";
 
 const test = () => (
-  <CreatePost />
+  <ListQuestion />
 );
 
 export default test;
