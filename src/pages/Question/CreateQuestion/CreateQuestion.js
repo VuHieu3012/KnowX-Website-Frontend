@@ -1,15 +1,11 @@
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
 
-// eslint-disable-next-line import/no-unresolved
 import TextField from '@mui/material/TextField';
-// eslint-disable-next-line import/no-unresolved
 import Box from '@mui/material/Box';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-// eslint-disable-next-line import/no-unresolved
 import ButtonGroup from '@mui/material/ButtonGroup';
-// eslint-disable-next-line import/no-unresolved
 import Button from '@mui/material/Button';
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
