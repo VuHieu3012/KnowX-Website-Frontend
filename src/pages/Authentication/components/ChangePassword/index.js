@@ -13,7 +13,7 @@ import "./styles.scss";
 import AuthRight from "../../../../components/AuthRight";
 import images from "../../../../assets/images";
 
-const Signin = () => {
+const ChangePassword = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -57,7 +57,11 @@ const Signin = () => {
                 value={loginData.password}
                 onChange={onChangeHandler}
               />
-              <Stack width="100%" direction="row" justifyContent="space-between">
+              <Stack
+                width="100%"
+                direction="row"
+                justifyContent="space-between"
+              >
                 <Button
                   sx={{ p: 1, width: "100%" }}
                   variant="contained"
@@ -74,4 +78,4 @@ const Signin = () => {
     </>
   );
 };
-export default Signin;
+export default ChangePassword;
