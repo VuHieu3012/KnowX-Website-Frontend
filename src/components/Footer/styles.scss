@@ -1,55 +1,23 @@
 .footer-container {
   clear: both;
   width: 100%;
-  background: rgba(0, 53, 142, 1);
-  height: 196px;
-  color: #fff;
-  display: flex;
+  background: #00358e;
+  height: 160px;
   font-family: Segoe UI;
-}
-
-.footer-container a {
+  position: relative;
   color: #fff;
-  text-decoration: none;
-}
-
-.footer-logo {
-  height: 175px;
-  width: 215px;
 }
 
 .footer-logo img {
-  height: 175px;
-  width: 215px;
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  left: 12px;
+  top: -30px;
 }
-
-.footer-resources {
-  display: block;
-  padding: 20px;
+.mb-10 {
+  margin-bottom: 10px;
 }
-
-.footer-resources-content {
-  display: flex;
-  margin-top: 10px;
-}
-
-.footer-resources-left,
-.footer-resources-right {
-  display: flex;
-  flex-direction: column;
-}
-
-.footer-resources-right {
-  margin-left: 20px;
-}
-
-.contact {
-  padding: 20px;
-  margin-left: 100px;
-  display: flex;
-  flex-direction: column;
-}
-
-.contact > a {
-  margin-top: 10px;
+.mt--12 {
+  margin-top: -12px;
 }

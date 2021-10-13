@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
@@ -13,23 +14,78 @@ import "./signin.scss";
 import AuthRight from "../../../../components/AuthRight";
 import images from "../../../../assets/images";
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#00358E",
+    },
+  },
+});
+
 const Signin = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+  const [hidden, setHidden] = useState(true);
+  const [errMsgEmail, setErrMsgEmail] = useState("");
+  const [errMsgPassword, setErrMsgPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState(false);
+
   const onChangeHandler = (e) => {
     const tmpLogin = { ...loginData };
     tmpLogin[e.target.name] = e.target.value;
     setLoginData(tmpLogin);
   };
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#00358E",
-      },
-    },
-  });
+
+  const onSubmitHandler = () => {
+    const formdata = new FormData();
+    formdata.append("email", loginData.email);
+    formdata.append("password", loginData.password);
+
+    const requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+    fetch("http://127.0.0.1:8000/api/user/login", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.status === "success") {
+          setAccessToken(result.token);
+          sessionStorage.setItem("token", result.token);
+          sessionStorage.setItem("userName", loginData.email);
+          sessionStorage.setItem("isLoggedIn", true);
+        }
+        if (result.status === "failed") {
+          setErrMsg(result.message);
+        }
+        if (result.status === "error") {
+          setError(true);
+          setErrMsgEmail(result.validation_errors.email[0]);
+          setErrMsgPassword(result.validation_errors.password[0]);
+        }
+        if (result.error === false) {
+          setRedirect(true);
+        }
+      })
+      .catch((error) => {
+        console.log("errro", error);
+      });
+  };
+
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+
+  if (redirect) {
+    return <Redirect to="/homepage" />;
+  }
+
+  if (isLoggedIn) {
+    return <Redirect to="/homepage" />;
+  }
+
   return (
     <>
       <Container className="themed-container mt-2" fluid="sm">
@@ -43,6 +99,8 @@ const Signin = () => {
             </Box>
             <div className="signin-wrapper">
               <TextField
+                error={error}
+                helperText={loginData.email === "" ? error : errMsgEmail}
                 label="Email"
                 type="text"
                 name="email"
@@ -53,8 +111,13 @@ const Signin = () => {
               />
               <div className="show-hide-pwd-wrapper">
                 <TextField
+                  error={error}
+                  helperText={
+                    loginData.password === "" ? error : errMsgPassword
+                  }
                   label="Password"
                   name="password"
+                  type={hidden ? "password" : "text"}
                   fullWidth
                   variant="outlined"
                   value={loginData.password}
@@ -66,16 +129,13 @@ const Signin = () => {
                   Forgot password?
                 </Link>
               </p>
+              <p className="errMsgStyl">{errMsg}</p>
               <Stack
                 width="100%"
                 direction="row"
                 justifyContent="space-between"
               >
-                <Button
-                  sx={{ p: 1, width: "45%" }}
-                  variant="outlined"
-                  // onClick={signUp}
-                >
+                <Button sx={{ p: 1, width: "45%" }} variant="outlined">
                   <Link className="sign-up-txt" to="/auth/sign-up">
                     SIGN UP
                   </Link>
@@ -83,7 +143,10 @@ const Signin = () => {
                 <Button
                   sx={{ p: 1, width: "45%" }}
                   variant="contained"
+                  fullWidth
                   color="primary"
+                  onClick={onSubmitHandler}
+                  disabled={!loginData.email || !loginData.password}
                 >
                   SIGN IN
                 </Button>

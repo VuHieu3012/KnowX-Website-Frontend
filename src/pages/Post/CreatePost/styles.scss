@@ -1,9 +1,11 @@
-.container{
-  // display: flex;
-  width: 100%;
-  justify-content:space-between;
-}
-.content{
-  width: "60%";
-  float: left;
+.container {
+  .hashtag {
+    margin-top: 25px;
+  }
+  .description {
+    margin-top: 35px;
+    .ck-content {
+      height: 500px;
+    }
+  }
 }

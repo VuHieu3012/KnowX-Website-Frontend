@@ -11,7 +11,7 @@ import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 
 const { Content } = Layout;
-const CreatePost = () => (
+const CreateQuestion = () => (
   <>
     <Layout>
       <Header />
@@ -20,7 +20,7 @@ const CreatePost = () => (
         <Content>
           <div className="container">
             <div className="title">
-              <Input placeholder="Add title of post" />
+              <Input placeholder="Add title of question" />
             </div>
             <div className="hashtag">
               <Input placeholder="Add hashtag" />
@@ -64,4 +64,4 @@ const CreatePost = () => (
   </>
 );
 
-export default CreatePost;
+export default CreateQuestion;

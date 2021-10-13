@@ -22,7 +22,7 @@ import { store } from "./app/store";
 // reportWebVitals();
 ReactDOM.render(
   <React.StrictMode>
-    <Test />
+    <App />
   </React.StrictMode>,
   document.getElementById("root"),
 );

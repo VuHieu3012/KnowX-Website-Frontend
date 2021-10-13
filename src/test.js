@@ -8,12 +8,15 @@ import SidebarLeft from "./components/SidebarLeft/SidebarLeft";
 import SidebarRight from "./components/SidebarRight/SidebarRight";
 import Footer from "./components/Footer/Footer";
 import CreatePost from "./pages/Post/CreatePost/CreatePost";
+import Homepage from "./pages/Homepage/Homepage";
+import DetailPost from "./pages/Post/DetailPost/DetailPost";
+import FindBuddy from "./pages/Find/FindBuddy/FindBuddy";
 
 const Test = () => (
   <>
     <BrowserRouter>
       <Switch>
-        <CreatePost />
+        <FindBuddy />
       </Switch>
     </BrowserRouter>
   </>

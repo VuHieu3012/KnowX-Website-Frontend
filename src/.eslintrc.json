@@ -11,6 +11,7 @@
     "no-use-before-define": "off",
     "linebreak-style": "off",
     "react/jsx-filename-extension": "off",
-    "quotes": ["off", "double"]
+    "quotes": ["off", "double"],
+    "object-curly-newline": "off"
   }
 }
