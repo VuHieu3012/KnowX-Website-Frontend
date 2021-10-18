@@ -11,19 +11,11 @@ import reportWebVitals from "./reportWebVitals";
 import Test from "./test";
 import { store } from "./app/store";
 
-// ReactDOM.render(
-//   <Provider store={store}>
-//     <React.StrictMode>
-//       <App />
-//     </React.StrictMode>
-//   </Provider>,
-//   document.getElementById("root"),
-// );
-// reportWebVitals();
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById("root"),
+  // eslint-disable-next-line comma-dangle
+  document.getElementById("root")
 );
 reportWebVitals();

@@ -44,7 +44,6 @@
 
 .postDetail-title {
   display: flex;
-  justify-content: space-between;
 }
 
 .postDetail-title .postDetail-option {
@@ -122,4 +121,23 @@
 
 .comment-item-reply {
   cursor: pointer;
+}
+
+.postDetail-dropdown {
+  float: right;
+  display: flex;
+  padding: 7px;
+  margin-left: auto;
+}
+
+table {
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }

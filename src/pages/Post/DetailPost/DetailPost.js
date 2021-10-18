@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable comma-dangle */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable import/no-unresolved */
@@ -6,15 +9,16 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select } from "antd";
-import { createFromIconfontCN } from "@ant-design/icons";
+import { Layout, Select, Menu, Dropdown, Button } from "antd";
+import { createFromIconfontCN, DownOutlined } from "@ant-design/icons";
 import { Input } from "reactstrap";
+import { useLocation, Redirect } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
 import images from "../../../assets/images";
-
 // import images from "../../assets/images";
 
 const IconFont = createFromIconfontCN({
@@ -22,11 +26,127 @@ const IconFont = createFromIconfontCN({
 });
 const { Content } = Layout;
 const { Option } = Select;
+
 const DetailPost = () => {
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
+  const location = useLocation();
+  const arr = location.pathname.split("/");
+  const selectedId = arr[arr.length - 1];
+
+  const [selectedPost, setSelectedPost] = useState({});
+  const [user, setUser] = useState({});
+  const [redirect, setRedirect] = useState(false);
+  const [isEditMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    console.log("selectedId: ", selectedId);
+    async function getPersonal() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user",
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        setUser(responseJSON.data);
+        console.log("personal: ", user);
+      } catch (error) {
+        console.log("Faild fetch user : ", error.message);
+      }
+    }
+
+    async function getPostData() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/posts/${selectedId}`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        setSelectedPost(responseJSON.data);
+        console.log("list post: ", selectedPost);
+      } catch (error) {
+        console.log("Failed fetch list Posts", error.message);
+      }
+    }
+    getPersonal();
+    getPostData();
+  }, []);
+
+  async function handleDelete() {
+    // eslint-disable-next-line no-restricted-globals
+    const check = confirm("Do you like delete this post?");
+    if (check) {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/posts/${selectedId}`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.status === "success") {
+          setRedirect(true);
+          alert("Post Deleted");
+        }
+      } catch (error) {
+        console.log("Faild fetch delete post : ", error.message);
+      }
+    }
+  }
+
+  function handleEdit() {
+    setEditMode(true);
+  }
+
+  // convert timestams to date
+  const formatDate = (timestams) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+    };
+    return new Date(timestams).toLocaleDateString(undefined, options);
   };
 
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" onClick={handleEdit}>
+        Edit
+      </Menu.Item>
+      <Menu.Item key="2" onClick={handleDelete}>
+        Delete
+      </Menu.Item>
+    </Menu>
+  );
+
+  if (redirect) {
+    return <Redirect to="/post/myposts" />;
+  }
+  if (isEditMode) {
+    return <Redirect to={`/post/edit/${selectedId}`} />;
+  }
   return (
     <Layout>
       <Header />
@@ -37,15 +157,21 @@ const DetailPost = () => {
             <div className="postDetail-container">
               <div className="postDetail-author">
                 <img src={images.knowXLogo} alt="img" />
-                <a href="#">Vũ Quốc Hiệu</a>
-                <button>Follow</button>
+                <a href="#">{user.full_name}</a>
               </div>
-              <div className="postDetail-date">Published 20/09/2021</div>
+              <div className="postDetail-date">{formatDate(selectedPost.updated_at)}</div>
               <div className="postDetail-hastag">
-                <a href="#">#react</a>
+                <a href="#">{selectedPost.hashtag}</a>
               </div>
               <div className="postDetail-title">
-                <h5>Tìm hiểu về redux saga qua ví dụ thực tế</h5>
+                <h5>{selectedPost.title}</h5>
+                <div className="postDetail-dropdown">
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      Option <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                </div>
                 <i className="ti-more-alt">
                   <div className="postDetail-option">
                     <a href="#">Edit</a>
@@ -53,21 +179,10 @@ const DetailPost = () => {
                   </div>
                 </i>
               </div>
-              <div className="postDetail-content">
-                REDUX-SAGA LÀ GÌ? Redux saga là một thư viện redux middleware,
-                giúp quản lý những side effect trong ứng dụng redux trở nên đơn
-                giản hơn. Bằng việc sử dụng tối đa tính năng Generators (
-                function* ) của ES6, nó cho phép ta viết async code nhìn giống
-                như là synchronos.\ Khi view dispatch 1 action lên cho reducer
-                xử lý thì trước tiên nó phải đi qua middleware Saga Khi Saga
-                nhận được action mà view dispatch lên thì nó sẽ bắt lấy action
-                đấy để xử lý Sau khi saga xử lý xong thì nó sẽ dùng hàm put để
-                dispatch một action mới lên cho reducer (action này có thể kèm
-                theo cả dữ liệu mà saga đã xử lý trước đó) Bây giờ thì reducer
-                mới nhận được action, sau đó reducer sẽ xử các action theo các
-                điều kiện khác nhau(tùy theo action mà saga gửi lên thì reducer
-                xử lý).
-              </div>
+              <div
+                className="postDetail-content"
+                dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+              />
               <div className="postDetail-icons">
                 <i className="fas fa-thumbs-up" />
                 <i className="fas fa-thumbs-down" />

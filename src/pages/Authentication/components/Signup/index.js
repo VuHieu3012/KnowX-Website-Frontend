@@ -74,6 +74,7 @@ const Signup = () => {
             first_name: "",
             last_name: "",
             password: "",
+            password_confirmation: "",
             email: "",
             phone: "",
           });

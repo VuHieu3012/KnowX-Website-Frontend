@@ -3,6 +3,8 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 import CreatePost from "./CreatePost/CreatePost";
 import Homepage from "../Homepage/Homepage";
 import DetailPost from "./DetailPost/DetailPost";
+import MyPosts from "./MyPosts/MyPosts";
+import EditPost from "./EditPost/EditPost";
 
 function Post(props) {
   const match = useRouteMatch();
@@ -10,8 +12,10 @@ function Post(props) {
   return (
     <Switch>
       <Route exact path={match.url} component={Homepage} />
-      <Route path={`${match.url}/create`} component={CreatePost} />
-      <Route path={`${match.url}/detail`} component={DetailPost} />
+      <Route exact path={`${match.url}/create`} component={CreatePost} />
+      <Route path={`${match.url}/detail/:postId`} component={DetailPost} />
+      <Route path={`${match.url}/myposts`} component={MyPosts} />
+      <Route path={`${match.url}/edit/:postId`} component={EditPost} />
     </Switch>
   );
 }

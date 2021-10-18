@@ -38,10 +38,12 @@ const Header = () => {
           </Link>
           <SubMenu key="Post" title="Post" onTitleClick={handleClick}>
             <Menu.Item>
+              <Link to="/post/myposts">My Posts</Link>
+            </Menu.Item>
+            <Menu.Item>
               <Link to="/following">Followings</Link>
             </Menu.Item>
             <Menu.Item>Newest</Menu.Item>
-            <Menu.Item>Top read</Menu.Item>
             <Menu.Item>Master post</Menu.Item>
             <Menu.Item>
               <Link to="/post/create">Create post</Link>
@@ -49,10 +51,12 @@ const Header = () => {
           </SubMenu>
           <SubMenu key="Question" title="Question">
             <Menu.Item>
+              <Link to="/question/myquestions">My Questions</Link>
+            </Menu.Item>
+            <Menu.Item>
               <Link to="/question/following">Followings</Link>
             </Menu.Item>
             <Menu.Item>Newest</Menu.Item>
-            <Menu.Item>Unsolved</Menu.Item>
             <Menu.Item>Interest</Menu.Item>
             <Menu.Item>
               <Link to="/question/create">Create question</Link>

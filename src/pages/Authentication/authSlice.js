@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-empty-pattern */
 import { createSlice } from "@reduxjs/toolkit";
@@ -5,11 +6,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    username: '',
-    email: '',
+    username: "",
+    email: "",
     isSuccess: false,
     isError: false,
-    errorMessage: '',
+    errorMessage: "",
   },
   reducers: {
     loginSuccess: (state, action) => {
