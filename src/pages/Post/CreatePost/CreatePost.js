@@ -2,7 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable object-curly-newline */
 import "./styles.scss";
-import { Layout, Input, Button, Space } from "antd";
+import { Layout, Input, Button, Space, message, Form } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useState } from "react";
@@ -15,6 +15,7 @@ import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 const { Content } = Layout;
 const CreatePost = () => {
   const [redirect, setRedirect] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [postData, setPostData] = useState({
     title: "",
     hashtag: "",
@@ -22,13 +23,15 @@ const CreatePost = () => {
   });
 
   const tmpPostData = { ...postData };
+
   async function create() {
+    setLoading(true);
     setPostData(tmpPostData);
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
-    formData.append("title", postData.title);
-    formData.append("hashtag", postData.hashtag);
-    formData.append("content", postData.content);
+    formData.append("title", tmpPostData.title);
+    formData.append("hashtag", tmpPostData.hashtag);
+    formData.append("content", tmpPostData.content);
     const requestOptions = {
       method: "POST",
       body: formData,
@@ -36,32 +39,49 @@ const CreatePost = () => {
         Authorization: `Bearer ${token}`,
       },
     };
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/user/posts",
-        requestOptions,
-      );
-      const responseJSON = await response.json();
-      console.log(responseJSON);
-      if (responseJSON.status === "success") {
-        setRedirect(true);
-        alert("Post Created");
+    setTimeout(async () => {
+      console.log(tmpPostData);
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user/posts",
+          // eslint-disable-next-line comma-dangle
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.status === "success") {
+          success();
+          setRedirect(true);
+        }
+        if (responseJSON.error === false) {
+          setPostData({
+            title: "",
+            hashtag: "",
+            content: "",
+          });
+        }
+        if (responseJSON.status === "error") {
+          setLoading(false);
+          error();
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log("Failed create post", error);
       }
-      if (responseJSON.error === false) {
-        setPostData({
-          title: "",
-          hashtag: "",
-          content: "",
-        });
-      }
-    } catch (error) {
-      console.log("Failed create post", error);
-    }
+    }, 2000);
   }
 
   if (redirect) {
     return <Redirect to="/post/myposts" />;
   }
+
+  const success = () => {
+    message.success("Success. Post Created!", 5);
+  };
+
+  const error = () => {
+    message.error("Error. Post create failed!", 5);
+  };
 
   return (
     <>
@@ -71,38 +91,43 @@ const CreatePost = () => {
           <SidebarLeft />
           <Content>
             <div className="container">
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  marginRight: "25px",
-                  marginBottom: "25px",
-                  paddingBottom: "25px",
-                }}
+              <Form />
+              <Form.Item>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                    marginBottom: "25px",
+                    marginRight: "25px",
+                    paddingBottom: "25px",
+                  }}
+                >
+                  CREATE POST
+                </span>
+              </Form.Item>
+              <Form.Item
+                name="title"
+                rules={[{ required: true, message: "please input title" }]}
               >
-                CREATE POST
-              </span>
-              <div className="title">
                 <Input
-                  type="text"
                   placeholder="Add title of post"
-                  name="title"
                   onChange={(e) => {
                     tmpPostData.title = e.target.value;
                   }}
                 />
-              </div>
-              <div className="hashtag">
+              </Form.Item>
+              <Form.Item
+                name="hashtag"
+                rules={[{ required: true, message: "Please input hashtag!" }]}
+              >
                 <Input
-                  type="text"
-                  placeholder="Add hashtag"
-                  name="hashtag"
+                  placeholder="VD: #react, #php"
                   onChange={(e) => {
                     tmpPostData.hashtag = e.target.value;
                   }}
                 />
-              </div>
-              <div className="description">
+              </Form.Item>
+              <Form.Item name="content">
                 <CKEditor
                   name="content"
                   editor={ClassicEditor}
@@ -117,17 +142,26 @@ const CreatePost = () => {
                     console.log({ event, editor, data });
                   }}
                 />
-              </div>
-              <div style={{ marginTop: "55px", textAlign: "center" }}>
-                <Space size={20}>
-                  <Button size="large" type="primary" onClick={create}>
-                    CREATE
-                  </Button>
-                  <Button size="large" type="primary">
-                    CANCEL
-                  </Button>
-                </Space>
-              </div>
+              </Form.Item>
+              <Form.Item>
+                <div style={{ marginTop: "55px", textAlign: "center" }}>
+                  <Space size={20}>
+                    <Button
+                      size="large"
+                      type="primary"
+                      onClick={create}
+                      loading={loading}
+                      htmlType="submit"
+                    >
+                      CREATE
+                    </Button>
+                    <Button size="large" type="primary">
+                      CANCEL
+                    </Button>
+                  </Space>
+                </div>
+              </Form.Item>
+              <Form />
             </div>
           </Content>
           <SidebarRight />

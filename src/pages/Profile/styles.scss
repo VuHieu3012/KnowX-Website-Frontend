@@ -1,0 +1,25 @@
+// .layout-header .banner-profile {
+//   background-image: url(./banner_profile.png);
+// }
+.container {
+  .navigation-profile {
+  }
+  .personal-profile {
+    .ant-descriptions-bordered .ant-descriptions-view,
+    td {
+      border: none;
+    }
+  }
+  .account-info {
+    .title-account-info {
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1.5715;
+    }
+    .ant-form-item-control-input-content {
+      flex: auto;
+      max-width: 50%;
+    }
+  }
+}

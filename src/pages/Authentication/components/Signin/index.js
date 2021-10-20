@@ -23,6 +23,7 @@ const theme = createTheme({
 });
 
 const Signin = () => {
+  const [toSignUp, setToSignUp] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -50,9 +51,11 @@ const Signin = () => {
       method: "POST",
       body: formdata,
     };
+
     fetch("http://127.0.0.1:8000/api/user/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log("status: ", result);
         if (result.status === "success") {
           setAccessToken(result.token);
           sessionStorage.setItem("token", result.token);
@@ -85,6 +88,14 @@ const Signin = () => {
   if (isLoggedIn) {
     return <Redirect to="/homepage" />;
   }
+
+  if (toSignUp) {
+    return <Redirect to="/auth/sign-up" />;
+  }
+
+  const isSignUp = () => {
+    setToSignUp(true);
+  };
 
   return (
     <>
@@ -135,10 +146,12 @@ const Signin = () => {
                 direction="row"
                 justifyContent="space-between"
               >
-                <Button sx={{ p: 1, width: "45%" }} variant="outlined">
-                  <Link className="sign-up-txt" to="/auth/sign-up">
-                    SIGN UP
-                  </Link>
+                <Button
+                  sx={{ p: 1, width: "45%" }}
+                  variant="outlined"
+                  onClick={isSignUp}
+                >
+                  SIGN UP
                 </Button>
                 <Button
                   sx={{ p: 1, width: "45%" }}

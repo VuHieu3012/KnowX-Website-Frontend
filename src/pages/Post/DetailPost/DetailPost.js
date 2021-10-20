@@ -9,7 +9,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Menu, Dropdown, Button } from "antd";
+import { Layout, Select, Menu, Dropdown, Button, Modal, message } from "antd";
 import { createFromIconfontCN, DownOutlined } from "@ant-design/icons";
 import { Input } from "reactstrap";
 import { useLocation, Redirect } from "react-router-dom";
@@ -28,6 +28,9 @@ const { Content } = Layout;
 const { Option } = Select;
 
 const DetailPost = () => {
+  const [modalText, setModalText] = useState("Accept delete this post?");
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
@@ -38,7 +41,6 @@ const DetailPost = () => {
   const [isEditMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    console.log("selectedId: ", selectedId);
     async function getPersonal() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -88,16 +90,15 @@ const DetailPost = () => {
 
   async function handleDelete() {
     // eslint-disable-next-line no-restricted-globals
-    const check = confirm("Do you like delete this post?");
-    if (check) {
-      const token = sessionStorage.getItem("token");
-      const requestOptions = {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+    const token = sessionStorage.getItem("token");
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
+    setTimeout(async () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/posts/${selectedId}`,
@@ -106,13 +107,13 @@ const DetailPost = () => {
         const responseJSON = await response.json();
         console.log(responseJSON);
         if (responseJSON.status === "success") {
+          success();
           setRedirect(true);
-          alert("Post Deleted");
         }
       } catch (error) {
         console.log("Faild fetch delete post : ", error.message);
       }
-    }
+    }, 2000);
   }
 
   function handleEdit() {
@@ -129,13 +130,16 @@ const DetailPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
+  const showModal = () => {
+    setVisible(true);
+  };
 
   const menu = (
     <Menu>
       <Menu.Item key="1" onClick={handleEdit}>
         Edit
       </Menu.Item>
-      <Menu.Item key="2" onClick={handleDelete}>
+      <Menu.Item key="2" onClick={showModal}>
         Delete
       </Menu.Item>
     </Menu>
@@ -147,19 +151,47 @@ const DetailPost = () => {
   if (isEditMode) {
     return <Redirect to={`/post/edit/${selectedId}`} />;
   }
+
+  // handle modal
+  const handleOk = () => {
+    handleDelete();
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setVisible(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setVisible(false);
+  };
+  const success = () => {
+    message.success("Success. Post deleted!", 5);
+  };
   return (
     <Layout>
       <Header />
       <Layout>
         <SidebarLeft />
         <Content>
+          <Modal
+            title="Confirm"
+            visible={visible}
+            onOk={handleOk}
+            confirmLoading={confirmLoading}
+            onCancel={handleCancel}
+          >
+            <p>{modalText}</p>
+          </Modal>
           <div className="container">
             <div className="postDetail-container">
               <div className="postDetail-author">
                 <img src={images.knowXLogo} alt="img" />
                 <a href="#">{user.full_name}</a>
               </div>
-              <div className="postDetail-date">{formatDate(selectedPost.updated_at)}</div>
+              <div className="postDetail-date">
+                {formatDate(selectedPost.updated_at)}
+              </div>
               <div className="postDetail-hastag">
                 <a href="#">{selectedPost.hashtag}</a>
               </div>

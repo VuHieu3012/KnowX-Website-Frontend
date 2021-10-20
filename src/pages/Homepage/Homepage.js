@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
-import "./styles.scss";
+import "./Homepage.scss";
 import { Layout, Select } from "antd";
 import { createFromIconfontCN } from "@ant-design/icons";
 import { Link } from "react-router-dom";

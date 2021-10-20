@@ -3,8 +3,8 @@
 import "./styles.scss";
 
 const AuthRight = () => (
-  <div className="background content">
-    <div className="description">
+  <div className="background">
+    <div className="description-authright">
       <h2>
         WELL COME TO
         <br />

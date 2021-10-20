@@ -3,7 +3,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable object-curly-newline */
 import "./styles.scss";
-import { Layout, Input, Button, Space, Form } from "antd";
+import { Layout, Input, Button, Space, Form, message } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 
 const { Content } = Layout;
 const EditQuestion = () => {
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
@@ -47,9 +48,10 @@ const EditQuestion = () => {
       }
     }
     getQuestionData();
-  }, []);
+  }, [selectedId]);
 
   async function handleEdit() {
+    setLoading(true);
     setQuestionData(tmpQuestionData);
     const token = sessionStorage.getItem("token");
     const urlencode = new URLSearchParams();
@@ -64,26 +66,40 @@ const EditQuestion = () => {
       body: urlencode,
       headers: myHeaders,
     };
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/user/questions/${selectedId}`,
-        requestOptions
-      );
-      const responseJSON = await response.json();
-      console.log(responseJSON);
-      if (responseJSON.status === "success") {
-        setRedirect(true);
-        alert("Question Updated");
+
+    setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/questions/${selectedId}`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.status === "success") {
+          setRedirect(true);
+          success();
+        }
+        if (responseJSON.status === "error") {
+          setLoading(false);
+          error();
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log("Failed edit question", error.message);
       }
-    } catch (error) {
-      console.log("Failed edit question", error.message);
-    }
+    }, 2000);
   }
   const tmpQuestionData = { ...questionData };
   if (redirect) {
     return <Redirect to={`/question/detail/${selectedId}`} />;
   }
-  console.log("data: ", questionData.title);
+  const success = () => {
+    message.success("Success. Question Updated!", 5);
+  };
+
+  const error = () => {
+    message.error("Error. Question update failed!", 5);
+  };
   return (
     <>
       <Layout>
@@ -92,17 +108,6 @@ const EditQuestion = () => {
           <SidebarLeft />
           <Content>
             <div className="container">
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  marginRight: "25px",
-                  marginBottom: "25px",
-                  paddingBottom: "25px",
-                }}
-              >
-                EDIT QUESTION
-              </span>
               {tmpQuestionData.title && tmpQuestionData.title !== "" && (
                 <Form
                   name="basic"
@@ -111,6 +116,19 @@ const EditQuestion = () => {
                     hashtag: tmpQuestionData.hashtag,
                   }}
                 >
+                  <Form.Item>
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "20px",
+                        marginRight: "25px",
+                        marginBottom: "25px",
+                        paddingBottom: "25px",
+                      }}
+                    >
+                      EDIT QUESTION
+                    </span>
+                  </Form.Item>
                   <Form.Item
                     rules={[{ required: true }]}
                     name="title"
@@ -127,7 +145,11 @@ const EditQuestion = () => {
                     name="hashtag"
                     initialValue={tmpQuestionData.hashtag}
                   >
-                    <Input />
+                    <Input
+                      onChange={(e) => {
+                        tmpQuestionData.hashtag = e.target.value;
+                      }}
+                    />
                   </Form.Item>
                   <Form.Item>
                     <CKEditor
@@ -149,6 +171,7 @@ const EditQuestion = () => {
                           type="primary"
                           onClick={handleEdit}
                           style={{ width: "100px" }}
+                          loading={loading}
                         >
                           EDIT
                         </Button>

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable vars-on-top */
 /* eslint-disable radix */
 /* eslint-disable no-var */
@@ -8,10 +9,12 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState } from "react";
-import { TextField, Button, Stack } from "@material-ui/core";
+import { TextField, Stack } from "@material-ui/core";
+import { Button, Alert, notification } from "antd";
 import { Container } from "reactstrap";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import "./signup.scss";
+import { Redirect, useHistory } from "react-router-dom";
 import AuthRight from "../../../../components/AuthRight";
 import images from "../../../../assets/images";
 
@@ -23,6 +26,9 @@ const theme = createTheme({
   },
 });
 const Signup = () => {
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [redirect, setRedirect] = useState(false);
   const [signupData, setSignupData] = useState({
     first_name: "",
     last_name: "",
@@ -33,7 +39,7 @@ const Signup = () => {
     full_name: "",
   });
 
-  const [hidden, setHidden] = useState(true);
+  const [hidden, setHidden] = useState(false);
   const [errMsgFirstName, setErrMsgFistName] = useState("");
   const [errMsgLastName, setErrMsgLastName] = useState("");
   const [errMsgPhone, setErrMsgPhone] = useState("");
@@ -42,10 +48,6 @@ const Signup = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState(false);
 
-  const toggleShow = () => {
-    setHidden(!hidden);
-  };
-
   const onChangeHandler = (e, key) => {
     let tmpSignup = { ...signupData };
     tmpSignup[e.target.name] = e.target.value.trim();
@@ -53,6 +55,7 @@ const Signup = () => {
   };
 
   const onSubmitHandler = (e) => {
+    setLoading(true);
     e.preventDefault();
     var formdata = new FormData();
     formdata.append("first_name", signupData.first_name);
@@ -70,6 +73,9 @@ const Signup = () => {
       .then((response) => response.json())
       .then((result) => {
         if (result.status === "success") {
+          openNotificationWithIcon("success");
+          setRedirect(true);
+          setLoading(false);
           setSignupData({
             first_name: "",
             last_name: "",
@@ -92,22 +98,27 @@ const Signup = () => {
         if (result.status === "error" && result.validation_errors.first_name) {
           setError(true);
           setErrMsgFistName(result.validation_errors.first_name[0]);
+          setLoading(false);
         }
         if (result.status === "error" && result.validation_errors.last_name) {
           setError(true);
           setErrMsgLastName(result.validation_errors.last_name[0]);
+          setLoading(false);
         }
         if (result.status === "error" && result.validation_errors.phone) {
           setError(true);
           setErrMsgPhone(result.validation_errors.phone[0]);
+          setLoading(false);
         }
         if (result.status === "error" && result.validation_errors.email) {
           setError(true);
           setErrMsgEmail(result.validation_errors.email[0]);
+          setLoading(false);
         }
         if (result.status === "error" && result.validation_errors.password) {
           setError(true);
           setErrMsgPassword(result.validation_errors.password[0]);
+          setLoading(false);
         }
       })
       // eslint-disable-next-line no-shadow
@@ -116,6 +127,18 @@ const Signup = () => {
         console.log("env:", process.env.REACT_APP_API_URL);
       });
   };
+
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Congratulation! Signup successfully",
+      description: "Now, you can signin to KnowX",
+    });
+  };
+
+  if (redirect) {
+    return <Redirect to="/auth" />;
+  }
+
   return (
     <>
       <Container className="themed-container mt-2" fluid="sm">
@@ -198,15 +221,28 @@ const Signup = () => {
                   onChange={onChangeHandler}
                 />
               </div>
-              <div className="alert alert-success">{successMsg}</div>
+              {/* {hidden ? (
+                <Alert message={successMsg} type="success" showIcon />
+              ) : null} */}
               <Stack width="100%" direction="row" justifyContent="center">
                 <Button
-                  sx={{ p: 1, width: "35%" }}
-                  variant="contained"
-                  color="primary"
+                  size="large"
+                  type="primary"
+                  shape="round"
+                  style={{ marginRight: "10px" }}
                   onClick={onSubmitHandler}
+                  loading={loading}
                 >
                   SIGN UP
+                </Button>
+                <Button
+                  size="large"
+                  shape="round"
+                  onClick={() => {
+                    history.push("/auth");
+                  }}
+                >
+                  CANCEL
                 </Button>
               </Stack>
             </div>

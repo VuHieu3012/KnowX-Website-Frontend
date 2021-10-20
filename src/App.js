@@ -7,6 +7,7 @@ const Authentication = React.lazy(() => import("./pages/Authentication"));
 const Homepage = React.lazy(() => import("./pages/Homepage/Homepage"));
 const Post = React.lazy(() => import("./pages/Post"));
 const Question = React.lazy(() => import("./pages/Question"));
+const Profile = React.lazy(() => import("./pages/Profile/Profile"));
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/post" component={Post} />
             <Route path="/homepage" component={Homepage} />
             <Route path="/question" component={Question} />
+            <Route path="/profile" component={Profile} />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

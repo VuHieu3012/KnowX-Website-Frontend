@@ -4,7 +4,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable object-curly-newline */
 import "./styles.scss";
-import { Layout, Input, Button, Space, Form } from "antd";
+import { Layout, Input, Button, Space, Form, message } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useEffect, useState, React, useRef } from "react";
@@ -20,6 +20,7 @@ const EditPost = () => {
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
   const [redirect, setRedirect] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [postData, setPostData] = useState({
     title: "",
     hashtag: "",
@@ -51,7 +52,7 @@ const EditPost = () => {
   }, [selectedId]);
 
   async function handleEdit() {
-    console.log("new Data: ", postData);
+    setLoading(true);
     setPostData(tmpPostData);
     const token = sessionStorage.getItem("token");
     const urlencode = new URLSearchParams();
@@ -66,26 +67,41 @@ const EditPost = () => {
       body: urlencode,
       headers: myHeaders,
     };
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/user/posts/${selectedId}`,
-        requestOptions
-      );
-      const responseJSON = await response.json();
-      console.log(responseJSON);
-      if (responseJSON.status === "success") {
-        setRedirect(true);
-        alert("Post Updated");
+    setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/posts/${selectedId}`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.status === "success") {
+          setRedirect(true);
+          success();
+        }
+        if (responseJSON.status === "error") {
+          setLoading(false);
+          error();
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log("Failed edit post", error.message);
       }
-    } catch (error) {
-      console.log("Failed edit post", error.message);
-    }
+    }, 2000);
   }
 
   const tmpPostData = { ...postData };
   if (redirect) {
     return <Redirect to={`/post/detail/${selectedId}`} />;
   }
+
+  const success = () => {
+    message.success("Success. Post Updated!", 5);
+  };
+
+  const error = () => {
+    message.error("Error. Post update failed!", 5);
+  };
 
   return (
     <>
@@ -95,17 +111,6 @@ const EditPost = () => {
           <SidebarLeft />
           <Content>
             <div className="container">
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  marginRight: "25px",
-                  marginBottom: "25px",
-                  paddingBottom: "25px",
-                }}
-              >
-                EDIT POST
-              </span>
               {tmpPostData.title && tmpPostData.title !== "" && (
                 <Form
                   name="basic"
@@ -114,6 +119,19 @@ const EditPost = () => {
                     hashtag: tmpPostData.hashtag,
                   }}
                 >
+                  <Form.Item>
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "20px",
+                        marginRight: "25px",
+                        marginBottom: "25px",
+                        paddingBottom: "25px",
+                      }}
+                    >
+                      EDIT POST
+                    </span>
+                  </Form.Item>
                   <Form.Item
                     rules={[{ required: true }]}
                     name="title"
@@ -130,7 +148,11 @@ const EditPost = () => {
                     name="hashtag"
                     initialValue={tmpPostData.hashtag}
                   >
-                    <Input />
+                    <Input
+                      onChange={(e) => {
+                        tmpPostData.hashtag = e.target.value;
+                      }}
+                    />
                   </Form.Item>
                   <Form.Item>
                     <CKEditor
@@ -152,6 +174,7 @@ const EditPost = () => {
                           type="primary"
                           onClick={handleEdit}
                           style={{ width: "100px" }}
+                          loading={loading}
                         >
                           EDIT
                         </Button>
