@@ -1,9 +1,10 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable no-undef */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import "antd/dist/antd.css";
 import "./styles.scss";
 import React, { useState, useEffect } from "react";
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu, Button, Avatar } from "antd";
 import {
   ExportOutlined,
   ReadOutlined,
@@ -13,23 +14,34 @@ import {
   BellOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import images from "../../assets/images";
-
-const IconFont = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-});
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SidebarLeft = () => {
-  // call api logout
-  const [isLoggedIn, setLoggedIn] = useState(null);
-
+  const [user, setUser] = useState({});
   useEffect(() => {
-    setTimeout(() => {
-      setLoggedIn(sessionStorage.getItem("isLoggedIn"));
-    }, 100);
+    async function getPersonal() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user",
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        setUser(responseJSON.data);
+      } catch (error) {
+        console.log("Faild fetch user : ", error.message);
+      }
+    }
+    getPersonal();
   }, []);
 
   const logout = () => {
@@ -58,9 +70,11 @@ const SidebarLeft = () => {
     <div className="layout-sidebar-left">
       <Sider width={200} className="site-layout-background">
         <div className="sidebar-profile">
-          <img src={images.knowXLogo} alt="" />
+          <div className="sidebar-profile-img">
+            <Avatar src={`http://127.0.0.1:8000/${user.image}`} size={128} />
+          </div>
           <div>
-            <Link to="/profile">NGUYEN LE DUY ANH</Link>
+            <Link to="/profile">{user.full_name}</Link>
           </div>
         </div>
         <Menu mode="inline" style={{ height: "100%", borderRight: 0 }}>

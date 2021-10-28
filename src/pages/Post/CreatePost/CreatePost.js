@@ -1,8 +1,10 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable object-curly-newline */
 import "./styles.scss";
-import { Layout, Input, Button, Space, message, Form } from "antd";
+import { Layout, Input, Button, Space, message, Form, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useState } from "react";
@@ -14,6 +16,8 @@ import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 
 const { Content } = Layout;
 const CreatePost = () => {
+  const [title, setTitle] = useState("");
+  const [picture, setPicture] = useState();
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postData, setPostData] = useState({
@@ -27,11 +31,14 @@ const CreatePost = () => {
   async function create() {
     setLoading(true);
     setPostData(tmpPostData);
+    console.log("data: ", tmpPostData);
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
-    formData.append("title", tmpPostData.title);
+    formData.append("title", title);
     formData.append("hashtag", tmpPostData.hashtag);
     formData.append("content", tmpPostData.content);
+    formData.append("image", picture);
+    console.log(picture.image);
     const requestOptions = {
       method: "POST",
       body: formData,
@@ -83,6 +90,10 @@ const CreatePost = () => {
     message.error("Error. Post create failed!", 5);
   };
 
+  const handleImage = (e) => {
+    setPicture(e.target.files[0]);
+  };
+
   return (
     <>
       <Layout>
@@ -112,9 +123,20 @@ const CreatePost = () => {
                 <Input
                   placeholder="Add title of post"
                   onChange={(e) => {
-                    tmpPostData.title = e.target.value;
+                    setTitle(e.target.value);
+                    console.log(title);
                   }}
                 />
+              </Form.Item>
+              <Form.Item name="image">
+                <div className="input-group mb-3">
+                  <label className="input-group-text">Upload Image</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={handleImage}
+                  />
+                </div>
               </Form.Item>
               <Form.Item
                 name="hashtag"
@@ -124,6 +146,7 @@ const CreatePost = () => {
                   placeholder="VD: #react, #php"
                   onChange={(e) => {
                     tmpPostData.hashtag = e.target.value;
+                    console.log(tmpPostData);
                   }}
                 />
               </Form.Item>
@@ -132,14 +155,10 @@ const CreatePost = () => {
                   name="content"
                   editor={ClassicEditor}
                   data="<p></p>"
-                  onReady={(editor) => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log("Editor is ready to use!", editor);
-                  }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
                     tmpPostData.content = data;
-                    console.log({ event, editor, data });
+                    console.log(tmpPostData);
                   }}
                 />
               </Form.Item>

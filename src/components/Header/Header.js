@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable import/no-unresolved */
@@ -20,7 +21,7 @@ const Header = () => {
         <Menu mode="horizontal">
           <Link to="/homepage">
             <Menu.Item
-              icon={(
+              icon={
                 <HomeOutlined
                   style={{
                     fontSize: "24px",
@@ -28,7 +29,7 @@ const Header = () => {
                     marginLeft: "-45px",
                   }}
                 />
-              )}
+              }
             >
               <span style={{ color: "#00358E" }}>
                 Know
@@ -43,7 +44,9 @@ const Header = () => {
             <Menu.Item>
               <Link to="/following">Followings</Link>
             </Menu.Item>
-            <Menu.Item>Newest</Menu.Item>
+            <Menu.Item>
+              <Link to="/post/newest">Newest</Link>
+            </Menu.Item>
             <Menu.Item>Master post</Menu.Item>
             <Menu.Item>
               <Link to="/post/create">Create post</Link>
@@ -56,13 +59,17 @@ const Header = () => {
             <Menu.Item>
               <Link to="/question/following">Followings</Link>
             </Menu.Item>
-            <Menu.Item>Newest</Menu.Item>
+            <Menu.Item>
+              <Link to="/question/newest">Newest</Link>
+            </Menu.Item>
             <Menu.Item>Interest</Menu.Item>
             <Menu.Item>
               <Link to="/question/create">Create question</Link>
             </Menu.Item>
           </SubMenu>
-          <Menu.Item key="3">Find buddy</Menu.Item>
+          <Menu.Item key="3">
+            <Link to="/buddy">Find buddy</Link>
+          </Menu.Item>
           <Menu.Item key="4">Find mentor</Menu.Item>
           <Menu.Item key="5">Video call</Menu.Item>
           <Menu.Item key="6">Job</Menu.Item>

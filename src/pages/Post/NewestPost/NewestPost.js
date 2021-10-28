@@ -1,12 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable comma-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Button, Tooltip, Image, List, Avatar } from "antd";
+import { Layout, Select, Button, Tooltip, List, Avatar } from "antd";
 import { createFromIconfontCN, SearchOutlined } from "@ant-design/icons";
 import { Link, Redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -19,7 +18,7 @@ import images from "../../../assets/images";
 const { Content } = Layout;
 const { Option } = Select;
 
-const MyPosts = () => {
+const NewestPost = () => {
   const [listPost, setList] = useState([]);
   const [user, setUser] = useState({});
 
@@ -57,14 +56,15 @@ const MyPosts = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/user/posts",
+          "http://127.0.0.1:8000/api/user/posts/newest",
           requestOptions
         );
         const responseJSON = await response.json();
-        setList(responseJSON.data);
-        console.log("list post: ", listPost);
+        if (responseJSON.status === "success") {
+          setList(responseJSON.data);
+        }
       } catch (error) {
-        console.log("Failed fetch list Posts", error.message);
+        console.log("Failed fetch list newest Posts", error.message);
       }
     }
     getPersonal();
@@ -81,58 +81,9 @@ const MyPosts = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-  let data;
-  if (listPost.length === 0) {
-    data = <p>Create post now!</p>;
-  } else {
-    data = (
-      <div>
-        <List
-          itemLayout="vertical"
-          size="large"
-          pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
-            pageSize: 5,
-          }}
-          dataSource={listPost}
-          renderItem={(item) => (
-            <List.Item
-              extra={
-                <img
-                  width={272}
-                  alt="logo"
-                  src={`http://127.0.0.1:8000/${item.image}`}
-                />
-              }
-            >
-              <List.Item.Meta
-                avatar={
-                  <Link to="/profile">
-                    <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
-                  </Link>
-                }
-                title={<Link to="/profile">{user.full_name}</Link>}
-                description={
-                  <a href={`/post/detail/${item.id}`}>
-                    <h6>{item.title}</h6>
-                  </a>
-                }
-              />
 
-              {`${formatDate(item.updated_at)}  |  `}
-              {
-                <a href="#">
-                  <span>{item.hashtag}</span>
-                </a>
-              }
-            </List.Item>
-          )}
-        />
-        ,
-      </div>
-    );
+  if (listPost.length === 0) {
+    return <p>Create post now!</p>;
   }
   return (
     <Layout>
@@ -149,10 +100,55 @@ const MyPosts = () => {
                   marginRight: "25px",
                 }}
               >
-                MY POSTS
+                NEWEST POSTS
               </span>
             </div>
-            {data}
+            <div>
+              <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 5,
+                }}
+                dataSource={listPost}
+                renderItem={(item) => (
+                  <List.Item
+                    extra={(
+                      <img
+                        width={272}
+                        alt="logo"
+                        src={`http://127.0.0.1:8000/${item.image}`}
+                      />
+                    )}
+                  >
+                    <List.Item.Meta
+                      avatar={(
+                        <Link to={`/otherprofile/${user.id}`}>
+                          <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
+                        </Link>
+                      )}
+                      title={(
+                        <Link to={`/otherprofile/${user.id}`}>
+                          {user.full_name}
+                        </Link>
+                      )}
+                      description={(
+                        <a href={`/post/detail/${item.id}`}>
+                          <h6>{item.title}</h6>
+                        </a>
+                      )}
+                    />
+
+                    {`${formatDate(item.updated_at)}  |  `}
+                    {<a href="#"><span>{item.hashtag}</span></a>}
+                  </List.Item>
+                )}
+              />
+              ,
+            </div>
           </div>
         </Content>
         <SidebarRight />
@@ -162,4 +158,4 @@ const MyPosts = () => {
   );
 };
 
-export default MyPosts;
+export default NewestPost;

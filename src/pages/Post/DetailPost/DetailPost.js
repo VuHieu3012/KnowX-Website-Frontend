@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable comma-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -9,10 +10,20 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Menu, Dropdown, Button, Modal, message } from "antd";
+import {
+  Layout,
+  Select,
+  Menu,
+  Dropdown,
+  Button,
+  Modal,
+  message,
+  Image,
+  Avatar,
+} from "antd";
 import { createFromIconfontCN, DownOutlined } from "@ant-design/icons";
 import { Input } from "reactstrap";
-import { useLocation, Redirect } from "react-router-dom";
+import { useLocation, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
@@ -28,6 +39,7 @@ const { Content } = Layout;
 const { Option } = Select;
 
 const DetailPost = () => {
+  const userId = sessionStorage.getItem("user_id");
   const [modalText, setModalText] = useState("Accept delete this post?");
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -41,28 +53,6 @@ const DetailPost = () => {
   const [isEditMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    async function getPersonal() {
-      const token = sessionStorage.getItem("token");
-      const requestOptions = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/user",
-          requestOptions
-        );
-        const responseJSON = await response.json();
-        setUser(responseJSON.data);
-        console.log("personal: ", user);
-      } catch (error) {
-        console.log("Faild fetch user : ", error.message);
-      }
-    }
-
     async function getPostData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -79,12 +69,12 @@ const DetailPost = () => {
         );
         const responseJSON = await response.json();
         setSelectedPost(responseJSON.data);
-        console.log("list post: ", selectedPost);
+        setUser(responseJSON.user);
+        console.log(responseJSON.user.id);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
     }
-    getPersonal();
     getPostData();
   }, []);
 
@@ -186,24 +176,33 @@ const DetailPost = () => {
           <div className="container">
             <div className="postDetail-container">
               <div className="postDetail-author">
-                <img src={images.knowXLogo} alt="img" />
-                <a href="#">{user.full_name}</a>
+                <Avatar src={`http://127.0.0.1:8000/${user.image}`} size={40} />
+                <Link
+                  to={`/otherprofile/${user.id}`}
+                  style={{ fontSize: "16px", lineHeight: "42px" }}
+                >
+                  {user.full_name}
+                </Link>
               </div>
               <div className="postDetail-date">
                 {formatDate(selectedPost.updated_at)}
               </div>
               <div className="postDetail-hastag">
-                <a href="#">{selectedPost.hashtag}</a>
+                <a href="#">
+                  <span>{selectedPost.hashtag}</span>
+                </a>
               </div>
               <div className="postDetail-title">
                 <h5>{selectedPost.title}</h5>
-                <div className="postDetail-dropdown">
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      Option <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                </div>
+                {user.id === parseInt(userId) ? (
+                  <div className="postDetail-dropdown">
+                    <Dropdown overlay={menu}>
+                      <Button>
+                        Option <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  </div>
+                ) : null}
                 <i className="ti-more-alt">
                   <div className="postDetail-option">
                     <a href="#">Edit</a>
@@ -211,6 +210,12 @@ const DetailPost = () => {
                   </div>
                 </i>
               </div>
+              <Image
+                width={500}
+                src={`http://localhost:8000/${selectedPost.image}`}
+                alt={selectedPost.image}
+                style={{ marginBottom: "5px", borderRadius: "10px" }}
+              />
               <div
                 className="postDetail-content"
                 dangerouslySetInnerHTML={{ __html: selectedPost.content }}

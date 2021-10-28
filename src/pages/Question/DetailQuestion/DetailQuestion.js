@@ -9,11 +9,21 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Menu, Dropdown, Button, Modal, message } from "antd";
+import {
+  Layout,
+  Select,
+  Menu,
+  Dropdown,
+  Button,
+  Modal,
+  message,
+  Avatar,
+} from "antd";
 import { createFromIconfontCN, DownOutlined } from "@ant-design/icons";
 import { Input } from "reactstrap";
-import { useLocation, Redirect } from "react-router-dom";
+import { useLocation, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
@@ -41,29 +51,6 @@ const DetailQuestion = () => {
   const [isEditMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    console.log("selectedId: ", selectedId);
-    async function getPersonal() {
-      const token = sessionStorage.getItem("token");
-      const requestOptions = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/user",
-          requestOptions
-        );
-        const responseJSON = await response.json();
-        setUser(responseJSON.data);
-        console.log("personal: ", user);
-      } catch (error) {
-        console.log("Faild fetch user : ", error.message);
-      }
-    }
-
     async function getQuestionData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -80,12 +67,11 @@ const DetailQuestion = () => {
         );
         const responseJSON = await response.json();
         setSelectedQuestion(responseJSON.data);
-        console.log("list question: ", selectedQuestion);
+        setUser(responseJSON.user);
       } catch (error) {
-        console.log("Failed fetch list questions", error.message);
+        console.log("Failed fetch list Posts", error.message);
       }
     }
-    getPersonal();
     getQuestionData();
   }, []);
 
@@ -189,14 +175,21 @@ const DetailQuestion = () => {
           <div className="container">
             <div className="postDetail-container">
               <div className="postDetail-author">
-                <img src={images.knowXLogo} alt="img" />
-                <a href="#">{user.full_name}</a>
+                <Avatar src={`http://127.0.0.1:8000/${user.image}`} size={40} />
+                <Link
+                  to={`/otherprofile/${user.id}`}
+                  style={{ fontSize: "16px", lineHeight: "42px" }}
+                >
+                  {user.full_name}
+                </Link>
               </div>
               <div className="postDetail-date">
                 {formatDate(selectedQuestion.updated_at)}
               </div>
               <div className="postDetail-hastag">
-                <a href="#">{selectedQuestion.hashtag}</a>
+                <a href="#">
+                  <span>{selectedQuestion.hashtag}</span>
+                </a>
               </div>
               <div className="postDetail-title">
                 <h5>{selectedQuestion.title}</h5>

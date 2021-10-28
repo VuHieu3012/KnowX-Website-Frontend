@@ -1,30 +1,278 @@
-/* eslint-disable consistent-return */
-/* eslint-disable vars-on-top */
-/* eslint-disable radix */
-/* eslint-disable no-var */
-/* eslint-disable prefer-const */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-undef */
-/* eslint-disable camelcase */
-/* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
+// /* eslint-disable consistent-return */
+// /* eslint-disable vars-on-top */
+// /* eslint-disable radix */
+// /* eslint-disable no-var */
+// /* eslint-disable prefer-const */
+// /* eslint-disable react/no-unescaped-entities */
+// /* eslint-disable no-undef */
+// /* eslint-disable camelcase */
+// /* eslint-disable import/extensions */
+// /* eslint-disable import/no-unresolved */
+// import React, { useState } from "react";
+// import { TextField, Stack } from "@material-ui/core";
+// import { Button, Alert, notification } from "antd";
+// import { Container } from "reactstrap";
+// import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+// import "./signup.scss";
+// import { Redirect, useHistory } from "react-router-dom";
+// import AuthRight from "../../../../components/AuthRight";
+// import images from "../../../../assets/images";
+
+// const theme = createTheme({
+//   palette: {
+//     primary: {
+//       main: "#00358E",
+//     },
+//   },
+// });
+// const Signup = () => {
+//   const history = useHistory();
+//   const [loading, setLoading] = useState(false);
+//   const [redirect, setRedirect] = useState(false);
+//   const [signupData, setSignupData] = useState({
+//     first_name: "",
+//     last_name: "",
+//     phone: "",
+//     email: "",
+//     password: "",
+//     password_confirmation: "",
+//     full_name: "",
+//   });
+
+//   const [hidden, setHidden] = useState(false);
+//   const [errMsgFirstName, setErrMsgFistName] = useState("");
+//   const [errMsgLastName, setErrMsgLastName] = useState("");
+//   const [errMsgPhone, setErrMsgPhone] = useState("");
+//   const [errMsgEmail, setErrMsgEmail] = useState("");
+//   const [errMsgPassword, setErrMsgPassword] = useState("");
+//   const [successMsg, setSuccessMsg] = useState("");
+//   const [error, setError] = useState(false);
+
+//   const onChangeHandler = (e, key) => {
+//     let tmpSignup = { ...signupData };
+//     tmpSignup[e.target.name] = e.target.value.trim();
+//     setSignupData(tmpSignup);
+//   };
+
+//   const onSubmitHandler = (e) => {
+//     setLoading(true);
+//     e.preventDefault();
+//     var formdata = new FormData();
+//     formdata.append("first_name", signupData.first_name);
+//     formdata.append("last_name", signupData.last_name);
+//     formdata.append("email", signupData.email);
+//     formdata.append("password", signupData.password);
+//     formdata.append("password_confirmation", signupData.password_confirmation);
+//     formdata.append("phone", signupData.phone);
+//     // eslint-disable-next-line vars-on-top
+//     var requestOptions = {
+//       method: "POST",
+//       body: formdata,
+//     };
+//     fetch("http://127.0.0.1:8000/api/user/register", requestOptions)
+//       .then((response) => response.json())
+//       .then((result) => {
+//         if (result.status === "success") {
+//           openNotificationWithIcon("success");
+//           setRedirect(true);
+//           setLoading(false);
+//           setSignupData({
+//             first_name: "",
+//             last_name: "",
+//             password: "",
+//             password_confirmation: "",
+//             email: "",
+//             phone: "",
+//           });
+//           setErrMsgFistName("");
+//           setErrMsgLastName("");
+//           setErrMsgPhone("");
+//           setErrMsgEmail("");
+//           setSuccessMsg("");
+//           setErrMsgPassword("");
+//           setError(false);
+//         }
+//         setTimeout(() => {
+//           setSuccessMsg(result.message);
+//         }, 1000);
+//         if (result.status === "error" && result.validation_errors.first_name) {
+//           setError(true);
+//           setErrMsgFistName(result.validation_errors.first_name[0]);
+//           setLoading(false);
+//         }
+//         if (result.status === "error" && result.validation_errors.last_name) {
+//           setError(true);
+//           setErrMsgLastName(result.validation_errors.last_name[0]);
+//           setLoading(false);
+//         }
+//         if (result.status === "error" && result.validation_errors.phone) {
+//           setError(true);
+//           setErrMsgPhone(result.validation_errors.phone[0]);
+//           setLoading(false);
+//         }
+//         if (result.status === "error" && result.validation_errors.email) {
+//           setError(true);
+//           setErrMsgEmail(result.validation_errors.email[0]);
+//           setLoading(false);
+//         }
+//         if (result.status === "error" && result.validation_errors.password) {
+//           setError(true);
+//           setErrMsgPassword(result.validation_errors.password[0]);
+//           setLoading(false);
+//         }
+//       })
+//       // eslint-disable-next-line no-shadow
+//       .catch((error) => {
+//         console.log(error);
+//         console.log("env:", process.env.REACT_APP_API_URL);
+//       });
+//   };
+
+//   const openNotificationWithIcon = (type) => {
+//     notification[type]({
+//       message: "Congratulation! Signup successfully",
+//       description: "Now, you can signin to KnowX",
+//     });
+//   };
+
+//   if (redirect) {
+//     return <Redirect to="/auth" />;
+//   }
+
+//   return (
+//     <>
+//       <Container className="themed-container mt-2" fluid="sm">
+//         <ThemeProvider theme={theme}>
+//           <div className="wrapper">
+//             <div className="logo_signup">
+//               <img src={images.knowXLogo} alt="logo" />
+//             </div>
+//             <div className="signup-wrapper">
+//               <TextField
+//                 error={error}
+//                 label="First name"
+//                 type="text"
+//                 name="first_name"
+//                 fullWidth
+//                 variant="standard"
+//                 value={signupData.first_name}
+//                 onChange={onChangeHandler}
+//                 helperText={errMsgFirstName}
+//               />
+//               <TextField
+//                 error={error}
+//                 label="Last name"
+//                 type="text"
+//                 name="last_name"
+//                 fullWidth
+//                 variant="standard"
+//                 value={signupData.last_name}
+//                 onChange={onChangeHandler}
+//                 helperText={errMsgLastName}
+//               />
+//               <TextField
+//                 error={error}
+//                 name="phone"
+//                 label="Phone"
+//                 type="number"
+//                 fullWidth
+//                 variant="standard"
+//                 value={signupData.phone}
+//                 onChange={onChangeHandler}
+//                 onInput={(e) => {
+//                   e.target.value = Math.max(0, parseInt(e.target.value))
+//                     .toString()
+//                     .slice(0, 10);
+//                 }}
+//                 min={0}
+//                 helperText={errMsgPhone}
+//               />
+//               <TextField
+//                 error={error}
+//                 label="Your email"
+//                 type="email"
+//                 name="email"
+//                 fullWidth
+//                 variant="standard"
+//                 value={signupData.email}
+//                 onChange={onChangeHandler}
+//                 helperText={errMsgEmail}
+//               />
+//               <TextField
+//                 error={error}
+//                 label="Password"
+//                 type={hidden ? "password" : "text"}
+//                 name="password"
+//                 fullWidth
+//                 variant="standard"
+//                 value={signupData.password}
+//                 onChange={onChangeHandler}
+//                 helperText={errMsgPassword}
+//               />
+//               <div className="show-hide-pwd-wrapper">
+//                 <TextField
+//                   error={error}
+//                   label="Confirm password"
+//                   name="password_confirmation"
+//                   type={hidden ? "password" : "text"}
+//                   fullWidth
+//                   variant="standard"
+//                   value={signupData.password_confirmation}
+//                   onChange={onChangeHandler}
+//                 />
+//               </div>
+//               {/* {hidden ? (
+//                 <Alert message={successMsg} type="success" showIcon />
+//               ) : null} */}
+//               <Stack width="100%" direction="row" justifyContent="center">
+//                 <Button
+//                   size="large"
+//                   type="primary"
+//                   shape="round"
+//                   style={{ marginRight: "10px" }}
+//                   onClick={onSubmitHandler}
+//                   loading={loading}
+//                 >
+//                   SIGN UP
+//                 </Button>
+//                 <Button
+//                   size="large"
+//                   shape="round"
+//                   onClick={() => {
+//                     history.push("/auth");
+//                   }}
+//                 >
+//                   CANCEL
+//                 </Button>
+//               </Stack>
+//             </div>
+//           </div>
+//         </ThemeProvider>
+//       </Container>
+//       <AuthRight />
+//     </>
+//   );
+// };
+// export default Signup;
+
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable radix */
 import React, { useState } from "react";
-import { TextField, Stack } from "@material-ui/core";
-import { Button, Alert, notification } from "antd";
-import { Container } from "reactstrap";
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-import "./signup.scss";
+import { Form, Input, Button, Checkbox, notification } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  PhoneOutlined,
+  GoogleOutlined,
+} from "@ant-design/icons";
+import "./styles.scss";
 import { Redirect, useHistory } from "react-router-dom";
 import AuthRight from "../../../../components/AuthRight";
 import images from "../../../../assets/images";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#00358E",
-    },
-  },
-});
 const Signup = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -39,7 +287,7 @@ const Signup = () => {
     full_name: "",
   });
 
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(true);
   const [errMsgFirstName, setErrMsgFistName] = useState("");
   const [errMsgLastName, setErrMsgLastName] = useState("");
   const [errMsgPhone, setErrMsgPhone] = useState("");
@@ -48,26 +296,23 @@ const Signup = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState(false);
 
-  const onChangeHandler = (e, key) => {
-    let tmpSignup = { ...signupData };
-    tmpSignup[e.target.name] = e.target.value.trim();
-    setSignupData(tmpSignup);
+  const onFinish = (values) => {
+    console.log("Received values of form: ", values);
   };
-
   const onSubmitHandler = (e) => {
     setLoading(true);
     e.preventDefault();
-    var formdata = new FormData();
-    formdata.append("first_name", signupData.first_name);
-    formdata.append("last_name", signupData.last_name);
-    formdata.append("email", signupData.email);
-    formdata.append("password", signupData.password);
-    formdata.append("password_confirmation", signupData.password_confirmation);
-    formdata.append("phone", signupData.phone);
+    const formData = new FormData();
+    formData.append("first_name", signupData.first_name);
+    formData.append("last_name", signupData.last_name);
+    formData.append("email", signupData.email);
+    formData.append("password", signupData.password);
+    formData.append("password_confirmation", signupData.password_confirmation);
+    formData.append("phone", signupData.phone);
     // eslint-disable-next-line vars-on-top
-    var requestOptions = {
+    const requestOptions = {
       method: "POST",
-      body: formdata,
+      body: formData,
     };
     fetch("http://127.0.0.1:8000/api/user/register", requestOptions)
       .then((response) => response.json())
@@ -127,7 +372,6 @@ const Signup = () => {
         console.log("env:", process.env.REACT_APP_API_URL);
       });
   };
-
   const openNotificationWithIcon = (type) => {
     notification[type]({
       message: "Congratulation! Signup successfully",
@@ -141,114 +385,177 @@ const Signup = () => {
 
   return (
     <>
-      <Container className="themed-container mt-2" fluid="sm">
-        <ThemeProvider theme={theme}>
-          <div className="wrapper">
-            <div className="logo_signup">
-              <img src={images.knowXLogo} alt="logo" />
-            </div>
-            <div className="signup-wrapper">
-              <TextField
-                error={error}
-                label="First name"
-                type="text"
-                name="first_name"
-                fullWidth
-                variant="outlined"
-                value={signupData.first_name}
-                onChange={onChangeHandler}
-                helperText={errMsgFirstName}
-              />
-              <TextField
-                error={error}
-                label="Last name"
-                type="text"
-                name="last_name"
-                fullWidth
-                variant="outlined"
-                value={signupData.last_name}
-                onChange={onChangeHandler}
-                helperText={errMsgLastName}
-              />
-              <TextField
-                error={error}
-                name="phone"
-                label="Phone"
-                type="number"
-                fullWidth
-                variant="outlined"
-                value={signupData.phone}
-                onChange={onChangeHandler}
-                onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
-                    .toString()
-                    .slice(0, 10);
+      <div className="wrapper">
+        <div className="logo_signup">
+          <img src={images.knowXLogo} alt="logo" />
+        </div>
+        <div className="signup-wrapper">
+          <Form
+            name="register"
+            className="signup-form"
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+          >
+            <Form.Item
+              name="first_name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your first name!",
+                },
+              ]}
+              validateStatus={error ? "error" : error === false}
+              help={error ? errMsgFirstName : ""}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="First name"
+                size="large"
+                onChange={(e) => {
+                  signupData.first_name = e.target.value;
                 }}
-                min={0}
-                helperText={errMsgPhone}
               />
-              <TextField
-                error={error}
-                label="Your email"
+            </Form.Item>
+            <Form.Item
+              name="last_name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your last name!",
+                },
+              ]}
+              validateStatus={error ? "error" : error === false}
+              help={error ? errMsgLastName : ""}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                size="large"
+                placeholder="Last name"
+                onChange={(e) => {
+                  signupData.last_name = e.target.value;
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="phone_number"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your phone number!",
+                },
+              ]}
+              validateStatus={error ? "error" : error === false}
+              help={error ? errMsgPhone : ""}
+            >
+              <Input
+                prefix={<PhoneOutlined className="site-form-item-icon" />}
+                type="number"
+                size="large"
+                placeholder="Phone number"
+                onChange={(e) => {
+                  signupData.phone = e.target.value;
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: "The input is not valid E-mail!",
+                },
+                {
+                  required: true,
+                  message: "Please input your E-mail!",
+                },
+              ]}
+              validateStatus={error ? "error" : error === false}
+              help={error ? errMsgEmail : ""}
+            >
+              <Input
+                prefix={<GoogleOutlined className="site-form-item-icon" />}
                 type="email"
-                name="email"
-                fullWidth
-                variant="outlined"
-                value={signupData.email}
-                onChange={onChangeHandler}
-                helperText={errMsgEmail}
+                size="large"
+                placeholder="E-mail"
+                onChange={(e) => {
+                  signupData.email = e.target.value;
+                }}
               />
-              <TextField
-                error={error}
-                label="Password"
-                type={hidden ? "password" : "text"}
-                name="password"
-                fullWidth
-                variant="outlined"
-                value={signupData.password}
-                onChange={onChangeHandler}
-                helperText={errMsgPassword}
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Password!",
+                },
+              ]}
+              validateStatus={error ? "error" : error === false}
+              help={error ? errMsgPassword : ""}
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                size="large"
+                placeholder="Password"
+                onChange={(e) => {
+                  signupData.password = e.target.value;
+                }}
               />
-              <div className="show-hide-pwd-wrapper">
-                <TextField
-                  error={error}
-                  label="Confirm password"
-                  name="password_confirmation"
-                  type={hidden ? "password" : "text"}
-                  fullWidth
-                  variant="outlined"
-                  value={signupData.password_confirmation}
-                  onChange={onChangeHandler}
-                />
-              </div>
-              {/* {hidden ? (
-                <Alert message={successMsg} type="success" showIcon />
-              ) : null} */}
-              <Stack width="100%" direction="row" justifyContent="center">
-                <Button
-                  size="large"
-                  type="primary"
-                  shape="round"
-                  style={{ marginRight: "10px" }}
-                  onClick={onSubmitHandler}
-                  loading={loading}
-                >
-                  SIGN UP
-                </Button>
-                <Button
-                  size="large"
-                  shape="round"
-                  onClick={() => {
-                    history.push("/auth");
-                  }}
-                >
-                  CANCEL
-                </Button>
-              </Stack>
-            </div>
-          </div>
-        </ThemeProvider>
-      </Container>
+            </Form.Item>
+            <Form.Item
+              name="confirm_password"
+              dependencies={["password"]}
+              validateStatus={error ? "error" : error === false}
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your password!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "The two passwords that you entered do not match!",
+                      ),
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                size="large"
+                placeholder="Confirm Password"
+                onChange={(e) => {
+                  signupData.password_confirmation = e.target.value;
+                }}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                style={{ marginTop: "30px", marginBottom: "15px" }}
+                block
+                type="primary"
+                // htmlType="submit"
+                className="login-form-button"
+                onClick={onSubmitHandler}
+                loading={loading}
+              >
+                SIGN UP
+              </Button>
+              Already have an account?
+              <a href="/auth"> Log in</a>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
       <AuthRight />
     </>
   );

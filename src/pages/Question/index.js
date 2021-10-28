@@ -5,6 +5,7 @@ import Homepage from "../Homepage/Homepage";
 import MyQuestions from "./MyQuestions/MyQuestions";
 import DetailQuestion from "./DetailQuestion/DetailQuestion";
 import EditQuestion from "./EditQuestion/EditQuestion";
+import NewestQuestion from "./NewestQuestion/NewestQuestion";
 
 function Question(props) {
   const match = useRouteMatch();
@@ -19,6 +20,7 @@ function Question(props) {
         component={DetailQuestion}
       />
       <Route path={`${match.url}/edit/:questionId`} component={EditQuestion} />
+      <Route path={`${match.url}/newest`} component={NewestQuestion} />
     </Switch>
   );
 }

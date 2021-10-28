@@ -1,4 +1,4 @@
-.themed-container {
+.wrapper {
   width: 65%;
   display: inline-block;
 }
@@ -40,4 +40,16 @@
 .sign-up-txt {
   text-decoration: none;
   color: black;
+}
+.login-form-forgot {
+  float: right;
+}
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+// .login-form-button {
+//   width: 30%;
+// }
+.ant-form-item {
+  margin-bottom: 0px;
 }

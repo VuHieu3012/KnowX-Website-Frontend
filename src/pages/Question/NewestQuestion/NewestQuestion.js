@@ -1,13 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable comma-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Button, Tooltip, Image, List, Avatar } from "antd";
-import { createFromIconfontCN, SearchOutlined } from "@ant-design/icons";
+import { Layout, Select } from "antd";
+import { createFromIconfontCN } from "@ant-design/icons";
 import { Link, Redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
@@ -17,10 +15,9 @@ import Footer from "../../../components/Footer/Footer";
 import images from "../../../assets/images";
 
 const { Content } = Layout;
-const { Option } = Select;
 
-const MyPosts = () => {
-  const [listPost, setList] = useState([]);
+const NewestQuestion = () => {
+  const [listQuestions, setList] = useState([]);
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -46,7 +43,7 @@ const MyPosts = () => {
       }
     }
 
-    async function getPostData() {
+    async function getQuestionData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
         method: "GET",
@@ -57,21 +54,20 @@ const MyPosts = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/user/posts",
+          "http://127.0.0.1:8000/api/user/questions/newest",
           requestOptions
         );
         const responseJSON = await response.json();
         setList(responseJSON.data);
-        console.log("list post: ", listPost);
+        console.log("list question: ", listQuestions);
       } catch (error) {
-        console.log("Failed fetch list Posts", error.message);
+        console.log("Failed fetch list newest questions", error.message);
       }
     }
     getPersonal();
-    getPostData();
+    getQuestionData();
   }, []);
 
-  // convert timestams to date
   const formatDate = (timestams) => {
     const options = {
       year: "numeric",
@@ -81,57 +77,36 @@ const MyPosts = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-  let data;
-  if (listPost.length === 0) {
-    data = <p>Create post now!</p>;
-  } else {
-    data = (
-      <div>
-        <List
-          itemLayout="vertical"
-          size="large"
-          pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
-            pageSize: 5,
-          }}
-          dataSource={listPost}
-          renderItem={(item) => (
-            <List.Item
-              extra={
-                <img
-                  width={272}
-                  alt="logo"
-                  src={`http://127.0.0.1:8000/${item.image}`}
-                />
-              }
-            >
-              <List.Item.Meta
-                avatar={
-                  <Link to="/profile">
-                    <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
-                  </Link>
-                }
-                title={<Link to="/profile">{user.full_name}</Link>}
-                description={
-                  <a href={`/post/detail/${item.id}`}>
-                    <h6>{item.title}</h6>
-                  </a>
-                }
-              />
 
-              {`${formatDate(item.updated_at)}  |  `}
-              {
-                <a href="#">
-                  <span>{item.hashtag}</span>
-                </a>
-              }
-            </List.Item>
-          )}
-        />
-        ,
+  let myQuestionsData = [];
+  if (listQuestions.length !== 0) {
+    myQuestionsData = listQuestions.map((question) => (
+      <div className="content">
+        <div className="user-profile">
+          <img className="avatar" src={`http://127.0.0.1:8000/${user.image}`} />
+          <span className="user-name">{user.full_name}</span>
+        </div>
+        <div className="title">
+          <Link exact to={`/question/detail/${question.id}`}>
+            {question.title}
+          </Link>
+        </div>
+        <div className>
+          <span className="time">{formatDate(question.updated_at)}</span>
+          <div className="react">
+            <span className="like"> </span>
+            <span className="dislike"> </span>
+            <span className="comment"> </span>
+          </div>
+        </div>
+        <div className="hashtag">
+          <span>{question.hashtag}</span>
+        </div>
       </div>
+    ));
+  } else {
+    myQuestionsData = (
+      <p>Bạn chưa có câu hỏi nào. Tích cực đưa ra vấn đề bạn đang gặp nhé !</p>
     );
   }
   return (
@@ -145,14 +120,14 @@ const MyPosts = () => {
               <span
                 style={{
                   fontWeight: "bold",
-                  fontSize: "20px",
+                  fontSize: "18px",
                   marginRight: "25px",
                 }}
               >
-                MY POSTS
+                NEWEST QUESTIONS
               </span>
             </div>
-            {data}
+            {myQuestionsData}
           </div>
         </Content>
         <SidebarRight />
@@ -162,4 +137,4 @@ const MyPosts = () => {
   );
 };
 
-export default MyPosts;
+export default NewestQuestion;

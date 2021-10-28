@@ -5,6 +5,7 @@ import Homepage from "../Homepage/Homepage";
 import DetailPost from "./DetailPost/DetailPost";
 import MyPosts from "./MyPosts/MyPosts";
 import EditPost from "./EditPost/EditPost";
+import NewestPost from "./NewestPost/NewestPost";
 
 function Post(props) {
   const match = useRouteMatch();
@@ -16,6 +17,7 @@ function Post(props) {
       <Route path={`${match.url}/detail/:postId`} component={DetailPost} />
       <Route path={`${match.url}/myposts`} component={MyPosts} />
       <Route path={`${match.url}/edit/:postId`} component={EditPost} />
+      <Route path={`${match.url}/newest`} component={NewestPost} />
     </Switch>
   );
 }
