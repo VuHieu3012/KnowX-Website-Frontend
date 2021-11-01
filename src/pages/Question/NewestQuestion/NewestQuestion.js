@@ -1,10 +1,12 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable radix */
 /* eslint-disable comma-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select } from "antd";
+import { Layout, Select, List, Avatar } from "antd";
 import { createFromIconfontCN } from "@ant-design/icons";
 import { Link, Redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -18,31 +20,9 @@ const { Content } = Layout;
 
 const NewestQuestion = () => {
   const [listQuestions, setList] = useState([]);
-  const [user, setUser] = useState({});
+  const userId = sessionStorage.getItem("user_id");
 
   useEffect(() => {
-    async function getPersonal() {
-      const token = sessionStorage.getItem("token");
-      const requestOptions = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/user",
-          requestOptions
-        );
-        const responseJSON = await response.json();
-        setUser(responseJSON.data);
-        console.log("personal: ", user);
-      } catch (error) {
-        console.log("Faild fetch user : ", error.message);
-      }
-    }
-
     async function getQuestionData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -64,7 +44,6 @@ const NewestQuestion = () => {
         console.log("Failed fetch list newest questions", error.message);
       }
     }
-    getPersonal();
     getQuestionData();
   }, []);
 
@@ -78,37 +57,6 @@ const NewestQuestion = () => {
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
 
-  let myQuestionsData = [];
-  if (listQuestions.length !== 0) {
-    myQuestionsData = listQuestions.map((question) => (
-      <div className="content">
-        <div className="user-profile">
-          <img className="avatar" src={`http://127.0.0.1:8000/${user.image}`} />
-          <span className="user-name">{user.full_name}</span>
-        </div>
-        <div className="title">
-          <Link exact to={`/question/detail/${question.id}`}>
-            {question.title}
-          </Link>
-        </div>
-        <div className>
-          <span className="time">{formatDate(question.updated_at)}</span>
-          <div className="react">
-            <span className="like"> </span>
-            <span className="dislike"> </span>
-            <span className="comment"> </span>
-          </div>
-        </div>
-        <div className="hashtag">
-          <span>{question.hashtag}</span>
-        </div>
-      </div>
-    ));
-  } else {
-    myQuestionsData = (
-      <p>Bạn chưa có câu hỏi nào. Tích cực đưa ra vấn đề bạn đang gặp nhé !</p>
-    );
-  }
   return (
     <Layout>
       <Header />
@@ -127,7 +75,62 @@ const NewestQuestion = () => {
                 NEWEST QUESTIONS
               </span>
             </div>
-            {myQuestionsData}
+            <div>
+              <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 5,
+                }}
+                dataSource={listQuestions}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={(
+                        <Link
+                          to={
+                            item.user_id === parseInt(userId)
+                              ? "/profile"
+                              : `/otherprofile/${item.user_id}`
+                          }
+                        >
+                          <Avatar
+                            src={`http://127.0.0.1:8000/${item.user_image}`}
+                          />
+                        </Link>
+                      )}
+                      title={(
+                        <Link
+                          to={
+                            item.user_id === parseInt(userId)
+                              ? "/profile"
+                              : `/otherprofile/${item.user_id}`
+                          }
+                        >
+                          {item.full_name}
+                        </Link>
+                      )}
+                      description={(
+                        <a href={`/question/detail/${item.id}`}>
+                          <h6>{item.title}</h6>
+                        </a>
+                      )}
+                    />
+
+                    {`${formatDate(item.updated_at)}  |  `}
+                    {
+                      <a href="#">
+                        <span>{item.hashtag}</span>
+                      </a>
+                    }
+                  </List.Item>
+                )}
+              />
+              ,
+            </div>
           </div>
         </Content>
         <SidebarRight />

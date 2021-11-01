@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable comma-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -20,31 +21,9 @@ const { Option } = Select;
 
 const NewestPost = () => {
   const [listPost, setList] = useState([]);
-  const [user, setUser] = useState({});
+  const userId = sessionStorage.getItem("user_id");
 
   useEffect(() => {
-    async function getPersonal() {
-      const token = sessionStorage.getItem("token");
-      const requestOptions = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/user",
-          requestOptions
-        );
-        const responseJSON = await response.json();
-        setUser(responseJSON.data);
-        console.log("personal: ", user);
-      } catch (error) {
-        console.log("Faild fetch user : ", error.message);
-      }
-    }
-
     async function getPostData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -67,7 +46,6 @@ const NewestPost = () => {
         console.log("Failed fetch list newest Posts", error.message);
       }
     }
-    getPersonal();
     getPostData();
   }, []);
 
@@ -81,10 +59,6 @@ const NewestPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-
-  if (listPost.length === 0) {
-    return <p>Create post now!</p>;
-  }
   return (
     <Layout>
       <Header />
@@ -126,13 +100,27 @@ const NewestPost = () => {
                   >
                     <List.Item.Meta
                       avatar={(
-                        <Link to={`/otherprofile/${user.id}`}>
-                          <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
+                        <Link
+                          to={
+                            item.user_id === parseInt(userId)
+                              ? "/profile"
+                              : `/otherprofile/${item.user_id}`
+                          }
+                        >
+                          <Avatar
+                            src={`http://127.0.0.1:8000/${item.user_image}`}
+                          />
                         </Link>
                       )}
                       title={(
-                        <Link to={`/otherprofile/${user.id}`}>
-                          {user.full_name}
+                        <Link
+                          to={
+                            item.user_id === parseInt(userId)
+                              ? "/profile"
+                              : `/otherprofile/${item.user_id}`
+                          }
+                        >
+                          {item.full_name}
                         </Link>
                       )}
                       description={(
@@ -143,7 +131,11 @@ const NewestPost = () => {
                     />
 
                     {`${formatDate(item.updated_at)}  |  `}
-                    {<a href="#"><span>{item.hashtag}</span></a>}
+                    {
+                      <a href="#">
+                        <span>{item.hashtag}</span>
+                      </a>
+                    }
                   </List.Item>
                 )}
               />

@@ -15,6 +15,9 @@
   overflow-x: hidden;
   z-index: 1;
   color: #767676;
+  .ant-menu-item a {
+    color: #767676;
+  }
 }
 .layout-header .banner {
   margin-top: 45px;

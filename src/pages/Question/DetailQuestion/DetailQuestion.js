@@ -29,6 +29,7 @@ import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
 import images from "../../../assets/images";
+import ListComment from "../Comment/ListComment";
 // import images from "../../assets/images";
 
 const IconFont = createFromIconfontCN({
@@ -162,89 +163,72 @@ const DetailQuestion = () => {
       <Header />
       <Layout>
         <SidebarLeft />
-        <Content>
-          <Modal
-            title="Confirm"
-            visible={visible}
-            onOk={handleOk}
-            confirmLoading={confirmLoading}
-            onCancel={handleCancel}
-          >
-            <p>{modalText}</p>
-          </Modal>
-          <div className="container">
-            <div className="postDetail-container">
-              <div className="postDetail-author">
-                <Avatar src={`http://127.0.0.1:8000/${user.image}`} size={40} />
-                <Link
-                  to={`/otherprofile/${user.id}`}
-                  style={{ fontSize: "16px", lineHeight: "42px" }}
-                >
-                  {user.full_name}
-                </Link>
-              </div>
-              <div className="postDetail-date">
-                {formatDate(selectedQuestion.updated_at)}
-              </div>
-              <div className="postDetail-hastag">
-                <a href="#">
-                  <span>{selectedQuestion.hashtag}</span>
-                </a>
-              </div>
-              <div className="postDetail-title">
-                <h5>{selectedQuestion.title}</h5>
-                <div className="postDetail-dropdown">
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      Option <DownOutlined />
-                    </Button>
-                  </Dropdown>
+        <Layout>
+          <Content>
+            <Modal
+              title="Confirm"
+              visible={visible}
+              onOk={handleOk}
+              confirmLoading={confirmLoading}
+              onCancel={handleCancel}
+            >
+              <p>{modalText}</p>
+            </Modal>
+            <div className="container">
+              <div className="postDetail-container">
+                <div className="postDetail-author">
+                  <Avatar
+                    src={`http://127.0.0.1:8000/${user.image}`}
+                    size={40}
+                  />
+                  <Link
+                    to={`/otherprofile/${user.id}`}
+                    style={{ fontSize: "16px", lineHeight: "42px" }}
+                  >
+                    {user.full_name}
+                  </Link>
                 </div>
-                <i className="ti-more-alt">
-                  <div className="postDetail-option">
-                    <a href="#">Edit</a>
-                    <a href="#">Delete</a>
+                <div className="postDetail-date">
+                  {formatDate(selectedQuestion.updated_at)}
+                </div>
+                <div className="postDetail-hastag">
+                  <a href="#">
+                    <span>{selectedQuestion.hashtag}</span>
+                  </a>
+                </div>
+                <div className="postDetail-title">
+                  <h5>{selectedQuestion.title}</h5>
+                  <div className="postDetail-dropdown">
+                    <Dropdown overlay={menu}>
+                      <Button>
+                        Option <DownOutlined />
+                      </Button>
+                    </Dropdown>
                   </div>
-                </i>
-              </div>
-              <div
-                className="postDetail-content"
-                dangerouslySetInnerHTML={{ __html: selectedQuestion.content }}
-              />
-              <div className="postDetail-icons">
-                <i className="fas fa-thumbs-up" />
-                <i className="fas fa-thumbs-down" />
-                <i className="fas fa-bookmark" />
-                <i className="fas fa-star" />
-              </div>
-
-              <div className="postDetail-comment-container">
-                <Input
-                  type="text"
-                  name="comment"
-                  id="comment"
-                  placeholder="Write comment..."
+                  <i className="ti-more-alt">
+                    <div className="postDetail-option">
+                      <a href="#">Edit</a>
+                      <a href="#">Delete</a>
+                    </div>
+                  </i>
+                </div>
+                <div
+                  className="postDetail-content"
+                  dangerouslySetInnerHTML={{ __html: selectedQuestion.content }}
                 />
-                <div className="postDetail-comment-list">
-                  <div className="comment-item">
-                    <div className="comment-item-user">
-                      <img src={images.knowXLogo} alt="user-img" />
-                      <a href="#">Nguyễn Hoàng Nam</a>
-                    </div>
-                    <div className="comment-item-comment">
-                      <p>Bài viết hay quá</p>
-                    </div>
-                    <div className="comment-item-react">
-                      <i className="fas fa-thumbs-up" />
-                      <i className="fas fa-thumbs-down" />
-                      <p className="comment-item-reply"> Reply </p>
-                    </div>
-                  </div>
+                <div className="postDetail-icons">
+                  <i className="fas fa-thumbs-up" />
+                  <i className="fas fa-thumbs-down" />
+                  <i className="fas fa-bookmark" />
+                  <i className="fas fa-star" />
                 </div>
               </div>
             </div>
-          </div>
-        </Content>
+          </Content>
+          <Layout style={{ padding: "0 15px" }}>
+            <ListComment />
+          </Layout>
+        </Layout>
         <SidebarRight />
       </Layout>
       <Footer />
