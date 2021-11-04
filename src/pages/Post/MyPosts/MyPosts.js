@@ -94,14 +94,14 @@ const MyPosts = () => {
             onChange: (page) => {
               console.log(page);
             },
-            pageSize: 5,
+            pageSize: 3,
           }}
           dataSource={listPost}
           renderItem={(item) => (
             <List.Item
               extra={
                 <img
-                  width={272}
+                  height={168}
                   alt="logo"
                   src={`http://127.0.0.1:8000/${item.image}`}
                 />

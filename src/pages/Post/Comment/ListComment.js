@@ -88,7 +88,8 @@ const ListComment = () => {
     <div>
       <Form.Item>
         <TextArea
-          rows={2}
+          rows={1}
+          value={comment}
           onChange={(e) => {
             comment = e.target.value;
           }}

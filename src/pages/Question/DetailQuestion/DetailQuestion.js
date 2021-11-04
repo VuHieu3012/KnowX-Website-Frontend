@@ -225,7 +225,7 @@ const DetailQuestion = () => {
               </div>
             </div>
           </Content>
-          <Layout style={{ padding: "0 15px" }}>
+          <Layout style={{ backgroundColor: "#fff", padding: "0 10px" }}>
             <ListComment />
           </Layout>
         </Layout>

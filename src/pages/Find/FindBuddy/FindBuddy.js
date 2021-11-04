@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -16,8 +18,12 @@ import {
   Divider,
   List,
   Cascader,
+  Typography,
+  Tooltip,
+  Modal,
+  message,
 } from "antd";
-import { MessageOutlined } from "@ant-design/icons";
+import { MessageOutlined, CloseOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
@@ -31,6 +37,11 @@ const FindBuddy = () => {
   const [listBuddy, setListBuddy] = useState([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [myFindBuddy, setMyFindBuddy] = useState([]);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [modalText, setModalText] = useState("Accept delete this item?");
+  const [deletingSubject, setDeletingSubject] = useState(null);
   useEffect(() => {
     async function getAllListSubject() {
       const token = sessionStorage.getItem("token");
@@ -68,6 +79,33 @@ const FindBuddy = () => {
     getListSubject();
   }, []);
 
+  useEffect(() => {
+    getListMyFindBuddy();
+  }, []);
+
+  async function getListMyFindBuddy() {
+    const token = sessionStorage.getItem("token");
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/user/buddy/myfindbuddy",
+        requestOptions,
+      );
+      const responseJSON = await response.json();
+      if (responseJSON.status === "success") {
+        console.log(responseJSON);
+        setMyFindBuddy(responseJSON.data);
+        console.log(myFindBuddy);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async function handleFindBuddy() {
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
@@ -88,6 +126,7 @@ const FindBuddy = () => {
       const responseJSON = await response.json();
       if (responseJSON.status === "success") {
         handleGetListBuddy(selectedSubject);
+        getListMyFindBuddy();
       }
     } catch (error) {
       console.log(error);
@@ -117,8 +156,36 @@ const FindBuddy = () => {
       console.log(listBuddy);
     }
     if (responseJSON.status === "failed") {
+      setLoading(false);
+      setListBuddy([]);
       console.log(responseJSON.message);
     }
+  }
+
+  async function handleDelteBuddy() {
+    console.log(deletingSubject);
+    const token = sessionStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("subject_id", deletingSubject);
+    const requestOptions = {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    setTimeout(async () => {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/user/buddy/delete",
+        requestOptions,
+      );
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+      if (responseJSON.status === "success") {
+        success();
+        getListMyFindBuddy();
+      }
+    }, 2000);
   }
   const [viewDetails, setViewDetails] = useState([]);
   const showDrawer = (value) => {
@@ -157,6 +224,25 @@ const FindBuddy = () => {
         option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1,
     );
   }
+  const handleOk = () => {
+    handleDelteBuddy();
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setShow(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setShow(false);
+  };
+  const success = () => {
+    message.success("Success. Item deleted!", 5);
+  };
+  const showModal = () => {
+    console.log(deletingSubject);
+    setShow(true);
+  };
   return (
     <>
       <Layout>
@@ -165,6 +251,15 @@ const FindBuddy = () => {
           <SidebarLeft />
           <Content>
             <div className="container">
+              <Modal
+                title="Confirm"
+                visible={show}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+              >
+                <p>{modalText}</p>
+              </Modal>
               <div className="find-content content">
                 <Row>
                   <Col span={12}>
@@ -197,16 +292,49 @@ const FindBuddy = () => {
                     FIND BUDDY
                   </Button>
                 </div>
+                {myFindBuddy.length > 0 ? (
+                  <>
+                    <Divider orientation="left">My Find Buddy</Divider>
+                    <List
+                      bordered
+                      dataSource={myFindBuddy}
+                      renderItem={(item) => (
+                        <List.Item>
+                          <Typography.Text>
+                            <b>
+                              [
+                              {item.subject_name}
+                              ]
+                            </b>
+                          </Typography.Text>
+                          {' '}
+                          {item.description}
+                          <Tooltip title="delete">
+                            <Button
+                              shape="circle"
+                              icon={<CloseOutlined />}
+                              style={{ float: "right" }}
+                              size="small"
+                              onClick={() => {
+                                setDeletingSubject(item.subject_id);
+                                showModal();
+                              }}
+                            />
+                          </Tooltip>
+                        </List.Item>
+                      )}
+                    />
+                  </>
+                ) : (null)}
+
               </div>
               <div className="list-users content">
+                <Divider orientation="left">Result</Divider>
                 <List
                   dataSource={listBuddy}
                   bordered
                   size="small"
                   pagination={{
-                    onChange: (page) => {
-                      console.log(page);
-                    },
                     pageSize: 5,
                   }}
                   renderItem={(item) => (

@@ -34,7 +34,7 @@ const CreatePost = () => {
     console.log("data: ", tmpPostData);
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
-    formData.append("title", title);
+    formData.append("title", tmpPostData.title);
     formData.append("hashtag", tmpPostData.hashtag);
     formData.append("content", tmpPostData.content);
     formData.append("image", picture);
@@ -123,8 +123,8 @@ const CreatePost = () => {
                 <Input
                   placeholder="Add title of post"
                   onChange={(e) => {
-                    setTitle(e.target.value);
-                    console.log(title);
+                    tmpPostData.title = e.target.value;
+                    console.log(tmpPostData.title);
                   }}
                 />
               </Form.Item>
