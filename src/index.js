@@ -8,7 +8,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Test from "./test";
 import { store } from "./app/store";
 
 ReactDOM.render(

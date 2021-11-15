@@ -10,7 +10,7 @@ import { Descriptions, Image, Space, Button, notification } from "antd";
 import { useLocation } from "react-router-dom";
 
 const Information = () => {
-  const [follow, setFollow] = useState();
+  const [follow, setFollow] = useState("");
   const [user, setUser] = useState({});
   const location = useLocation();
   const arr = location.pathname.split("/");
@@ -18,11 +18,15 @@ const Information = () => {
 
   useEffect(() => {
     async function checkFollow() {
+      const token = sessionStorage.getItem("token");
       const formData = new FormData();
       formData.append("target_user_id", selectedId);
       const requestOptions = {
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       };
 
       try {
@@ -31,11 +35,12 @@ const Information = () => {
           requestOptions
         );
         const responseJSON = await response.json();
+        console.log(responseJSON);
         if (responseJSON.status === "followed") {
-          setFollow(true);
+          setFollow("Following");
         }
         if (responseJSON.status === "follow") {
-          setFollow(false);
+          setFollow("Unfollowing");
         }
       } catch (error) {
         console.log("Faild fetch this user : ", error.message);
@@ -62,8 +67,8 @@ const Information = () => {
         console.log("Faild fetch this user : ", error.message);
       }
     }
-    getTargetUser();
     checkFollow();
+    getTargetUser();
   }, []);
 
   const handleFollow = () => {
@@ -82,10 +87,10 @@ const Information = () => {
       .then((response) => response.json())
       .then((result) => {
         if (result.type === "follow") {
-          setFollow(true);
+          setFollow("Following");
           openNotificationWithIcon("success", `Following ${user.full_name}`);
         } else {
-          setFollow(false);
+          setFollow("Unfollowing");
           openNotificationWithIcon("success", `Unfollowing ${user.full_name}`);
         }
       })
@@ -129,7 +134,7 @@ const Information = () => {
           }}
           onClick={handleFollow}
         >
-          {follow ? "Following " : "Follow"}
+          {`${follow}`}
         </Button>
       </div>
     </div>

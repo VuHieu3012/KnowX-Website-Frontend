@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable comma-dangle */
@@ -6,25 +7,34 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, List, Avatar } from "antd";
-import { createFromIconfontCN } from "@ant-design/icons";
+import { Layout, Select, List, Avatar, Space } from "antd";
+import {
+  createFromIconfontCN,
+  MessageOutlined,
+  LikeOutlined,
+} from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
-import images from "../../../assets/images";
 
 const IconFont = createFromIconfontCN({
   scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
 });
 const { Content } = Layout;
-const { Option } = Select;
 
 const MyQuestions = () => {
   const [listQuestions, setList] = useState([]);
   const [user, setUser] = useState({});
+
+  const IconText = ({ icon, text }) => (
+    <Space>
+      {React.createElement(icon)}
+      {text}
+    </Space>
+  );
 
   useEffect(() => {
     async function getPersonal() {
@@ -76,10 +86,10 @@ const MyQuestions = () => {
 
   const formatDate = (timestams) => {
     const options = {
-      year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
+      minute: "numeric",
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
@@ -87,7 +97,7 @@ const MyQuestions = () => {
   let data;
   if (listQuestions.length === 0) {
     data = (
-      <p>Bạn chưa có câu hỏi nào. Tích cực đưa ra vấn đề bạn đang gặp nhé !</p>
+      <p>Give your question...</p>
     );
   } else {
     data = (
@@ -103,7 +113,20 @@ const MyQuestions = () => {
           }}
           dataSource={listQuestions}
           renderItem={(item) => (
-            <List.Item>
+            <List.Item
+              actions={[
+                <IconText
+                  icon={LikeOutlined}
+                  text={item.like}
+                  key="list-vertical-like-o"
+                />,
+                <IconText
+                  icon={MessageOutlined}
+                  text={item.comment}
+                  key="list-vertical-message"
+                />,
+              ]}
+            >
               <List.Item.Meta
                 avatar={
                   <Link to="/profile">

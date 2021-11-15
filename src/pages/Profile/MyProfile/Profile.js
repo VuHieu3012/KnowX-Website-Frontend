@@ -6,20 +6,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
 import "./styles.scss";
-import {
-  Layout,
-  Form,
-  Input,
-  Button,
-  Modal,
-  Descriptions,
-  Select,
-  Menu,
-  Space,
-  notification,
-  Image,
-  Upload,
-} from "antd";
+import { Layout, Menu } from "antd";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
@@ -27,11 +14,12 @@ import Footer from "../../../components/Footer/Footer";
 import Followings from "./Followings";
 import Followers from "./Followers";
 import Information from "./Information";
+import Bookmark from "./Bookmark";
+import Mentor from "./Mentor";
 
 const { Content } = Layout;
 
 const Profile = () => {
-  const bookmarks = <div>bookmarks</div>;
   const mentor = <div>mentor</div>;
   const [key, setKey] = useState("information");
   const handleClick = (e) => {
@@ -64,9 +52,9 @@ const Profile = () => {
             ) : key === "followers" ? (
               <Followers />
             ) : key === "bookmarks" ? (
-              bookmarks
+              <Bookmark />
             ) : key === "mentor" ? (
-              mentor
+              <Mentor />
             ) : (
               <Followings />
             )}

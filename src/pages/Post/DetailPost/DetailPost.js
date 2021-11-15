@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable radix */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable comma-dangle */
@@ -20,24 +21,23 @@ import {
   message,
   Image,
   Avatar,
+  Space,
+  Divider
 } from "antd";
-import { createFromIconfontCN, DownOutlined } from "@ant-design/icons";
-import { Input } from "reactstrap";
+import {
+  DownOutlined,
+  BookOutlined,
+  LikeOutlined,
+} from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
-import images from "../../../assets/images";
 import ListComment from "../Comment/ListComment";
-// import images from "../../assets/images";
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-});
 const { Content } = Layout;
-const { Option } = Select;
 
 const DetailPost = () => {
   const userId = sessionStorage.getItem("user_id");
@@ -52,8 +52,127 @@ const DetailPost = () => {
   const [user, setUser] = useState({});
   const [redirect, setRedirect] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
+  const [colorBookmark, setColorBookmark] = useState("");
+  const [colorLike, setColorLike] = useState("");
+  const [countLike, setCountLike] = useState(0);
+
+  async function handleLike() {
+    const token = sessionStorage.getItem("token");
+    const fm = new FormData();
+    fm.append("post_id", selectedId);
+    const requestOptions = {
+      method: "POST", // goi api co dieu kien gui di
+      body: fm,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/user/posts/like`,
+        requestOptions
+      );
+      const responseJSON = await response.json();
+      if (responseJSON.type === "like") {
+        setCountLike(countLike + 1);
+        setColorLike("#08c");
+        message.success("Liked!");
+      } else {
+        setCountLike(countLike - 1);
+        setColorLike("black");
+        message.success("Unliked!");
+      }
+    } catch (error) {
+      console.log("Failed fetch bookmark", error.message);
+    }
+  }
+
+  async function createBookmark() {
+    const token = sessionStorage.getItem("token");
+    const fm = new FormData();
+    fm.append("post_id", selectedId);
+    const requestOptions = {
+      method: "POST", // goi api co dieu kien gui di
+      body: fm,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/user/posts/bookmark`,
+        requestOptions
+      );
+      const responseJSON = await response.json();
+      if (responseJSON.type === "bookmark") {
+        setColorBookmark("#08c");
+        message.success("Added this post to Bookmark!");
+      } else {
+        setColorBookmark("black");
+        message.success("Removed this post from Bookmark!");
+      }
+    } catch (error) {
+      console.log("Failed fetch bookmark", error.message);
+    }
+  }
 
   useEffect(() => {
+    async function checkBookmark() {
+      const token = sessionStorage.getItem("token");
+      const fm = new FormData();
+      fm.append("post_id", selectedId);
+      const requestOptions = {
+        method: "POST", // goi api co dieu kien gui di
+        body: fm,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/posts/checkbookmark`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.result === true) {
+          setColorBookmark("#08c");
+        } else {
+          setColorBookmark("black");
+        }
+      } catch (error) {
+        console.log("Failed fetch bookmark", error.message);
+      }
+    }
+
+    async function checkLike() {
+      const token = sessionStorage.getItem("token");
+      const fm = new FormData();
+      fm.append("post_id", selectedId);
+      const requestOptions = {
+        method: "POST", // goi api co dieu kien gui di
+        body: fm,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/posts/checklike`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.result === true) {
+          setColorLike("#08c");
+        } else {
+          setColorLike("black");
+        }
+      } catch (error) {
+        console.log("Failed fetch check like", error.message);
+      }
+    }
+
     async function getPostData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -69,13 +188,16 @@ const DetailPost = () => {
           requestOptions
         );
         const responseJSON = await response.json();
+        setCountLike(responseJSON.data.like);
+        console.log(responseJSON.data.like);
         setSelectedPost(responseJSON.data);
         setUser(responseJSON.user);
-        console.log(responseJSON.user.id);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
     }
+    checkLike();
+    checkBookmark();
     getPostData();
   }, []);
 
@@ -227,11 +349,21 @@ const DetailPost = () => {
                   className="postDetail-content"
                   dangerouslySetInnerHTML={{ __html: selectedPost.content }}
                 />
+                <Divider />
                 <div className="postDetail-icons">
-                  <i className="fas fa-thumbs-up" />
-                  <i className="fas fa-thumbs-down" />
-                  <i className="fas fa-bookmark" />
-                  <i className="fas fa-star" />
+                  <Space direction="vertical" style={{ lineHeight: "3px" }}>
+                    <LikeOutlined
+                      style={{ fontSize: "30px", color: colorLike }}
+                      onClick={handleLike}
+                    />
+                    <p style={{ display: "flex", justifyContent: "center" }}>
+                      {countLike}
+                    </p>
+                  </Space>
+                  <BookOutlined
+                    style={{ fontSize: "30px", color: colorBookmark, marginLeft: "20px" }}
+                    onClick={createBookmark}
+                  />
                 </div>
               </div>
             </div>

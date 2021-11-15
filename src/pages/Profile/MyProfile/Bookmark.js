@@ -7,26 +7,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import {
-  Layout,
-  Select,
-  Button,
-  Tooltip,
-  Image,
-  List,
-  Avatar,
-  Space,
-} from "antd";
+import { List, Avatar, Space } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { Link, Redirect, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
-const ListPost = () => {
+const Bookmark = () => {
   const [listPost, setList] = useState([]);
-  const [user, setUser] = useState({});
-  const location = useLocation();
-  const arr = location.pathname.split("/");
-  const selectedId = arr[arr.length - 1];
 
   const IconText = ({ icon, text }) => (
     <Space>
@@ -36,34 +23,10 @@ const ListPost = () => {
   );
 
   useEffect(() => {
-    async function getTargetUser() {
-      const formData = new FormData();
-      formData.append("id", selectedId);
-      const requestOptions = {
-        method: "POST",
-        body: formData,
-      };
-
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/user/get-by-id`,
-          requestOptions
-        );
-        const responseJSON = await response.json();
-        if (responseJSON.status === "success") {
-          setUser(responseJSON.data);
-        }
-      } catch (error) {
-        console.log("Faild fetch this user : ", error.message);
-      }
-    }
     async function getPostData() {
       const token = sessionStorage.getItem("token");
-      const fm = new FormData();
-      fm.append("user_id", selectedId);
       const requestOptions = {
         method: "POST",
-        body: fm,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -71,19 +34,18 @@ const ListPost = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/user/posts/getbyuserid",
+          "http://127.0.0.1:8000/api/user/posts/getbookmark",
           requestOptions
         );
         const responseJSON = await response.json();
-        if (responseJSON.status === "success") {
-          setList(responseJSON.data);
-        }
+        setList(responseJSON.data);
+        console.log("list post: ", listPost);
       } catch (error) {
-        console.log("Failed fetch list Posts", error.message);
+        console.log("Failed fetch list Bookmark", error.message);
       }
     }
+
     getPostData();
-    getTargetUser();
   }, []);
 
   // convert timestams to date
@@ -96,11 +58,10 @@ const ListPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
+  let data;
 
-  if (listPost.length === 0) {
-    return <p>Nothing...</p>;
-  }
-  return (
+  // eslint-disable-next-line prefer-const
+  data = (
     <div>
       <List
         itemLayout="vertical"
@@ -128,7 +89,7 @@ const ListPost = () => {
             ]}
             extra={
               <img
-                width={272}
+                height={168}
                 alt="logo"
                 src={`http://127.0.0.1:8000/${item.image}`}
               />
@@ -136,13 +97,13 @@ const ListPost = () => {
           >
             <List.Item.Meta
               avatar={
-                <Link to={`/otherprofile/${user.id}`}>
-                  <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
+                <Link to="/profile">
+                  <Avatar src={`http://127.0.0.1:8000/${item.user_image}`} />
                 </Link>
               }
-              title={<Link to="/profile">{user.full_name}</Link>}
+              title={<Link to="/profile">{item.full_name}</Link>}
               description={
-                <a href={`/post/detail/${item.id}`}>
+                <a href={`/post/detail/${item.post_id}`}>
                   <h6>{item.title}</h6>
                 </a>
               }
@@ -160,6 +121,8 @@ const ListPost = () => {
       ,
     </div>
   );
+
+  return <div className="container">{data}</div>;
 };
 
-export default ListPost;
+export default Bookmark;

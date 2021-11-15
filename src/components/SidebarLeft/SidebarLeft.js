@@ -10,7 +10,6 @@ import {
   ReadOutlined,
   TrophyOutlined,
   MailOutlined,
-  createFromIconfontCN,
   BellOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -90,7 +89,7 @@ const SidebarLeft = () => {
             Certificates
           </Menu.Item>
           <Menu.Item key="4" icon={<MailOutlined className="fontSize-24" />}>
-            Messages
+            <a href="/chat">Messages</a>
           </Menu.Item>
           <Menu.Item key="5" icon={<BellOutlined className="fontSize-24" />}>
             Notifications

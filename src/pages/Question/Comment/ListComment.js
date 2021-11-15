@@ -75,10 +75,10 @@ const ListComment = () => {
 
   const formatDate = (timestams) => {
     const options = {
-      year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
+      minute: "numeric",
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
@@ -88,7 +88,7 @@ const ListComment = () => {
     <div>
       <Form.Item>
         <TextArea
-          rows={2}
+          rows={1}
           onChange={(e) => {
             comment = e.target.value;
           }}

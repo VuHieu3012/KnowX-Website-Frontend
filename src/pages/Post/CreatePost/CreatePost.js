@@ -116,6 +116,16 @@ const CreatePost = () => {
                   CREATE POST
                 </span>
               </Form.Item>
+              <Form.Item name="image">
+                <div className="input-group mb-3">
+                  <label className="input-group-text">Upload Image</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={handleImage}
+                  />
+                </div>
+              </Form.Item>
               <Form.Item
                 name="title"
                 rules={[{ required: true, message: "please input title" }]}
@@ -128,16 +138,7 @@ const CreatePost = () => {
                   }}
                 />
               </Form.Item>
-              <Form.Item name="image">
-                <div className="input-group mb-3">
-                  <label className="input-group-text">Upload Image</label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={handleImage}
-                  />
-                </div>
-              </Form.Item>
+
               <Form.Item
                 name="hashtag"
                 rules={[{ required: true, message: "Please input hashtag!" }]}

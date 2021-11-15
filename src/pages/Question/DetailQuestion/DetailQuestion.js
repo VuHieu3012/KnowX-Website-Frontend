@@ -18,9 +18,14 @@ import {
   Modal,
   message,
   Avatar,
+  Space,
+  Divider,
 } from "antd";
-import { createFromIconfontCN, DownOutlined } from "@ant-design/icons";
-import { Input } from "reactstrap";
+import {
+  createFromIconfontCN,
+  DownOutlined,
+  LikeOutlined,
+} from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -28,15 +33,10 @@ import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
-import images from "../../../assets/images";
 import ListComment from "../Comment/ListComment";
 // import images from "../../assets/images";
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-});
 const { Content } = Layout;
-const { Option } = Select;
 
 const DetailQuestion = () => {
   const [modalText, setModalText] = useState("Accept delete this question?");
@@ -50,6 +50,8 @@ const DetailQuestion = () => {
   const [user, setUser] = useState({});
   const [redirect, setRedirect] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
+  const [colorLike, setColorLike] = useState("");
+  const [countLike, setCountLike] = useState(0);
 
   useEffect(() => {
     async function getQuestionData() {
@@ -67,14 +69,76 @@ const DetailQuestion = () => {
           requestOptions
         );
         const responseJSON = await response.json();
+        setCountLike(responseJSON.data.like);
         setSelectedQuestion(responseJSON.data);
         setUser(responseJSON.user);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
     }
+
+    async function checkLike() {
+      const token = sessionStorage.getItem("token");
+      const fm = new FormData();
+      fm.append("post_id", selectedId);
+      const requestOptions = {
+        method: "POST", // goi api co dieu kien gui di
+        body: fm,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/user/questions/checklike`,
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.result === true) {
+          setColorLike("#08c");
+        } else {
+          setColorLike("black");
+        }
+      } catch (error) {
+        console.log("Failed fetch check like", error.message);
+      }
+    }
+    checkLike();
     getQuestionData();
   }, []);
+
+  async function handleLike() {
+    const token = sessionStorage.getItem("token");
+    const fm = new FormData();
+    fm.append("question_id", selectedId);
+    const requestOptions = {
+      method: "POST", // goi api co dieu kien gui di
+      body: fm,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/user/questions/like`,
+        requestOptions
+      );
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+      if (responseJSON.type === "like") {
+        setCountLike(countLike + 1);
+        setColorLike("#08c");
+        message.success("Liked!");
+      } else {
+        setCountLike(countLike - 1);
+        setColorLike("black");
+        message.success("Unliked!");
+      }
+    } catch (error) {
+      console.log("Failed fetch like question", error.message);
+    }
+  }
 
   async function handleDelete() {
     // eslint-disable-next-line no-restricted-globals
@@ -111,10 +175,10 @@ const DetailQuestion = () => {
   // convert timestams to date
   const formatDate = (timestams) => {
     const options = {
-      year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
+      minute: "numeric",
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
@@ -151,13 +215,16 @@ const DetailQuestion = () => {
       setConfirmLoading(false);
     }, 2000);
   };
+
   const handleCancel = () => {
     console.log("Clicked cancel button");
     setVisible(false);
   };
+
   const success = () => {
     message.success("Success. Question deleted!", 5);
   };
+
   return (
     <Layout>
       <Header />
@@ -216,11 +283,17 @@ const DetailQuestion = () => {
                   className="postDetail-content"
                   dangerouslySetInnerHTML={{ __html: selectedQuestion.content }}
                 />
+                <Divider />
                 <div className="postDetail-icons">
-                  <i className="fas fa-thumbs-up" />
-                  <i className="fas fa-thumbs-down" />
-                  <i className="fas fa-bookmark" />
-                  <i className="fas fa-star" />
+                  <Space direction="vertical" style={{ lineHeight: "3px" }}>
+                    <LikeOutlined
+                      style={{ fontSize: "30px", color: colorLike }}
+                      onClick={handleLike}
+                    />
+                    <p style={{ display: "flex", justifyContent: "center" }}>
+                      {countLike}
+                    </p>
+                  </Space>
                 </div>
               </div>
             </div>

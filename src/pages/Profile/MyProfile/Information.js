@@ -121,7 +121,6 @@ const Information = () => {
   };
 
   async function handleEdit() {
-    console.log(user);
     setLoading(true);
     setUser(tmpInforData);
     const token = sessionStorage.getItem("token");
@@ -369,7 +368,7 @@ const Information = () => {
 
         <Descriptions bordered column={1}>
           <Descriptions.Item label="Image">
-            <Image width={200} src={`http://127.0.0.1:8000/${user.image}`} />
+            <Image height={150} src={`http://127.0.0.1:8000/${user.image}`} />
           </Descriptions.Item>
           <Descriptions.Item label="Name">{user.full_name}</Descriptions.Item>
           <Descriptions.Item label="Birthday">

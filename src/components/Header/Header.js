@@ -42,12 +42,11 @@ const Header = () => {
               <Link to="/post/myposts">My Posts</Link>
             </Menu.Item>
             <Menu.Item>
-              <Link to="/following">Followings</Link>
-            </Menu.Item>
-            <Menu.Item>
               <Link to="/post/newest">Newest</Link>
             </Menu.Item>
-            <Menu.Item>Master post</Menu.Item>
+            <Menu.Item>
+              <Link to="/post/master">Master</Link>
+            </Menu.Item>
             <Menu.Item>
               <Link to="/post/create">Create post</Link>
             </Menu.Item>
@@ -57,12 +56,8 @@ const Header = () => {
               <Link to="/question/myquestions">My Questions</Link>
             </Menu.Item>
             <Menu.Item>
-              <Link to="/question/following">Followings</Link>
-            </Menu.Item>
-            <Menu.Item>
               <Link to="/question/newest">Newest</Link>
             </Menu.Item>
-            <Menu.Item>Interest</Menu.Item>
             <Menu.Item>
               <Link to="/question/create">Create question</Link>
             </Menu.Item>
@@ -70,8 +65,12 @@ const Header = () => {
           <Menu.Item key="3">
             <Link to="/buddy">Find buddy</Link>
           </Menu.Item>
-          <Menu.Item key="4">Find mentor</Menu.Item>
-          <Menu.Item key="5">Video call</Menu.Item>
+          <Menu.Item key="4">
+            <Link to="/mentor">Find mentor</Link>
+          </Menu.Item>
+          <Menu.Item key="5">
+            <Link to="/meeting">Meeting</Link>
+          </Menu.Item>
           <Menu.Item key="6">Job</Menu.Item>
           <Menu.Item key="7">
             <Search

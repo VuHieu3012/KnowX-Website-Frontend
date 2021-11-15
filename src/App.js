@@ -3,6 +3,8 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import FindBuddy from "./pages/Find/FindBuddy/FindBuddy";
+import ChatRoom from "./pages/ChatMessage/Chat/Chat";
+import MeetingOption from "./pages/Meeting/MeetingOption";
 
 const Authentication = React.lazy(() => import("./pages/Authentication"));
 const Homepage = React.lazy(() => import("./pages/Homepage/Homepage"));
@@ -10,6 +12,7 @@ const Post = React.lazy(() => import("./pages/Post"));
 const Question = React.lazy(() => import("./pages/Question"));
 const Profile = React.lazy(() => import("./pages/Profile/MyProfile/Profile"));
 const OtherProfile = React.lazy(() => import("./pages/Profile/OtherProfile/Profile"));
+const FindMentor = React.lazy(() => import("./pages/Find/FindMentor/FindMentor"));
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
             <Route path="/profile" component={Profile} />
             <Route path="/otherprofile/:id" component={OtherProfile} />
             <Route path="/buddy" component={FindBuddy} />
+            <Route path="/mentor" component={FindMentor} />
+            <Route path="/chat" component={ChatRoom} />
+            <Route path="/meeting" component={MeetingOption} />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

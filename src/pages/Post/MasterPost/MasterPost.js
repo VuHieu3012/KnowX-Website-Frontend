@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable radix */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable comma-dangle */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, List, Avatar, Space } from "antd";
+import { Layout, List, Avatar, Space } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
@@ -18,8 +18,8 @@ import Footer from "../../../components/Footer/Footer";
 
 const { Content } = Layout;
 
-const NewestQuestion = () => {
-  const [listQuestions, setList] = useState([]);
+const MasterPost = () => {
+  const [listPost, setList] = useState([]);
   const userId = sessionStorage.getItem("user_id");
 
   const IconText = ({ icon, text }) => (
@@ -30,10 +30,10 @@ const NewestQuestion = () => {
   );
 
   useEffect(() => {
-    async function getQuestionData() {
+    async function getPostData() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -41,19 +41,21 @@ const NewestQuestion = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/user/questions/newest",
+          "http://127.0.0.1:8000/api/user/posts/masterpost",
           requestOptions
         );
         const responseJSON = await response.json();
-        setList(responseJSON.data);
-        console.log("list question: ", listQuestions);
+        if (responseJSON.status === "success") {
+          setList(responseJSON.data);
+        }
       } catch (error) {
-        console.log("Failed fetch list newest questions", error.message);
+        console.log("Failed fetch list newest Posts", error.message);
       }
     }
-    getQuestionData();
+    getPostData();
   }, []);
 
+  // convert timestams to date
   const formatDate = (timestams) => {
     const options = {
       month: "long",
@@ -63,7 +65,6 @@ const NewestQuestion = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-
   return (
     <Layout>
       <Header />
@@ -75,11 +76,11 @@ const NewestQuestion = () => {
               <span
                 style={{
                   fontWeight: "bold",
-                  fontSize: "18px",
+                  fontSize: "20px",
                   marginRight: "25px",
                 }}
               >
-                NEWEST QUESTIONS
+                MASTER POSTS
               </span>
             </div>
             <div>
@@ -92,7 +93,7 @@ const NewestQuestion = () => {
                   },
                   pageSize: 5,
                 }}
-                dataSource={listQuestions}
+                dataSource={listPost}
                 renderItem={(item) => (
                   <List.Item
                     actions={[
@@ -107,6 +108,13 @@ const NewestQuestion = () => {
                         key="list-vertical-message"
                       />,
                     ]}
+                    extra={(
+                      <img
+                        height={168}
+                        alt="logo"
+                        src={`http://127.0.0.1:8000/${item.image}`}
+                      />
+                    )}
                   >
                     <List.Item.Meta
                       avatar={(
@@ -134,7 +142,7 @@ const NewestQuestion = () => {
                         </Link>
                       )}
                       description={(
-                        <a href={`/question/detail/${item.id}`}>
+                        <a href={`/post/detail/${item.id}`}>
                           <h6>{item.title}</h6>
                         </a>
                       )}
@@ -160,4 +168,4 @@ const NewestQuestion = () => {
   );
 };
 
-export default NewestQuestion;
+export default MasterPost;

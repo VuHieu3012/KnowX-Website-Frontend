@@ -43,7 +43,6 @@ const Signin = () => {
     fetch("http://127.0.0.1:8000/api/user/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log("status: ", result);
         if (result.status === "success") {
           setAccessToken(result.token);
           sessionStorage.setItem("token", result.token);

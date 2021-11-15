@@ -1,117 +1,161 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable radix */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable comma-dangle */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
-import "./Homepage.scss";
-import { Layout, Select } from "antd";
-import { createFromIconfontCN } from "@ant-design/icons";
+import "./styles.scss";
+import { Layout, List, Avatar, Space } from "antd";
+import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/Header";
 import SidebarLeft from "../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../components/SidebarRight/SidebarRight";
 import Footer from "../../components/Footer/Footer";
-import images from "../../assets/images";
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-});
 const { Content } = Layout;
-const { Option } = Select;
-const Homepage = () => (
-  <Layout>
-    <Header />
+
+const Homepage = () => {
+  const [listPost, setList] = useState([]);
+  const userId = sessionStorage.getItem("user_id");
+
+  const IconText = ({ icon, text }) => (
+    <Space>
+      {React.createElement(icon)}
+      {text}
+    </Space>
+  );
+
+  useEffect(() => {
+    async function getPostData() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user/posts/recomment",
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        if (responseJSON.status === "success") {
+          setList(responseJSON.data);
+        }
+      } catch (error) {
+        console.log("Failed fetch list newest Posts", error.message);
+      }
+    }
+    getPostData();
+  }, []);
+
+  // convert timestams to date
+  const formatDate = (timestams) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+    };
+    return new Date(timestams).toLocaleDateString(undefined, options);
+  };
+  return (
     <Layout>
-      <SidebarLeft />
-      <Content>
-        <div className="container">
-          <div>
-            <span
-              style={{
-                fontWeight: "bold",
-                fontSize: "18px",
-                marginRight: "25px",
-              }}
-            >
-              All Updates
-            </span>
-            <Select
-              defaultValue="Followings"
-              style={{
-                width: 200,
-                borderRadius: "5px",
-              }}
-            >
-              <Option value="followings">Followings</Option>
-              <Option value="newest">Newest</Option>
-              <Option value="topRead">Top red</Option>
-              <Option value="masterPost">Master post</Option>
-              <Option value="createPost">Create post</Option>
-            </Select>
-          </div>
-          <div className="content">
-            <div className="user-profile">
-              <img className="avatar" src={images.knowXLogo} />
-              <span className="user-name">KnowX Admin</span>
-              <span className="following">Following</span>
-            </div>
-            <div className="title">
-              <Link to="/post/detail">
-                Seminar hướng nghiệp “Hello world” cho tân sinh viên
-              </Link>
-            </div>
-            <div className="description">
-              Vừa qua, Khoa công nghệ thông tin (CNTT) ĐH Thái Bình Dương đã
-              tổ chức Seminar “Những kiến thức, kỹ năng sinh viên IT cần có
-              khi tìm việc” thu hút gần 100 sinh viên, học sinh THPT tham dự.
-              Đặc biệt, sinh viên năm cuối được huấn luyện một số kỹ năng và
-              được phỏng vấn,...........
-            </div>
-            <div className>
-              <span className="time">15/09/2021</span>
-              <div className="react">
-                <span className="like"> </span>
-                <span className="dislike"> </span>
-                <span className="comment"> </span>
-              </div>
-            </div>
-            <div className="hashtag">
-              <span>#admin</span>
-              <span>#seminar</span>
-            </div>
-          </div>
-          <div className="content">
-            <div className="user-profile">
-              <img className="avatar" src={images.knowXLogo} />
-              <span className="user-name">Hoàng Anh</span>
-              <span className="following">Following</span>
-            </div>
-            <div className="title">React: Hello world!</div>
-            <div className="description">
-              This is the first chapter in a step-by-step guide about main
-              React concepts. You can find a list of all its chapters in the
-              navigation sidebar. If you’re reading this from a mobile device,
-              you can access the navigation by pressing the button in the
-              bottom right corner of your screen.
-            </div>
-            <div className>
-              <span className="time">15/09/2021</span>
-              <div className="react">
-                <span className="like"> </span>
-                <span className="dislike"> </span>
-                <span className="comment"> </span>
-              </div>
-            </div>
-            <div className="hashtag">
-              <span>#admin</span>
-              <span>#seminar</span>
+      <Header />
+      <Layout>
+        <SidebarLeft />
+        <Content>
+          <div className="container">
+            {/* <Divider orientation="left">RECOMMENT FOR YOU</Divider> */}
+            <div>
+              <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 5,
+                }}
+                dataSource={listPost}
+                renderItem={(item) => (
+                  <List.Item
+                    actions={[
+                      <IconText
+                        icon={LikeOutlined}
+                        text={item.like}
+                        key="list-vertical-like-o"
+                      />,
+                      <IconText
+                        icon={MessageOutlined}
+                        text={item.comment}
+                        key="list-vertical-message"
+                      />,
+                    ]}
+                    extra={(
+                      <img
+                        height={168}
+                        alt="logo"
+                        src={`http://127.0.0.1:8000/${item.image}`}
+                      />
+                    )}
+                  >
+                    <List.Item.Meta
+                      avatar={(
+                        <Link
+                          to={
+                            item.user_id === parseInt(userId)
+                              ? "/profile"
+                              : `/otherprofile/${item.user_id}`
+                          }
+                        >
+                          <Avatar
+                            src={`http://127.0.0.1:8000/${item.user_image}`}
+                          />
+                        </Link>
+                      )}
+                      title={(
+                        <Link
+                          to={
+                            item.user_id === parseInt(userId)
+                              ? "/profile"
+                              : `/otherprofile/${item.user_id}`
+                          }
+                        >
+                          {item.full_name}
+                        </Link>
+                      )}
+                      description={(
+                        <a href={`/post/detail/${item.id}`}>
+                          <h6>{item.title}</h6>
+                        </a>
+                      )}
+                    />
+
+                    {`${formatDate(item.updated_at)}  |  `}
+                    {
+                      <a href="#">
+                        <span>{item.hashtag}</span>
+                      </a>
+                    }
+                  </List.Item>
+                )}
+              />
+              ,
             </div>
           </div>
-        </div>
-      </Content>
-      <SidebarRight />
+        </Content>
+        <SidebarRight />
+      </Layout>
+      <Footer />
     </Layout>
-    <Footer />
-  </Layout>
-);
+  );
+};
 
 export default Homepage;

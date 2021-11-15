@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable radix */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable comma-dangle */
@@ -6,22 +7,27 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Button, Tooltip, List, Avatar } from "antd";
-import { createFromIconfontCN, SearchOutlined } from "@ant-design/icons";
+import { Layout, Select, List, Avatar, Space } from "antd";
+import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link, Redirect } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
-import images from "../../../assets/images";
 
 const { Content } = Layout;
-const { Option } = Select;
 
 const NewestPost = () => {
   const [listPost, setList] = useState([]);
   const userId = sessionStorage.getItem("user_id");
+
+  const IconText = ({ icon, text }) => (
+    <Space>
+      {React.createElement(icon)}
+      {text}
+    </Space>
+  );
 
   useEffect(() => {
     async function getPostData() {
@@ -52,10 +58,10 @@ const NewestPost = () => {
   // convert timestams to date
   const formatDate = (timestams) => {
     const options = {
-      year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
+      minute: "numeric",
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
@@ -90,6 +96,18 @@ const NewestPost = () => {
                 dataSource={listPost}
                 renderItem={(item) => (
                   <List.Item
+                    actions={[
+                      <IconText
+                        icon={LikeOutlined}
+                        text={item.like}
+                        key="list-vertical-like-o"
+                      />,
+                      <IconText
+                        icon={MessageOutlined}
+                        text={item.comment}
+                        key="list-vertical-message"
+                      />,
+                    ]}
                     extra={(
                       <img
                         height={168}

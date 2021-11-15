@@ -1,7 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable comma-dangle */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState, useEffect } from "react";
-import { Comment, Avatar, Form, Button, List, Input } from "antd";
+import { useState, useEffect, Dropdown } from "react";
+import {
+  DownOutlined,
+} from "@ant-design/icons";
+import { Comment, Menu, Form, Button, List, Input } from "antd";
 import { useLocation } from "react-router-dom";
 
 const { TextArea } = Input;
@@ -13,7 +17,6 @@ const ListComment = () => {
   const selectedId = arr[arr.length - 1];
 
   let comment = "";
-  // lấy list comment
   async function getListComment() {
     const token = sessionStorage.getItem("token");
     const fm = new FormData();
@@ -25,7 +28,6 @@ const ListComment = () => {
         Authorization: `Bearer ${token}`,
       },
     };
-    // gọi api
     setTimeout(async () => {
       try {
         const response = await fetch(
@@ -34,9 +36,7 @@ const ListComment = () => {
         );
         const responseJSON = await response.json();
         setLoading(false);
-        // Gán giá trị vừa lấy được vào biến listcomment để hiển thị ra màn hình
         setListComment(responseJSON.data);
-        console.log(listComment);
       } catch (error) {
         console.log("Failed fetch list comment", error.message);
       }
@@ -61,7 +61,6 @@ const ListComment = () => {
         requestOptions
       );
       const responseJSON = await response.json();
-      console.log(responseJSON);
       getListComment();
 
       comment = "";
@@ -75,21 +74,27 @@ const ListComment = () => {
 
   const formatDate = (timestams) => {
     const options = {
-      year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
+      minute: "numeric",
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-  console.log(listComment);
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1">
+        Delete
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <div>
       <Form.Item>
         <TextArea
           rows={1}
-          value={comment}
           onChange={(e) => {
             comment = e.target.value;
           }}

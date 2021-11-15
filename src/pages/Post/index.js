@@ -6,6 +6,7 @@ import DetailPost from "./DetailPost/DetailPost";
 import MyPosts from "./MyPosts/MyPosts";
 import EditPost from "./EditPost/EditPost";
 import NewestPost from "./NewestPost/NewestPost";
+import MasterPost from "./MasterPost/MasterPost";
 
 function Post(props) {
   const match = useRouteMatch();
@@ -18,6 +19,7 @@ function Post(props) {
       <Route path={`${match.url}/myposts`} component={MyPosts} />
       <Route path={`${match.url}/edit/:postId`} component={EditPost} />
       <Route path={`${match.url}/newest`} component={NewestPost} />
+      <Route path={`${match.url}/master`} component={MasterPost} />
     </Switch>
   );
 }

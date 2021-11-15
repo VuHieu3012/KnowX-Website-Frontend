@@ -1,3 +1,5 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable jsx-a11y/anchor-is-valid */
@@ -6,24 +8,18 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import "./styles.scss";
 import {
   Button,
   Col,
   Drawer,
-  Input,
   Layout,
   Row,
   Avatar,
   Divider,
   List,
   Cascader,
-  Typography,
-  Tooltip,
-  Modal,
-  message,
 } from "antd";
-import { MessageOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons";
+import { MessageOutlined, SearchOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
@@ -31,19 +27,13 @@ import Footer from "../../../components/Footer/Footer";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 
 const { Content } = Layout;
-const FindBuddy = () => {
-  let description = "";
+const FindMentor = () => {
   const [listSubject, setListSubject] = useState([]);
   const [listBuddy, setListBuddy] = useState([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [myFindBuddy, setMyFindBuddy] = useState([]);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [show, setShow] = useState(false);
-  const [modalText, setModalText] = useState("Accept delete this item?");
-  const [deletingSubject, setDeletingSubject] = useState(null);
   useEffect(() => {
-    async function getAllListSubject() {
+    async function getAllListMentor() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
         method: "GET",
@@ -52,13 +42,13 @@ const FindBuddy = () => {
         },
       };
       const response = await fetch(
-        "http://127.0.0.1:8000/api/user/buddy/getall",
-        requestOptions,
+        "http://127.0.0.1:8000/api/user/mentor/getall",
+        requestOptions
       );
       const responseJSON = await response.json();
       setListBuddy(responseJSON.data);
     }
-    getAllListSubject();
+    getAllListMentor();
   }, []);
   useEffect(() => {
     async function getListSubject() {
@@ -71,7 +61,7 @@ const FindBuddy = () => {
       };
       const response = await fetch(
         "http://127.0.0.1:8000/api/user/subject/get",
-        requestOptions,
+        requestOptions
       );
       const responseJSON = await response.json();
       setListSubject(responseJSON.data);
@@ -79,61 +69,7 @@ const FindBuddy = () => {
     getListSubject();
   }, []);
 
-  useEffect(() => {
-    getListMyFindBuddy();
-  }, []);
-
-  async function getListMyFindBuddy() {
-    const token = sessionStorage.getItem("token");
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/user/buddy/myfindbuddy",
-        requestOptions,
-      );
-      const responseJSON = await response.json();
-      if (responseJSON.status === "success") {
-        console.log(responseJSON);
-        setMyFindBuddy(responseJSON.data);
-        console.log(myFindBuddy);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async function handleFindBuddy() {
-    const token = sessionStorage.getItem("token");
-    const formData = new FormData();
-    formData.append("subject_id", selectedSubject);
-    formData.append("description", description);
-    const requestOptions = {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/user/buddy/create",
-        requestOptions,
-      );
-      const responseJSON = await response.json();
-      if (responseJSON.status === "success") {
-        handleGetListBuddy(selectedSubject);
-        getListMyFindBuddy();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function handleGetListBuddy() {
+  async function handleGetListMentor() {
     setLoading(true);
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
@@ -146,8 +82,8 @@ const FindBuddy = () => {
       },
     };
     const response = await fetch(
-      "http://127.0.0.1:8000/api/user/buddy/get",
-      requestOptions,
+      "http://127.0.0.1:8000/api/user/mentor/get",
+      requestOptions
     );
     const responseJSON = await response.json();
     if (responseJSON.status === "success") {
@@ -160,32 +96,6 @@ const FindBuddy = () => {
       setListBuddy([]);
       console.log(responseJSON.message);
     }
-  }
-
-  async function handleDelteBuddy() {
-    console.log(deletingSubject);
-    const token = sessionStorage.getItem("token");
-    const formData = new FormData();
-    formData.append("subject_id", deletingSubject);
-    const requestOptions = {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    setTimeout(async () => {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/user/buddy/delete",
-        requestOptions,
-      );
-      const responseJSON = await response.json();
-      console.log(responseJSON);
-      if (responseJSON.status === "success") {
-        success();
-        getListMyFindBuddy();
-      }
-    }, 2000);
   }
   const [viewDetails, setViewDetails] = useState([]);
   const showDrawer = (value) => {
@@ -213,36 +123,20 @@ const FindBuddy = () => {
       label: listSubject[i].name,
     });
   }
+
   let selectedSubject = null;
-  function onChange(value, selectedOptions) {
+
+  function onChange(value) {
     selectedSubject = value;
   }
+
   function filter(inputValue, path) {
     return path.some(
       (option) =>
         // eslint-disable-next-line implicit-arrow-linebreak
-        option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1,
+        option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
     );
   }
-  const handleOk = () => {
-    handleDelteBuddy();
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setShow(false);
-      setConfirmLoading(false);
-    }, 2000);
-  };
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setShow(false);
-  };
-  const success = () => {
-    message.success("Success. Item deleted!", 5);
-  };
-  const showModal = () => {
-    console.log(deletingSubject);
-    setShow(true);
-  };
   return (
     <>
       <Layout>
@@ -251,19 +145,11 @@ const FindBuddy = () => {
           <SidebarLeft />
           <Content>
             <div className="container">
-              <Modal
-                title="Confirm"
-                visible={show}
-                onOk={handleOk}
-                confirmLoading={confirmLoading}
-                onCancel={handleCancel}
-              >
-                <p>{modalText}</p>
-              </Modal>
               <div className="find-content content">
                 <Row>
                   <Col span={12}>
                     <Cascader
+                      style={{ width: "90%" }}
                       size="large"
                       options={options}
                       onChange={onChange}
@@ -272,62 +158,17 @@ const FindBuddy = () => {
                     />
                   </Col>
                   <Col span={12}>
-                    <Input.TextArea
-                      rows={6}
-                      placeholder="Description"
-                      onChange={(e) => {
-                        description = e.target.value;
-                      }}
-                    />
+                    <Button
+                      size="large"
+                      type="primary"
+                      loading={loading}
+                      onClick={handleGetListMentor}
+                      icon={<SearchOutlined style={{ marginBottom: "20px" }} />}
+                    >
+                      FIND MENTOR
+                    </Button>
                   </Col>
                 </Row>
-                <div align="center">
-                  <Button
-                    style={{ marginTop: "25px" }}
-                    size="large"
-                    type="primary"
-                    loading={loading}
-                    onClick={handleFindBuddy}
-                    icon={<SearchOutlined style={{ marginBottom: "7px" }} />}
-                  >
-                    FIND BUDDY
-                  </Button>
-                </div>
-                {myFindBuddy.length > 0 ? (
-                  <>
-                    <Divider orientation="left">My Find Buddy</Divider>
-                    <List
-                      bordered
-                      dataSource={myFindBuddy}
-                      renderItem={(item) => (
-                        <List.Item>
-                          <Typography.Text>
-                            <b>
-                              [
-                              {item.subject_name}
-                              ]
-                            </b>
-                          </Typography.Text>
-                          {' '}
-                          {item.description}
-                          <Tooltip title="delete">
-                            <Button
-                              shape="circle"
-                              icon={<CloseOutlined />}
-                              style={{ float: "right" }}
-                              size="small"
-                              onClick={() => {
-                                setDeletingSubject(item.subject_id);
-                                showModal();
-                              }}
-                            />
-                          </Tooltip>
-                        </List.Item>
-                      )}
-                    />
-                  </>
-                ) : (null)}
-
               </div>
               <div className="list-users content">
                 <Divider orientation="left">Result</Divider>
@@ -354,12 +195,12 @@ const FindBuddy = () => {
                       ]}
                     >
                       <List.Item.Meta
-                        avatar={(
+                        avatar={
                           <Avatar
                             size={64}
                             src={`http://127.0.0.1:8000/${item.image}`}
                           />
-                        )}
+                        }
                         title={<a href="/profile">{item.full_name}</a>}
                         description={item.subject[0].name}
                       />
@@ -437,9 +278,7 @@ const FindBuddy = () => {
             size="24px"
             type="primary"
             style={{ float: "right" }}
-            icon={
-              <MessageOutlined style={{ fontSize: "23px" }} />
-          }
+            icon={<MessageOutlined style={{ fontSize: "23px" }} />}
             shape="round"
           >
             Send Message
@@ -449,4 +288,4 @@ const FindBuddy = () => {
     </>
   );
 };
-export default FindBuddy;
+export default FindMentor;
