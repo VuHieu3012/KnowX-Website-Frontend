@@ -20,7 +20,6 @@ import Mentor from "./Mentor";
 const { Content } = Layout;
 
 const Profile = () => {
-  const mentor = <div>mentor</div>;
   const [key, setKey] = useState("information");
   const handleClick = (e) => {
     setKey(e.key);

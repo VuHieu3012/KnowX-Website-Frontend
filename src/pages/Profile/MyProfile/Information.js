@@ -10,7 +10,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import "./styles.scss";
 import {
-  Layout,
   Form,
   Input,
   Button,
@@ -19,6 +18,7 @@ import {
   Space,
   notification,
   Image,
+  Spin,
   message,
 } from "antd";
 
@@ -31,6 +31,7 @@ const Information = () => {
     new_password: "",
     confirm_password: "",
   });
+  const [spin, setSpin] = useState(true);
 
   useEffect(() => {
     async function getPersonal() {
@@ -49,6 +50,7 @@ const Information = () => {
         );
         const responseJSON = await response.json();
         setUser(responseJSON.data);
+        setSpin(false);
       } catch (error) {
         console.log("Faild fetch user : ", error.message);
       }
@@ -180,6 +182,7 @@ const Information = () => {
   const handleImage = (e) => {
     setPicture(e.target.files[0]);
   };
+
   const tmpInforData = { ...user };
   const editInfo = (
     <div>
@@ -342,6 +345,14 @@ const Information = () => {
     </div>
   );
 
+  if (spin) {
+    return (
+      <div className="spin">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="personal-profile content">
@@ -357,6 +368,7 @@ const Information = () => {
           Personal information
         </span>
         <Button
+          style={{ marginBottom: "20px" }}
           type="primary"
           onClick={() => {
             setEditMode(true);

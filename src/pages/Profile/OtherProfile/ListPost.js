@@ -8,17 +8,12 @@
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
 import {
-  Layout,
-  Select,
-  Button,
-  Tooltip,
-  Image,
   List,
   Avatar,
   Space,
 } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { Link, Redirect, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 const ListPost = () => {

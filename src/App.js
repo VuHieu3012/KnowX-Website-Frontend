@@ -9,6 +9,7 @@ import MeetingOption from "./pages/Meeting/MeetingOption";
 const Authentication = React.lazy(() => import("./pages/Authentication"));
 const Homepage = React.lazy(() => import("./pages/Homepage/Homepage"));
 const Post = React.lazy(() => import("./pages/Post"));
+const Job = React.lazy(() => import("./pages/Job"));
 const Question = React.lazy(() => import("./pages/Question"));
 const Profile = React.lazy(() => import("./pages/Profile/MyProfile/Profile"));
 const OtherProfile = React.lazy(() => import("./pages/Profile/OtherProfile/Profile"));
@@ -31,6 +32,7 @@ function App() {
             <Route path="/mentor" component={FindMentor} />
             <Route path="/chat" component={ChatRoom} />
             <Route path="/meeting" component={MeetingOption} />
+            <Route path="/jobs" component={Job} />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

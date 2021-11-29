@@ -21,6 +21,7 @@ const EditPost = () => {
   const selectedId = arr[arr.length - 1];
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [picture, setPicture] = useState("");
   const [postData, setPostData] = useState({
     title: "",
     hashtag: "",
@@ -52,6 +53,7 @@ const EditPost = () => {
   }, [selectedId]);
 
   async function handleEdit() {
+    console.log(picture);
     setLoading(true);
     setPostData(tmpPostData);
     const token = sessionStorage.getItem("token");
@@ -59,6 +61,7 @@ const EditPost = () => {
     urlencode.append("title", tmpPostData.title);
     urlencode.append("hashtag", tmpPostData.hashtag);
     urlencode.append("content", tmpPostData.content);
+    urlencode.append("image", picture);
     const myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -103,6 +106,10 @@ const EditPost = () => {
     message.error("Error. Post update failed!", 5);
   };
 
+  const handleImage = (e) => {
+    setPicture(e.target.files[0]);
+  };
+
   return (
     <>
       <Layout>
@@ -131,6 +138,16 @@ const EditPost = () => {
                     >
                       EDIT POST
                     </span>
+                  </Form.Item>
+                  <Form.Item name="image">
+                    <div className="input-group mb-3">
+                      <label className="input-group-text">Upload Image</label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={handleImage}
+                      />
+                    </div>
                   </Form.Item>
                   <Form.Item
                     rules={[{ required: true }]}

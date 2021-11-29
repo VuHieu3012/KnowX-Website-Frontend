@@ -18,7 +18,7 @@ const Meeting = (props) => {
       },
       parentNode: document.querySelector("#jitsi-iframe"),
       userInfo: {
-        displayName: "Ngoc Huy",
+        displayName: props.userName,
       },
     };
 

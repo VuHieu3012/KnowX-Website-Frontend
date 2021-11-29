@@ -1,10 +1,10 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable object-curly-newline */
 import "./styles.scss";
-import { Layout, Input, Button, Space, message, Form, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Layout, Input, Button, Space, message, Form } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useState } from "react";
@@ -16,7 +16,6 @@ import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 
 const { Content } = Layout;
 const CreatePost = () => {
-  const [title, setTitle] = useState("");
   const [picture, setPicture] = useState();
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,7 +37,6 @@ const CreatePost = () => {
     formData.append("hashtag", tmpPostData.hashtag);
     formData.append("content", tmpPostData.content);
     formData.append("image", picture);
-    console.log(picture.image);
     const requestOptions = {
       method: "POST",
       body: formData,
@@ -46,8 +44,8 @@ const CreatePost = () => {
         Authorization: `Bearer ${token}`,
       },
     };
+
     setTimeout(async () => {
-      console.log(tmpPostData);
       try {
         const response = await fetch(
           "http://127.0.0.1:8000/api/user/posts",
@@ -69,11 +67,16 @@ const CreatePost = () => {
         }
         if (responseJSON.status === "error") {
           setLoading(false);
-          error();
+          error(tmpPostData);
+          if (responseJSON.validation_errors.image) {
+            for (const item of responseJSON.validation_errors.image) {
+              message.error(item);
+            }
+          }
         }
-      } catch (error) {
+      } catch (err) {
         setLoading(false);
-        console.log("Failed create post", error);
+        console.log("Failed create post", err);
       }
     }, 2000);
   }
@@ -86,8 +89,18 @@ const CreatePost = () => {
     message.success("Success. Post Created!", 5);
   };
 
-  const error = () => {
-    message.error("Error. Post create failed!", 5);
+  const error = (data) => {
+    if (data.title === "") {
+      message.error("Error. Title is required!", 5);
+    }
+
+    if (data.hashtag === "") {
+      message.error("Error. Hashtag is required!", 5);
+    }
+
+    if (data.content === "") {
+      message.error("Error. Content is required!", 5);
+    }
   };
 
   const handleImage = (e) => {

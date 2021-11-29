@@ -7,9 +7,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, Button, Tooltip, Image, List, Avatar, Space } from "antd";
+import { Layout, List, Avatar, Space, Spin } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
@@ -21,6 +21,7 @@ const { Content } = Layout;
 const MyPosts = () => {
   const [listPost, setList] = useState([]);
   const [user, setUser] = useState({});
+  const [spin, setSpin] = useState(true);
 
   const IconText = ({ icon, text }) => (
     <Space>
@@ -46,7 +47,6 @@ const MyPosts = () => {
         );
         const responseJSON = await response.json();
         setUser(responseJSON.data);
-        console.log("personal: ", user);
       } catch (error) {
         console.log("Faild fetch user : ", error.message);
       }
@@ -68,7 +68,7 @@ const MyPosts = () => {
         );
         const responseJSON = await response.json();
         setList(responseJSON.data);
-        console.log("list post: ", listPost);
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
@@ -87,7 +87,9 @@ const MyPosts = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
+
   let data;
+
   if (listPost.length === 0) {
     data = <p>Create post now!</p>;
   } else {
@@ -170,7 +172,16 @@ const MyPosts = () => {
                 MY POSTS
               </span>
             </div>
-            {data}
+            {spin ? (
+              <div
+                className="spin"
+                style={{ textAlign: "center", marginTop: "50px" }}
+              >
+                <Spin size="large" />
+              </div>
+            ) : (
+              data
+            )}
           </div>
         </Content>
         <SidebarRight />

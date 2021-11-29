@@ -18,6 +18,7 @@ import {
   Divider,
   List,
   Cascader,
+  Spin,
 } from "antd";
 import { MessageOutlined, SearchOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
@@ -32,6 +33,7 @@ const FindMentor = () => {
   const [listBuddy, setListBuddy] = useState([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [spin, setSpin] = useState(true);
   useEffect(() => {
     async function getAllListMentor() {
       const token = sessionStorage.getItem("token");
@@ -47,10 +49,9 @@ const FindMentor = () => {
       );
       const responseJSON = await response.json();
       setListBuddy(responseJSON.data);
+      setSpin(false);
     }
-    getAllListMentor();
-  }, []);
-  useEffect(() => {
+
     async function getListSubject() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
@@ -66,7 +67,9 @@ const FindMentor = () => {
       const responseJSON = await response.json();
       setListSubject(responseJSON.data);
     }
+
     getListSubject();
+    getAllListMentor();
   }, []);
 
   async function handleGetListMentor() {
@@ -97,15 +100,19 @@ const FindMentor = () => {
       console.log(responseJSON.message);
     }
   }
+
   const [viewDetails, setViewDetails] = useState([]);
+
   const showDrawer = (value) => {
     console.log(value);
     setViewDetails(value);
     setVisible(true);
   };
+
   const onClose = () => {
     setVisible(false);
   };
+
   const DescriptionItem = ({ title, content }) => (
     <div className="site-description-item-profile-wrapper">
       <p className="site-description-item-profile-p-label">
@@ -137,6 +144,7 @@ const FindMentor = () => {
         option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
     );
   }
+
   return (
     <>
       <Layout>
@@ -170,44 +178,53 @@ const FindMentor = () => {
                   </Col>
                 </Row>
               </div>
-              <div className="list-users content">
-                <Divider orientation="left">Result</Divider>
-                <List
-                  dataSource={listBuddy}
-                  bordered
-                  size="small"
-                  pagination={{
-                    pageSize: 5,
-                  }}
-                  renderItem={(item) => (
-                    <List.Item
-                      key={item.id}
-                      actions={[
-                        <a
-                          key={`a-${item.id}`}
-                          onClick={() => {
-                            showDrawer(item);
-                            console.log("item: ", item);
-                          }}
-                        >
-                          View Detail
-                        </a>,
-                      ]}
-                    >
-                      <List.Item.Meta
-                        avatar={
-                          <Avatar
-                            size={64}
-                            src={`http://127.0.0.1:8000/${item.image}`}
-                          />
-                        }
-                        title={<a href="/profile">{item.full_name}</a>}
-                        description={item.subject[0].name}
-                      />
-                    </List.Item>
-                  )}
-                />
-              </div>
+              {spin ? (
+                <div
+                  className="spin"
+                  style={{ textAlign: "center", marginTop: "50px" }}
+                >
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <div className="list-users content">
+                  <Divider orientation="left">Result</Divider>
+                  <List
+                    dataSource={listBuddy}
+                    bordered
+                    size="small"
+                    pagination={{
+                      pageSize: 5,
+                    }}
+                    renderItem={(item) => (
+                      <List.Item
+                        key={item.id}
+                        actions={[
+                          <a
+                            key={`a-${item.id}`}
+                            onClick={() => {
+                              showDrawer(item);
+                              console.log("item: ", item);
+                            }}
+                          >
+                            View Detail
+                          </a>,
+                        ]}
+                      >
+                        <List.Item.Meta
+                          avatar={
+                            <Avatar
+                              size={64}
+                              src={`http://127.0.0.1:8000/${item.image}`}
+                            />
+                          }
+                          title={<a href="/profile">{item.full_name}</a>}
+                          description={item.subject[0].name}
+                        />
+                      </List.Item>
+                    )}
+                  />
+                </div>
+              )}
             </div>
           </Content>
           <SidebarRight />

@@ -57,7 +57,7 @@ const MeetingOption = () => {
   return (
     <div>
       {meeting ? (
-        <Meeting room={room} imageUrl={imageUrl} />
+        <Meeting room={room} imageUrl={imageUrl} userName={user.full_name} />
       ) : (
         <Layout>
           <Header />

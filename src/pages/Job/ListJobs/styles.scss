@@ -1,12 +1,10 @@
-// .layout-header .banner-profile {
-//   background-image: url(./banner_profile.png);
-// }
 .container {
   width: 100%;
   height: 100%;
   padding: 35px;
   background-color: #fff;
   margin-left: 1px;
+
   .content {
     margin-top: 23px;
     border: 1px solid #f1f1f1;
@@ -44,14 +42,13 @@
     .title {
       margin-top: 13px;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
       line-height: 21px;
     }
 
     .description {
       margin-top: 13px;
       font-size: 14px;
-      line-height: 21px;
       color: #000000;
     }
 
@@ -66,57 +63,4 @@
       }
     }
   }
-  .navigation-profile {
-  }
-  .personal-profile {
-    .ant-descriptions-bordered .ant-descriptions-view,
-    td {
-      border: none;
-    }
-  }
-  .account-info {
-    .title-account-info {
-      color: rgba(0, 0, 0, 0.85);
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 1.5715;
-    }
-    .ant-form-item-control-input-content {
-      flex: auto;
-      max-width: 50%;
-    }
-  }
-}
-
-// button.ant-btn.ant-btn-primary {
-//   margin-bottom: 10px;
-// }
-
-.personal-profile input {
-  width: 600px;
-  float: right;
-  margin-right: 150px;
-}
-
-.personal-profile textarea {
-  width: 600px;
-  float: right;
-  margin-right: 150px;
-}
-
-.form-edit {
-  margin-top: 40px;
-}
-
-.button.ant-btn {
-  margin-left: 131px;
-}
-
-.li.ant-list-item:hover {
-  background-color: #333;
-}
-
-.spin {
-  text-align: center;
-  margin-top: 50px;
 }

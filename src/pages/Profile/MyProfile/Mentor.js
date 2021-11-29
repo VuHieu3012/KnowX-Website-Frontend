@@ -26,7 +26,7 @@ const Mentor = () => {
   return (
     <div className="container">
       <div className="content">
-        {/* <Divider orientation="left">LIST SUBJECT MENTORING</Divider> */}
+        <Divider orientation="left">LIST SUBJECT MENTORING</Divider>
         <List
           style={{ marginLeft: "15px" }}
           itemLayout="horizontal"

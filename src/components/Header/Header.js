@@ -71,7 +71,9 @@ const Header = () => {
           <Menu.Item key="5">
             <Link to="/meeting">Meeting</Link>
           </Menu.Item>
-          <Menu.Item key="6">Job</Menu.Item>
+          <Menu.Item key="6">
+            <Link to="/jobs">Job</Link>
+          </Menu.Item>
           <Menu.Item key="7">
             <Search
               style={{ marginTop: "6px" }}

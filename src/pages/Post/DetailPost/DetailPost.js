@@ -22,13 +22,9 @@ import {
   Image,
   Avatar,
   Space,
-  Divider
+  Divider,
 } from "antd";
-import {
-  DownOutlined,
-  BookOutlined,
-  LikeOutlined,
-} from "@ant-design/icons";
+import { DownOutlined, BookOutlined, LikeOutlined } from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
@@ -55,6 +51,7 @@ const DetailPost = () => {
   const [colorBookmark, setColorBookmark] = useState("");
   const [colorLike, setColorLike] = useState("");
   const [countLike, setCountLike] = useState(0);
+  const [spin, setSpin] = useState(false);
 
   async function handleLike() {
     const token = sessionStorage.getItem("token");
@@ -243,6 +240,7 @@ const DetailPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
+
   const showModal = () => {
     setVisible(true);
   };
@@ -261,6 +259,7 @@ const DetailPost = () => {
   if (redirect) {
     return <Redirect to="/post/myposts" />;
   }
+
   if (isEditMode) {
     return <Redirect to={`/post/edit/${selectedId}`} />;
   }
@@ -361,7 +360,11 @@ const DetailPost = () => {
                     </p>
                   </Space>
                   <BookOutlined
-                    style={{ fontSize: "30px", color: colorBookmark, marginLeft: "20px" }}
+                    style={{
+                      fontSize: "30px",
+                      color: colorBookmark,
+                      marginLeft: "20px",
+                    }}
                     onClick={createBookmark}
                   />
                 </div>
