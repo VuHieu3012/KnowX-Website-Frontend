@@ -7,11 +7,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import {
-  List,
-  Avatar,
-  Space,
-} from "antd";
+import { List, Avatar, Space, Spin } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -19,6 +15,8 @@ import React, { useEffect, useState } from "react";
 const ListPost = () => {
   const [listPost, setList] = useState([]);
   const [user, setUser] = useState({});
+  const [spin, setSpin] = useState(true);
+
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
@@ -72,7 +70,9 @@ const ListPost = () => {
         const responseJSON = await response.json();
         if (responseJSON.status === "success") {
           setList(responseJSON.data);
+          setSpin(false);
         }
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
@@ -92,9 +92,14 @@ const ListPost = () => {
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
 
-  if (listPost.length === 0) {
-    return <p>Nothing...</p>;
+  if (spin) {
+    return (
+      <div className="spin">
+        <Spin size="large" />
+      </div>
+    );
   }
+
   return (
     <div>
       <List

@@ -16,17 +16,14 @@ const Signin = () => {
     email: "",
     password: "",
   });
-  const [hidden, setHidden] = useState(true);
+
   const [errMsgEmail, setErrMsgEmail] = useState("");
   const [errMsgPassword, setErrMsgPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [accessToken, setAccessToken] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [error, setError] = useState(false);
   const [form] = Form.useForm();
-  const onReset = () => {
-    form.resetFields();
-  };
+
   const onSubmitHandler = () => {
     setErrMsgPassword("");
     setErrMsg("");
@@ -44,7 +41,6 @@ const Signin = () => {
       .then((response) => response.json())
       .then((result) => {
         if (result.status === "success") {
-          setAccessToken(result.token);
           sessionStorage.setItem("token", result.token);
           sessionStorage.setItem("userName", loginData.email);
           sessionStorage.setItem("user_id", result.user_id);
@@ -79,9 +75,11 @@ const Signin = () => {
   if (isLoggedIn) {
     return <Redirect to="/homepage" />;
   }
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
+
   return (
     <>
       <div className="wrapper">

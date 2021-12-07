@@ -1,10 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable comma-dangle */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState, useEffect, Dropdown } from "react";
-import {
-  DownOutlined,
-} from "@ant-design/icons";
+import { useState, useEffect } from "react";
 import { Comment, Menu, Form, Button, List, Input } from "antd";
 import { useLocation } from "react-router-dom";
 

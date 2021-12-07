@@ -5,6 +5,7 @@ import NotFound from "./components/NotFound";
 import FindBuddy from "./pages/Find/FindBuddy/FindBuddy";
 import ChatRoom from "./pages/ChatMessage/Chat/Chat";
 import MeetingOption from "./pages/Meeting/MeetingOption";
+import Search from "./pages/Search/Search";
 
 const Authentication = React.lazy(() => import("./pages/Authentication"));
 const Homepage = React.lazy(() => import("./pages/Homepage/Homepage"));
@@ -33,6 +34,7 @@ function App() {
             <Route path="/chat" component={ChatRoom} />
             <Route path="/meeting" component={MeetingOption} />
             <Route path="/jobs" component={Job} />
+            <Route path="/search/:id" component={Search} />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

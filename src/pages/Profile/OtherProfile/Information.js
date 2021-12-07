@@ -6,12 +6,15 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
 import "./styles.scss";
-import { Descriptions, Image, Space, Button, notification } from "antd";
+import { Descriptions, Image, Spin, Button, notification } from "antd";
 import { useLocation } from "react-router-dom";
+import { HeartTwoTone, UserAddOutlined } from "@ant-design/icons";
 
 const Information = () => {
   const [follow, setFollow] = useState("");
   const [user, setUser] = useState({});
+  const [spin, setSpin] = useState(true);
+
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
@@ -35,7 +38,6 @@ const Information = () => {
           requestOptions
         );
         const responseJSON = await response.json();
-        console.log(responseJSON);
         if (responseJSON.status === "followed") {
           setFollow("Following");
         }
@@ -46,6 +48,7 @@ const Information = () => {
         console.log("Faild fetch this user : ", error.message);
       }
     }
+
     async function getTargetUser() {
       const formData = new FormData();
       formData.append("id", selectedId);
@@ -62,6 +65,7 @@ const Information = () => {
         const responseJSON = await response.json();
         if (responseJSON.status === "success") {
           setUser(responseJSON.data);
+          setSpin(false);
         }
       } catch (error) {
         console.log("Faild fetch this user : ", error.message);
@@ -105,6 +109,14 @@ const Information = () => {
     });
   };
 
+  if (spin) {
+    return (
+      <div className="spin" style={{ margintop: "100px", textAlign: "center" }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="personal-profile content">
@@ -129,10 +141,9 @@ const Information = () => {
           type={follow ? "primary" : "default"}
           style={{
             marginTop: "50px",
-            display: "flex",
-            justifyContent: "center",
           }}
           onClick={handleFollow}
+          icon={follow === "Following" ? <HeartTwoTone /> : <UserAddOutlined />}
         >
           {`${follow}`}
         </Button>

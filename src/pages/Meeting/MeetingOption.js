@@ -2,6 +2,7 @@
 import "./styles.scss";
 import { Layout, Space, Divider, Button, Input } from "antd";
 import { useEffect, useState } from "react";
+import { VideoCameraAddOutlined } from "@ant-design/icons";
 import Header from "../../components/Header/Header";
 import SidebarLeft from "../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../components/SidebarRight/SidebarRight";
@@ -79,8 +80,15 @@ const MeetingOption = () => {
                     size="large"
                     onChange={onChangehandler}
                   />
-                  <Button type="primary" size="large" onClick={handleStart}>
-                    START
+                  <Button
+                    type="primary"
+                    size="large"
+                    onClick={handleStart}
+                    icon={
+                      <VideoCameraAddOutlined className="video-camera" style={{ fontSize: "20px", marginBottom: "5px" }} />
+                    }
+                  >
+                    NEW MEETING
                   </Button>
                 </Space>
               </div>

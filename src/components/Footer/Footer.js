@@ -4,7 +4,7 @@
 /* eslint-disable object-curly-newline */
 import images from "../../assets/images";
 import "./styles.scss";
-import { Layout, Row, Col, Divider } from "antd";
+import { Layout, Row, Col } from "antd";
 import { FacebookOutlined, MailOutlined } from "@ant-design/icons";
 
 const Footer = () => (

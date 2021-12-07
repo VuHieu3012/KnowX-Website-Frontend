@@ -12,14 +12,14 @@ import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
-const ListQuestion = () => {
-  const [listQuestion, setList] = useState([]);
-  const [user, setUser] = useState({});
+const SearchPost = () => {
+  const [listPost, setList] = useState([]);
   const [spin, setSpin] = useState(true);
+  let data = "";
 
   const location = useLocation();
   const arr = location.pathname.split("/");
-  const selectedId = arr[arr.length - 1];
+  data = arr[arr.length - 1];
 
   const IconText = ({ icon, text }) => (
     <Space>
@@ -29,32 +29,10 @@ const ListQuestion = () => {
   );
 
   useEffect(() => {
-    async function getTargetUser() {
-      const formData = new FormData();
-      formData.append("id", selectedId);
-      const requestOptions = {
-        method: "POST",
-        body: formData,
-      };
-
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/user/get-by-id`,
-          requestOptions
-        );
-        const responseJSON = await response.json();
-        if (responseJSON.status === "success") {
-          setUser(responseJSON.data);
-        }
-      } catch (error) {
-        console.log("Faild fetch this user : ", error.message);
-      }
-    }
-
-    async function getQuestionData() {
+    async function getPostData() {
       const token = sessionStorage.getItem("token");
       const fm = new FormData();
-      fm.append("user_id", selectedId);
+      fm.append("data", data);
       const requestOptions = {
         method: "POST",
         body: fm,
@@ -65,21 +43,22 @@ const ListQuestion = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/user/questions/getbyuserid",
+          "http://127.0.0.1:8000/api/user/posts/search",
           requestOptions
         );
         const responseJSON = await response.json();
+        console.log(responseJSON);
         if (responseJSON.status === "success") {
           setList(responseJSON.data);
-          setSpin(false);
         }
         setSpin(false);
       } catch (error) {
-        console.log("Failed fetch list questions", error.message);
+        setSpin(false);
+        console.log("Failed fetch list SearchPost", error.message);
       }
     }
-    getQuestionData();
-    getTargetUser();
+
+    getPostData();
   }, []);
 
   // convert timestams to date
@@ -92,6 +71,11 @@ const ListQuestion = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
+
+  console.log(listPost);
+  let posts;
+
+  // eslint-disable-next-line prefer-const
 
   if (spin) {
     return (
@@ -112,7 +96,7 @@ const ListQuestion = () => {
           },
           pageSize: 5,
         }}
-        dataSource={listQuestion}
+        dataSource={listPost}
         renderItem={(item) => (
           <List.Item
             actions={[
@@ -127,18 +111,23 @@ const ListQuestion = () => {
                 key="list-vertical-message"
               />,
             ]}
+            extra={
+              <img
+                width={272}
+                alt="logo"
+                src={`http://127.0.0.1:8000/${item.image}`}
+              />
+            }
           >
             <List.Item.Meta
               avatar={
-                <Link to={`/otherprofile/${user.id}`}>
-                  <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
+                <Link to={`/otherprofile/${item.user_id}`}>
+                  <Avatar src={`http://127.0.0.1:8000/${item.user_image}`} />
                 </Link>
               }
-              title={
-                <Link to={`/otherprofile/${user.id}`}>{user.full_name}</Link>
-              }
+              title={<Link to="/profile">{item.full_name}</Link>}
               description={
-                <a href={`/question/detail/${item.id}`}>
+                <a href={`/post/detail/${item.id}`}>
                   <h6>{item.title}</h6>
                 </a>
               }
@@ -158,4 +147,4 @@ const ListQuestion = () => {
   );
 };
 
-export default ListQuestion;
+export default SearchPost;

@@ -30,7 +30,6 @@ const CreatePost = () => {
   async function create() {
     setLoading(true);
     setPostData(tmpPostData);
-    console.log("data: ", tmpPostData);
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
     formData.append("title", tmpPostData.title);

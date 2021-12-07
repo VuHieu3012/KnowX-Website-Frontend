@@ -13,7 +13,6 @@
 import "./styles.scss";
 import {
   Layout,
-  Select,
   Menu,
   Dropdown,
   Button,
@@ -23,6 +22,7 @@ import {
   Avatar,
   Space,
   Divider,
+  Spin,
 } from "antd";
 import { DownOutlined, BookOutlined, LikeOutlined } from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
@@ -51,7 +51,7 @@ const DetailPost = () => {
   const [colorBookmark, setColorBookmark] = useState("");
   const [colorLike, setColorLike] = useState("");
   const [countLike, setCountLike] = useState(0);
-  const [spin, setSpin] = useState(false);
+  const [spin, setSpin] = useState(true);
 
   async function handleLike() {
     const token = sessionStorage.getItem("token");
@@ -185,10 +185,12 @@ const DetailPost = () => {
           requestOptions
         );
         const responseJSON = await response.json();
-        setCountLike(responseJSON.data.like);
-        console.log(responseJSON.data.like);
-        setSelectedPost(responseJSON.data);
-        setUser(responseJSON.user);
+        if (responseJSON.status === "success") {
+          setUser(responseJSON.user);
+          setSelectedPost(responseJSON.data);
+          setCountLike(responseJSON.data.like);
+        }
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
@@ -282,6 +284,7 @@ const DetailPost = () => {
   const success = () => {
     message.success("Success. Post deleted!", 5);
   };
+
   return (
     <Layout>
       <Header />
@@ -299,81 +302,89 @@ const DetailPost = () => {
               <p>{modalText}</p>
             </Modal>
             <div className="container">
-              <div className="postDetail-container">
-                <div className="postDetail-author">
-                  <Avatar
-                    src={`http://127.0.0.1:8000/${user.image}`}
-                    size={40}
-                  />
-                  <Link
-                    to={`/otherprofile/${user.id}`}
-                    style={{ fontSize: "16px", lineHeight: "42px" }}
-                  >
-                    {user.full_name}
-                  </Link>
+              {spin ? (
+                <div className="spin">
+                  <Spin size="large" />
                 </div>
-                <div className="postDetail-date">
-                  {formatDate(selectedPost.updated_at)}
-                </div>
-                <div className="postDetail-hastag">
-                  <a href="#">
-                    <span>{selectedPost.hashtag}</span>
-                  </a>
-                </div>
-                <div className="postDetail-title">
-                  <h5>{selectedPost.title}</h5>
-                  {user.id === parseInt(userId) ? (
-                    <div className="postDetail-dropdown">
-                      <Dropdown overlay={menu}>
-                        <Button>
-                          Option <DownOutlined />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  ) : null}
-                  <i className="ti-more-alt">
-                    <div className="postDetail-option">
-                      <a href="#">Edit</a>
-                      <a href="#">Delete</a>
-                    </div>
-                  </i>
-                </div>
-                <Image
-                  width={500}
-                  src={`http://localhost:8000/${selectedPost.image}`}
-                  alt={selectedPost.image}
-                  style={{ marginBottom: "5px", borderRadius: "10px" }}
-                />
-                <div
-                  className="postDetail-content"
-                  dangerouslySetInnerHTML={{ __html: selectedPost.content }}
-                />
-                <Divider />
-                <div className="postDetail-icons">
-                  <Space direction="vertical" style={{ lineHeight: "3px" }}>
-                    <LikeOutlined
-                      style={{ fontSize: "30px", color: colorLike }}
-                      onClick={handleLike}
+              ) : (
+                <div className="postDetail-container">
+                  <div className="postDetail-author">
+                    <Avatar
+                      src={`http://127.0.0.1:8000/${user.image}`}
+                      size={40}
                     />
-                    <p style={{ display: "flex", justifyContent: "center" }}>
-                      {countLike}
-                    </p>
-                  </Space>
-                  <BookOutlined
-                    style={{
-                      fontSize: "30px",
-                      color: colorBookmark,
-                      marginLeft: "20px",
-                    }}
-                    onClick={createBookmark}
+                    <Link
+                      to={`/otherprofile/${user.id}`}
+                      style={{ fontSize: "16px", lineHeight: "42px" }}
+                    >
+                      {user.full_name}
+                    </Link>
+                  </div>
+                  <div className="postDetail-date">
+                    {formatDate(selectedPost.updated_at)}
+                  </div>
+                  <div className="postDetail-hastag">
+                    <a href="#">
+                      <span>{selectedPost.hashtag}</span>
+                    </a>
+                  </div>
+                  <div className="postDetail-title">
+                    <h5>{selectedPost.title}</h5>
+                    {user.id === parseInt(userId) ? (
+                      <div className="postDetail-dropdown">
+                        <Dropdown overlay={menu}>
+                          <Button>
+                            Option <DownOutlined />
+                          </Button>
+                        </Dropdown>
+                      </div>
+                    ) : null}
+                    <i className="ti-more-alt">
+                      <div className="postDetail-option">
+                        <a href="#">Edit</a>
+                        <a href="#">Delete</a>
+                      </div>
+                    </i>
+                  </div>
+                  <Image
+                    width={500}
+                    src={`http://localhost:8000/${selectedPost.image}`}
+                    alt={selectedPost.image}
+                    style={{ marginBottom: "5px", borderRadius: "10px" }}
                   />
+                  <div
+                    className="postDetail-content"
+                    dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                  />
+                  <Divider />
+                  <div className="postDetail-icons">
+                    <Space direction="vertical" style={{ lineHeight: "3px" }}>
+                      <LikeOutlined
+                        style={{ fontSize: "30px", color: colorLike }}
+                        onClick={handleLike}
+                      />
+                      <p style={{ display: "flex", justifyContent: "center" }}>
+                        {countLike}
+                      </p>
+                    </Space>
+                    <BookOutlined
+                      style={{
+                        fontSize: "30px",
+                        color: colorBookmark,
+                        marginLeft: "20px",
+                      }}
+                      onClick={createBookmark}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </Content>
-          <Layout style={{ backgroundColor: "#fff", padding: "0 10px" }}>
-            <ListComment />
-          </Layout>
+          {spin ? null : (
+            <Layout style={{ backgroundColor: "#fff", padding: "0 10px" }}>
+              <ListComment />
+            </Layout>
+          )}
         </Layout>
         <SidebarRight />
       </Layout>

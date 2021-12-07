@@ -22,8 +22,13 @@ import {
   Tooltip,
   Modal,
   message,
+  Spin,
 } from "antd";
-import { MessageOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  MessageOutlined,
+  CloseOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
@@ -42,6 +47,8 @@ const FindBuddy = () => {
   const [show, setShow] = useState(false);
   const [modalText, setModalText] = useState("Accept delete this item?");
   const [deletingSubject, setDeletingSubject] = useState(null);
+  const [spin, setSpin] = useState(true);
+
   useEffect(() => {
     async function getAllListSubject() {
       const token = sessionStorage.getItem("token");
@@ -60,6 +67,7 @@ const FindBuddy = () => {
     }
     getAllListSubject();
   }, []);
+
   useEffect(() => {
     async function getListSubject() {
       const token = sessionStorage.getItem("token");
@@ -98,10 +106,9 @@ const FindBuddy = () => {
       );
       const responseJSON = await response.json();
       if (responseJSON.status === "success") {
-        console.log(responseJSON);
         setMyFindBuddy(responseJSON.data);
-        console.log(myFindBuddy);
       }
+      setSpin(false);
     } catch (error) {
       console.log(error);
     }
@@ -243,6 +250,7 @@ const FindBuddy = () => {
     console.log(deletingSubject);
     setShow(true);
   };
+
   return (
     <>
       <Layout>
@@ -308,7 +316,7 @@ const FindBuddy = () => {
                               ]
                             </b>
                           </Typography.Text>
-                          {' '}
+                          {" "}
                           {item.description}
                           <Tooltip title="delete">
                             <Button
@@ -326,47 +334,52 @@ const FindBuddy = () => {
                       )}
                     />
                   </>
-                ) : (null)}
-
+                ) : null}
               </div>
-              <div className="list-users content">
-                <Divider orientation="left">Result</Divider>
-                <List
-                  dataSource={listBuddy}
-                  bordered
-                  size="small"
-                  pagination={{
-                    pageSize: 5,
-                  }}
-                  renderItem={(item) => (
-                    <List.Item
-                      key={item.id}
-                      actions={[
-                        <a
-                          key={`a-${item.id}`}
-                          onClick={() => {
-                            showDrawer(item);
-                            console.log("item: ", item);
-                          }}
-                        >
-                          View Detail
-                        </a>,
-                      ]}
-                    >
-                      <List.Item.Meta
-                        avatar={(
-                          <Avatar
-                            size={64}
-                            src={`http://127.0.0.1:8000/${item.image}`}
-                          />
-                        )}
-                        title={<a href="/profile">{item.full_name}</a>}
-                        description={item.subject[0].name}
-                      />
-                    </List.Item>
-                  )}
-                />
-              </div>
+              {spin ? (
+                <div className="spin">
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <div className="list-users content">
+                  <Divider orientation="left">Result</Divider>
+                  <List
+                    dataSource={listBuddy}
+                    bordered
+                    size="small"
+                    pagination={{
+                      pageSize: 5,
+                    }}
+                    renderItem={(item) => (
+                      <List.Item
+                        key={item.id}
+                        actions={[
+                          <a
+                            key={`a-${item.id}`}
+                            onClick={() => {
+                              showDrawer(item);
+                              console.log("item: ", item);
+                            }}
+                          >
+                            View Detail
+                          </a>,
+                        ]}
+                      >
+                        <List.Item.Meta
+                          avatar={(
+                            <Avatar
+                              size={64}
+                              src={`http://127.0.0.1:8000/${item.image}`}
+                            />
+                          )}
+                          title={<a href="/profile">{item.full_name}</a>}
+                          description={item.subject[0].name}
+                        />
+                      </List.Item>
+                    )}
+                  />
+                </div>
+              )}
             </div>
           </Content>
           <SidebarRight />
@@ -437,9 +450,7 @@ const FindBuddy = () => {
             size="24px"
             type="primary"
             style={{ float: "right" }}
-            icon={
-              <MessageOutlined style={{ fontSize: "23px" }} />
-          }
+            icon={<MessageOutlined style={{ fontSize: "23px" }} />}
             shape="round"
           >
             Send Message

@@ -20,7 +20,7 @@ import {
   Cascader,
   Spin,
 } from "antd";
-import { MessageOutlined, SearchOutlined } from "@ant-design/icons";
+import { SendOutlined, SearchOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
@@ -171,7 +171,7 @@ const FindMentor = () => {
                       type="primary"
                       loading={loading}
                       onClick={handleGetListMentor}
-                      icon={<SearchOutlined style={{ marginBottom: "20px" }} />}
+                      icon={<SearchOutlined style={{ marginBottom: "9px" }} />}
                     >
                       FIND MENTOR
                     </Button>
@@ -203,7 +203,6 @@ const FindMentor = () => {
                             key={`a-${item.id}`}
                             onClick={() => {
                               showDrawer(item);
-                              console.log("item: ", item);
                             }}
                           >
                             View Detail
@@ -217,7 +216,11 @@ const FindMentor = () => {
                               src={`http://127.0.0.1:8000/${item.image}`}
                             />
                           }
-                          title={<a href="/profile">{item.full_name}</a>}
+                          title={
+                            <a href={`/otherprofile/${item.user_id}`}>
+                              {item.full_name}
+                            </a>
+                          }
                           description={item.subject[0].name}
                         />
                       </List.Item>
@@ -290,12 +293,19 @@ const FindMentor = () => {
         </Row>
         <Divider />
         <div style={{ lineHeight: "32px" }}>
-          <a href={`/otherprofile/${viewDetails.user_id}`}>Profile details</a>
           <Button
-            size="24px"
+            size="large"
+            type="primary"
+            style={{ marginRight: "10px" }}
+            shape="round"
+          >
+            <a href={`/otherprofile/${viewDetails.user_id}`}>Profile details</a>
+          </Button>
+          <Button
+            icon={<SendOutlined />}
+            size="large"
             type="primary"
             style={{ float: "right" }}
-            icon={<MessageOutlined style={{ fontSize: "23px" }} />}
             shape="round"
           >
             Send Message

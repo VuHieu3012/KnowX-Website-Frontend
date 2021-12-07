@@ -7,7 +7,7 @@ import "./styles.scss";
 import { Layout, Input, Button, Space, Form, message } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { useEffect, useState, React, useRef } from "react";
+import { useEffect, useState, React } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
@@ -53,7 +53,6 @@ const EditPost = () => {
   }, [selectedId]);
 
   async function handleEdit() {
-    console.log(picture);
     setLoading(true);
     setPostData(tmpPostData);
     const token = sessionStorage.getItem("token");
@@ -77,7 +76,6 @@ const EditPost = () => {
           requestOptions
         );
         const responseJSON = await response.json();
-        console.log(responseJSON);
         if (responseJSON.status === "success") {
           setRedirect(true);
           success();

@@ -4,7 +4,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/react-in-jsx-scope */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./styles.scss";
 import { Layout, Menu } from "antd";
 import Header from "../../../components/Header/Header";

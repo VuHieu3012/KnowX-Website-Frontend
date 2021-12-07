@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable operator-linebreak */
 import { Form, Button, Input } from "antd";
 import React, { useEffect, useState, useRef } from "react";
@@ -33,7 +34,7 @@ const FormStyled = styled(Form)`
     margin-bottom: 0;
   }
 `;
-const ChatWindow = () => {
+const ChatWindow = (targetId) => {
   const formatDate = (timestams) => {
     const options = {
       month: "long",
@@ -51,22 +52,28 @@ const ChatWindow = () => {
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
+
   async function getMessages() {
+    console.log(targetId);
     const token = sessionStorage.getItem("token");
+    const fm = new FormData();
+    fm.append("target_id", targetId);
     const requestOptions = {
-      method: "GET",
+      method: "POST",
+      body: fm,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
     const response = await fetch(
-      "http://127.0.0.1:8000/api/user/messages",
+      "http://127.0.0.1:8000/api/user/messages/get",
       requestOptions,
     );
     const responseJSON = await response.json();
     setMessage(responseJSON);
     console.log(responseJSON);
   }
+
   useEffect(() => {
     getMessages();
     if (messageListRef?.current) {
@@ -88,7 +95,7 @@ const ChatWindow = () => {
     };
     const response = await fetch(
       "http://127.0.0.1:8000/api/user/messages",
-      requestOptions,
+      requestOptions
     );
     const responseJSON = await response.json();
     if (responseJSON.status === "success") {

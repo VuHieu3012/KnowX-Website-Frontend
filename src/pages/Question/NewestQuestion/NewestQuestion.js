@@ -7,9 +7,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, List, Avatar, Space } from "antd";
+import { Layout, List, Avatar, Space, Spin } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
@@ -20,6 +20,7 @@ const { Content } = Layout;
 
 const NewestQuestion = () => {
   const [listQuestions, setList] = useState([]);
+  const [spin, setSpin] = useState(true);
   const userId = sessionStorage.getItem("user_id");
 
   const IconText = ({ icon, text }) => (
@@ -46,7 +47,7 @@ const NewestQuestion = () => {
         );
         const responseJSON = await response.json();
         setList(responseJSON.data);
-        console.log("list question: ", listQuestions);
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list newest questions", error.message);
       }
@@ -82,75 +83,81 @@ const NewestQuestion = () => {
                 NEWEST QUESTIONS
               </span>
             </div>
-            <div>
-              <List
-                itemLayout="vertical"
-                size="large"
-                pagination={{
-                  onChange: (page) => {
-                    console.log(page);
-                  },
-                  pageSize: 5,
-                }}
-                dataSource={listQuestions}
-                renderItem={(item) => (
-                  <List.Item
-                    actions={[
-                      <IconText
-                        icon={LikeOutlined}
-                        text={item.like}
-                        key="list-vertical-like-o"
-                      />,
-                      <IconText
-                        icon={MessageOutlined}
-                        text={item.comment}
-                        key="list-vertical-message"
-                      />,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      avatar={(
-                        <Link
-                          to={
-                            item.user_id === parseInt(userId)
-                              ? "/profile"
-                              : `/otherprofile/${item.user_id}`
-                          }
-                        >
-                          <Avatar
-                            src={`http://127.0.0.1:8000/${item.user_image}`}
-                          />
-                        </Link>
-                      )}
-                      title={(
-                        <Link
-                          to={
-                            item.user_id === parseInt(userId)
-                              ? "/profile"
-                              : `/otherprofile/${item.user_id}`
-                          }
-                        >
-                          {item.full_name}
-                        </Link>
-                      )}
-                      description={(
-                        <a href={`/question/detail/${item.id}`}>
-                          <h6>{item.title}</h6>
-                        </a>
-                      )}
-                    />
+            {spin ? (
+              <div className="spin">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div>
+                <List
+                  itemLayout="vertical"
+                  size="large"
+                  pagination={{
+                    onChange: (page) => {
+                      console.log(page);
+                    },
+                    pageSize: 5,
+                  }}
+                  dataSource={listQuestions}
+                  renderItem={(item) => (
+                    <List.Item
+                      actions={[
+                        <IconText
+                          icon={LikeOutlined}
+                          text={item.like}
+                          key="list-vertical-like-o"
+                        />,
+                        <IconText
+                          icon={MessageOutlined}
+                          text={item.comment}
+                          key="list-vertical-message"
+                        />,
+                      ]}
+                    >
+                      <List.Item.Meta
+                        avatar={(
+                          <Link
+                            to={
+                              item.user_id === parseInt(userId)
+                                ? "/profile"
+                                : `/otherprofile/${item.user_id}`
+                            }
+                          >
+                            <Avatar
+                              src={`http://127.0.0.1:8000/${item.user_image}`}
+                            />
+                          </Link>
+                        )}
+                        title={(
+                          <Link
+                            to={
+                              item.user_id === parseInt(userId)
+                                ? "/profile"
+                                : `/otherprofile/${item.user_id}`
+                            }
+                          >
+                            {item.full_name}
+                          </Link>
+                        )}
+                        description={(
+                          <a href={`/question/detail/${item.id}`}>
+                            <h6>{item.title}</h6>
+                          </a>
+                        )}
+                      />
 
-                    {`${formatDate(item.updated_at)}  |  `}
-                    {
-                      <a href="#">
-                        <span>{item.hashtag}</span>
-                      </a>
-                    }
-                  </List.Item>
-                )}
-              />
-              ,
-            </div>
+                      {`${formatDate(item.updated_at)}  |  `}
+                      {
+                        <a href="#">
+                          <span>{item.hashtag}</span>
+                        </a>
+                      }
+                    </List.Item>
+                  )}
+                />
+                ,
+              </div>
+            )}
           </div>
         </Content>
         <SidebarRight />

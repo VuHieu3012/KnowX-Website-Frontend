@@ -1,39 +1,80 @@
-import { Layout, Select, List, Avatar, Space, Row, Col } from "antd";
-import React, { useEffect, useState } from "react";
-import Sidebar from "../Sidebar/Sidebar";
-import ChatWindow from "../ChatWindow/ChatWindow";
-import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
-import SidebarRight from "../../../components/SidebarRight/SidebarRight";
-import Footer from "../../../components/Footer/Footer";
-import Header from "../../../components/Header/Header";
-import "./styles.scss";
+/* eslint-disable camelcase */
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-shadow */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable prefer-const */
+import { useEffect, useState } from "react";
+import Pusher from "pusher-js";
 
-const { Content } = Layout;
+function App() {
+  const [username, setUsername] = useState("username");
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  let allMessages = [];
 
-const ChatRoom = () => {
-  const i = 0;
+  useEffect(() => {
+    Pusher.logToConsole = true;
+
+    const pusher = new Pusher("33ea30792690a3ad7a88", {
+      cluster: "ap1",
+    });
+
+    const channel = pusher.subscribe("chat");
+    channel.bind("message", function (data) {
+      allMessages.push(data);
+      setMessages(allMessages);
+    });
+  }, []);
+
+  const submit = async (e) => {
+    e.preventDefault();
+
+    await fetch("http://127.0.0.1:8000/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        message,
+      }),
+    });
+
+    setMessage("");
+  };
+
   return (
-    <Layout>
-      <Header />
-      <Layout>
-        <SidebarLeft />
-        <Content>
-          <div className="chat-wrapper">
-            <Row>
-              <Col span={8}>
-                <Sidebar />
-              </Col>
-              <Col span={16}>
-                <ChatWindow />
-              </Col>
-            </Row>
-          </div>
-        </Content>
-        <SidebarRight />
-      </Layout>
-      <Footer />
-    </Layout>
+    <div className="container">
+      <div className="d-flex flex-column align-items-stretch flex-shrink-0 bg-white">
+        <div className="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+          <input
+            className="fs-5 fw-semibold"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className="list-group list-group-flush border-bottom scrollarea">
+          {messages.map((message) => {
+            return (
+              <div className="list-group-item list-group-item-action py-3 lh-tight">
+                <div className="d-flex w-100 align-items-center justify-content-between">
+                  <strong className="mb-1">{message.username}</strong>
+                </div>
+                <div className="col-10 mb-1 small">{message.message}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <form onSubmit={(e) => submit(e)}>
+        <input
+          className="form-control"
+          placeholder="Write a message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+      </form>
+    </div>
   );
-};
+}
 
-export default ChatRoom;
+export default App;

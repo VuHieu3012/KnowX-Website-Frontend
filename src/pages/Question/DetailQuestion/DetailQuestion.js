@@ -11,7 +11,6 @@
 import "./styles.scss";
 import {
   Layout,
-  Select,
   Menu,
   Dropdown,
   Button,
@@ -19,13 +18,10 @@ import {
   message,
   Avatar,
   Space,
+  Spin,
   Divider,
 } from "antd";
-import {
-  createFromIconfontCN,
-  DownOutlined,
-  LikeOutlined,
-} from "@ant-design/icons";
+import { DownOutlined, LikeOutlined } from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -34,7 +30,6 @@ import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
 import ListComment from "../Comment/ListComment";
-// import images from "../../assets/images";
 
 const { Content } = Layout;
 
@@ -52,6 +47,7 @@ const DetailQuestion = () => {
   const [isEditMode, setEditMode] = useState(false);
   const [colorLike, setColorLike] = useState("");
   const [countLike, setCountLike] = useState(0);
+  const [spin, setSpin] = useState(true);
 
   useEffect(() => {
     async function getQuestionData() {
@@ -72,8 +68,9 @@ const DetailQuestion = () => {
         setCountLike(responseJSON.data.like);
         setSelectedQuestion(responseJSON.data);
         setUser(responseJSON.user);
+        setSpin(false);
       } catch (error) {
-        console.log("Failed fetch list Posts", error.message);
+        console.log("Failed fetch this question", error.message);
       }
     }
 
@@ -242,60 +239,68 @@ const DetailQuestion = () => {
               <p>{modalText}</p>
             </Modal>
             <div className="container">
-              <div className="postDetail-container">
-                <div className="postDetail-author">
-                  <Avatar
-                    src={`http://127.0.0.1:8000/${user.image}`}
-                    size={40}
-                  />
-                  <Link
-                    to={`/otherprofile/${user.id}`}
-                    style={{ fontSize: "16px", lineHeight: "42px" }}
-                  >
-                    {user.full_name}
-                  </Link>
+              {spin ? (
+                <div className="spin">
+                  <Spin size="large" />
                 </div>
-                <div className="postDetail-date">
-                  {formatDate(selectedQuestion.updated_at)}
-                </div>
-                <div className="postDetail-hastag">
-                  <a href="#">
-                    <span>{selectedQuestion.hashtag}</span>
-                  </a>
-                </div>
-                <div className="postDetail-title">
-                  <h5>{selectedQuestion.title}</h5>
-                  <div className="postDetail-dropdown">
-                    <Dropdown overlay={menu}>
-                      <Button>
-                        Option <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  </div>
-                  <i className="ti-more-alt">
-                    <div className="postDetail-option">
-                      <a href="#">Edit</a>
-                      <a href="#">Delete</a>
-                    </div>
-                  </i>
-                </div>
-                <div
-                  className="postDetail-content"
-                  dangerouslySetInnerHTML={{ __html: selectedQuestion.content }}
-                />
-                <Divider />
-                <div className="postDetail-icons">
-                  <Space direction="vertical" style={{ lineHeight: "3px" }}>
-                    <LikeOutlined
-                      style={{ fontSize: "30px", color: colorLike }}
-                      onClick={handleLike}
+              ) : (
+                <div className="postDetail-container">
+                  <div className="postDetail-author">
+                    <Avatar
+                      src={`http://127.0.0.1:8000/${user.image}`}
+                      size={40}
                     />
-                    <p style={{ display: "flex", justifyContent: "center" }}>
-                      {countLike}
-                    </p>
-                  </Space>
+                    <Link
+                      to={`/otherprofile/${user.id}`}
+                      style={{ fontSize: "16px", lineHeight: "42px" }}
+                    >
+                      {user.full_name}
+                    </Link>
+                  </div>
+                  <div className="postDetail-date">
+                    {formatDate(selectedQuestion.updated_at)}
+                  </div>
+                  <div className="postDetail-hastag">
+                    <a href="#">
+                      <span>{selectedQuestion.hashtag}</span>
+                    </a>
+                  </div>
+                  <div className="postDetail-title">
+                    <h5>{selectedQuestion.title}</h5>
+                    <div className="postDetail-dropdown">
+                      <Dropdown overlay={menu}>
+                        <Button>
+                          Option <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    </div>
+                    <i className="ti-more-alt">
+                      <div className="postDetail-option">
+                        <a href="#">Edit</a>
+                        <a href="#">Delete</a>
+                      </div>
+                    </i>
+                  </div>
+                  <div
+                    className="postDetail-content"
+                    dangerouslySetInnerHTML={{
+                      __html: selectedQuestion.content,
+                    }}
+                  />
+                  <Divider />
+                  <div className="postDetail-icons">
+                    <Space direction="vertical" style={{ lineHeight: "3px" }}>
+                      <LikeOutlined
+                        style={{ fontSize: "30px", color: colorLike }}
+                        onClick={handleLike}
+                      />
+                      <p style={{ display: "flex", justifyContent: "center" }}>
+                        {countLike}
+                      </p>
+                    </Space>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </Content>
           <Layout style={{ backgroundColor: "#fff", padding: "0 10px" }}>

@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect } from "react";
-import { Comment, Avatar, Form, Button, List, Input } from "antd";
+import { Comment, Form, Button, List, Input } from "antd";
 import { useLocation } from "react-router-dom";
 
 const { TextArea } = Input;

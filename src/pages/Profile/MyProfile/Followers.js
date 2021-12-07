@@ -2,11 +2,12 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect } from "react";
-import { List, Avatar, Button, notification } from "antd";
+import { List, Avatar, Button, Spin } from "antd";
 import { Link } from "react-router-dom";
 
 const Followers = () => {
   const [listFollowing, setListFollowing] = useState([]);
+  const [spin, setSpin] = useState(true);
   useEffect(() => {
     async function getListFollowingUsers() {
       const token = sessionStorage.getItem("token");
@@ -26,6 +27,7 @@ const Followers = () => {
         console.log(responseJSON);
         if (responseJSON.status === "success") {
           setListFollowing(responseJSON.data);
+          setSpin(false);
         }
       } catch (error) {
         console.log("Faild fetch list followers ", error.message);
@@ -35,34 +37,13 @@ const Followers = () => {
     console.log("list: ", listFollowing);
   }, []);
 
-  const handleFollow = (id) => {
-    console.log(id);
-    const token = sessionStorage.getItem("token");
-    const fm = new FormData();
-    fm.append("target_user_id", id);
-    const requestOptions = {
-      method: "POST",
-      body: fm,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    fetch("http://127.0.0.1:8000/api/user/follow", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("status: ", result);
-      })
-      .catch((error) => {
-        console.log("errro", error);
-      });
-  };
-
-  const openNotificationWithIcon = (type, msg) => {
-    notification[type]({
-      message: msg,
-    });
-  };
+  if (spin) {
+    return (
+      <div className="spin">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div>

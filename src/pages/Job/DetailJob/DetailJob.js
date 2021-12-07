@@ -13,7 +13,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Avatar, Typography, Button } from "antd";
+import { Layout, Avatar, Typography, Button, Spin } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -26,16 +26,15 @@ const { Content } = Layout;
 const { Text } = Typography;
 
 const DetailJob = () => {
-  const userId = sessionStorage.getItem("user_id");
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
 
   const [selectedPost, setSelectedPost] = useState({});
   const [user, setUser] = useState({});
+  const [spin, setSpin] = useState(true);
 
   useEffect(() => {
-    console.log(selectedId);
     async function getJobData() {
       const token = sessionStorage.getItem("token");
       const fm = new FormData();
@@ -54,9 +53,9 @@ const DetailJob = () => {
           requestOptions
         );
         const responseJSON = await response.json();
-        console.log(responseJSON);
         setSelectedPost(responseJSON.data);
         setUser(responseJSON.user);
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch this Job", error.message);
       }
@@ -75,10 +74,6 @@ const DetailJob = () => {
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
 
-  const sendMail = () => {
-    GmailApp.sendEmail("devhuy@gmail.com", "current time", "The time is: ");
-  };
-
   return (
     <Layout>
       <Header />
@@ -87,42 +82,48 @@ const DetailJob = () => {
         <Layout>
           <Content>
             <div className="container">
-              <div className="postDetail-container">
-                <div className="postDetail-author">
-                  <Avatar
-                    src={`http://127.0.0.1:8000/${user.image}`}
-                    size={40}
+              {spin ? (
+                <div className="spin">
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <div className="postDetail-container">
+                  <div className="postDetail-author">
+                    <Avatar
+                      src={`http://127.0.0.1:8000/${user.image}`}
+                      size={40}
+                    />
+                    <Link
+                      to={`/otherprofile/${user.id}`}
+                      style={{ fontSize: "16px", lineHeight: "42px" }}
+                    >
+                      {user.full_name}
+                    </Link>
+                  </div>
+                  <div className="postDetail-date">
+                    {formatDate(selectedPost.updated_at)}
+                  </div>
+                  <div className="postDetail-position">
+                    <Text mark> POSITION: {selectedPost.position}</Text>
+                  </div>
+                  <div className="postDetail-title">
+                    <h5>{selectedPost.title}</h5>
+                  </div>
+                  <div
+                    className="postDetail-content"
+                    dangerouslySetInnerHTML={{ __html: selectedPost.content }}
                   />
-                  <Link
-                    to={`/otherprofile/${user.id}`}
-                    style={{ fontSize: "16px", lineHeight: "42px" }}
-                  >
-                    {user.full_name}
-                  </Link>
+                  <a href={`mailto:${user.email}`}>
+                    <Button
+                      icon={<MailOutlined style={{ marginTop: "5px" }} />}
+                      type="primary"
+                      style={{ display: "flex", justifyContent: "center" }}
+                    >
+                      Contact Now!
+                    </Button>
+                  </a>
                 </div>
-                <div className="postDetail-date">
-                  {formatDate(selectedPost.updated_at)}
-                </div>
-                <div className="postDetail-position">
-                  <Text mark> POSITION: {selectedPost.position}</Text>
-                </div>
-                <div className="postDetail-title">
-                  <h5>{selectedPost.title}</h5>
-                </div>
-                <div
-                  className="postDetail-content"
-                  dangerouslySetInnerHTML={{ __html: selectedPost.content }}
-                />
-                <a href={`mailto:${user.email}`}>
-                  <Button
-                    icon={<MailOutlined style={{ marginTop: "3px" }} />}
-                    type="primary"
-                    style={{ display: "flex", justifyContent: "center" }}
-                  >
-                    Contact Now!
-                  </Button>
-                </a>
-              </div>
+              )}
             </div>
           </Content>
         </Layout>

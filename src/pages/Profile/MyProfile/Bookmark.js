@@ -7,13 +7,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { List, Avatar, Space } from "antd";
+import { List, Avatar, Space, Spin } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 const Bookmark = () => {
   const [listPost, setList] = useState([]);
+  const [spin, setSpin] = useState(true);
 
   const IconText = ({ icon, text }) => (
     <Space>
@@ -39,7 +40,7 @@ const Bookmark = () => {
         );
         const responseJSON = await response.json();
         setList(responseJSON.data);
-        console.log("list post: ", listPost);
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list Bookmark", error.message);
       }
@@ -121,6 +122,14 @@ const Bookmark = () => {
       ,
     </div>
   );
+
+  if (spin) {
+    return (
+      <div className="spin">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return <div className="container">{data}</div>;
 };

@@ -9,7 +9,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 // import "./styles.scss";\
 import "./styles.scss";
-import { Layout, List, Avatar, Space } from "antd";
+import { Layout, List, Avatar, Spin } from "antd";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
@@ -21,6 +21,7 @@ const { Content } = Layout;
 
 const ListJobs = () => {
   const [listPost, setList] = useState([]);
+  const [spin, setSpin] = useState(true);
   const userId = sessionStorage.getItem("user_id");
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const ListJobs = () => {
         if (responseJSON.status === "success") {
           setList(responseJSON.data);
         }
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list newest Posts", error.message);
       }
@@ -78,58 +80,64 @@ const ListJobs = () => {
                 JOBS
               </span>
             </div>
-            <div>
-              <List
-                itemLayout="vertical"
-                size="large"
-                pagination={{
-                  onChange: (page) => {
-                    console.log(page);
-                  },
-                  pageSize: 5,
-                }}
-                dataSource={listPost}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={
-                        <Link
-                          to={
-                            item.user_id === parseInt(userId)
-                              ? "/profile"
-                              : `/otherprofile/${item.user_id}`
-                          }
-                        >
-                          <Avatar
-                            src={`http://127.0.0.1:8000/${item.user_image}`}
-                          />
-                        </Link>
-                      }
-                      title={
-                        <Link
-                          to={
-                            item.user_id === parseInt(userId)
-                              ? "/profile"
-                              : `/otherprofile/${item.user_id}`
-                          }
-                        >
-                          {item.full_name}
-                        </Link>
-                      }
-                      description={
-                        <a href={`/jobs/detail/${item.id}`}>
-                          <h6>{item.title}</h6>
-                        </a>
-                      }
-                    />
+            {spin ? (
+              <div className="spin">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div>
+                <List
+                  itemLayout="vertical"
+                  size="large"
+                  pagination={{
+                    onChange: (page) => {
+                      console.log(page);
+                    },
+                    pageSize: 5,
+                  }}
+                  dataSource={listPost}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={
+                          <Link
+                            to={
+                              item.user_id === parseInt(userId)
+                                ? "/profile"
+                                : `/otherprofile/${item.user_id}`
+                            }
+                          >
+                            <Avatar
+                              src={`http://127.0.0.1:8000/${item.user_image}`}
+                            />
+                          </Link>
+                        }
+                        title={
+                          <Link
+                            to={
+                              item.user_id === parseInt(userId)
+                                ? "/profile"
+                                : `/otherprofile/${item.user_id}`
+                            }
+                          >
+                            {item.full_name}
+                          </Link>
+                        }
+                        description={
+                          <a href={`/jobs/detail/${item.id}`}>
+                            <h6>{item.title}</h6>
+                          </a>
+                        }
+                      />
 
-                    {`${formatDate(item.updated_at)}  |  `}
-                    {<span>{item.position}</span>}
-                  </List.Item>
-                )}
-              />
-              ,
-            </div>
+                      {`${formatDate(item.updated_at)}  |  `}
+                      {<span>{item.position}</span>}
+                    </List.Item>
+                  )}
+                />
+                ,
+              </div>
+            )}
           </div>
         </Content>
         <SidebarRight />

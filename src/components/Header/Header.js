@@ -6,15 +6,28 @@ import "antd/dist/antd.css";
 import { Layout, Menu, Input } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import "./styles.scss";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { useState } from "react";
 
 const { SubMenu } = Menu;
 const { Search } = Input;
 
 const Header = () => {
+  const [data, setData] = useState("");
+  const [redirect, setRedirect] = useState(false);
+
   const handleClick = () => {
     <Link to="/post" />;
   };
+
+  const onSearch = () => {
+    setRedirect(true);
+  };
+
+  if (redirect) {
+    return <Redirect to={`/search/${data}`} />;
+  }
+
   return (
     <Layout className="layout-header">
       <Layout.Header className="navigation space-align-header">
@@ -77,9 +90,14 @@ const Header = () => {
           <Menu.Item key="7">
             <Search
               style={{ marginTop: "6px" }}
+              placeholder="Search posts/questons/users"
+              allowClear
+              enterButton="Search"
+              onChange={(e) => {
+                setData(e.target.value);
+              }}
               size="default"
-              placeholder="Search KnowX"
-              enterButton
+              onSearch={onSearch}
             />
           </Menu.Item>
         </Menu>

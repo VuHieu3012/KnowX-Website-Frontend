@@ -7,12 +7,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, Select, List, Avatar, Space } from "antd";
-import {
-  createFromIconfontCN,
-  MessageOutlined,
-  LikeOutlined,
-} from "@ant-design/icons";
+import { Layout, List, Avatar, Space, Spin } from "antd";
+import { MessageOutlined, LikeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
@@ -20,14 +16,12 @@ import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-});
 const { Content } = Layout;
 
 const MyQuestions = () => {
   const [listQuestions, setList] = useState([]);
   const [user, setUser] = useState({});
+  const [spin, setSpin] = useState(true);
 
   const IconText = ({ icon, text }) => (
     <Space>
@@ -75,7 +69,7 @@ const MyQuestions = () => {
         );
         const responseJSON = await response.json();
         setList(responseJSON.data);
-        console.log("list question: ", listQuestions);
+        setSpin(false);
       } catch (error) {
         console.log("Failed fetch list questions", error.message);
       }
@@ -95,10 +89,9 @@ const MyQuestions = () => {
   };
 
   let data;
+
   if (listQuestions.length === 0) {
-    data = (
-      <p>Give your question...</p>
-    );
+    data = <p>Give your question...</p>;
   } else {
     data = (
       <div>
@@ -154,6 +147,7 @@ const MyQuestions = () => {
       </div>
     );
   }
+
   return (
     <Layout>
       <Header />
@@ -172,7 +166,13 @@ const MyQuestions = () => {
                 MY QUESTIONS
               </span>
             </div>
-            {data}
+            {spin ? (
+              <div className="spin">
+                <Spin size="large" />
+              </div>
+            ) : (
+              data
+            )}
           </div>
         </Content>
         <SidebarRight />

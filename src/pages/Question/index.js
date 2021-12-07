@@ -7,7 +7,7 @@ import DetailQuestion from "./DetailQuestion/DetailQuestion";
 import EditQuestion from "./EditQuestion/EditQuestion";
 import NewestQuestion from "./NewestQuestion/NewestQuestion";
 
-function Question(props) {
+function Question() {
   const match = useRouteMatch();
   console.log(match);
   return (
