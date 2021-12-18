@@ -4,7 +4,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./styles.scss";
 import { Layout, Menu } from "antd";
 import Header from "../../../components/Header/Header";
@@ -21,9 +21,86 @@ const { Content } = Layout;
 
 const Profile = () => {
   const [key, setKey] = useState("information");
+  const [countFollowings, setCountFollowings] = useState(0);
+  const [countFollowers, setCountFollowers] = useState(0);
+  const [countBookmarks, setCountBookmarks] = useState(0);
   const handleClick = (e) => {
     setKey(e.key);
   };
+
+  useEffect(() => {
+    async function getListFollowingUsers() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user/following",
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        if (responseJSON.status === "success") {
+          setCountFollowings(responseJSON.count);
+        }
+      } catch (error) {
+        console.log("Faild fetch list following users ", error.message);
+      }
+    }
+
+    async function getListFollowers() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user/followers",
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        if (responseJSON.status === "success") {
+          setCountFollowers(responseJSON.count);
+        }
+      } catch (error) {
+        console.log("Faild fetch list followers ", error.message);
+      }
+    }
+
+    async function getListBookmark() {
+      const token = sessionStorage.getItem("token");
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/user/posts/getbookmark",
+          requestOptions
+        );
+        const responseJSON = await response.json();
+        setCountBookmarks(responseJSON.count);
+      } catch (error) {
+        console.log("Failed fetch list Bookmark", error.message);
+      }
+    }
+
+    getListBookmark();
+    getListFollowers();
+    getListFollowingUsers();
+  }, []);
 
   return (
     <Layout>
@@ -40,9 +117,21 @@ const Profile = () => {
                 selectedKeys={key}
               >
                 <Menu.Item key="information">INFORMATION</Menu.Item>
-                <Menu.Item key="followers">FOLLOWERS</Menu.Item>
-                <Menu.Item key="followings">FOLLOWINGS</Menu.Item>
-                <Menu.Item key="bookmarks">BOOKMARKS</Menu.Item>
+                <Menu.Item key="followers">
+                  FOLLOWERS (
+                  {countFollowers}
+                  )
+                </Menu.Item>
+                <Menu.Item key="followings">
+                  FOLLOWINGS (
+                  {countFollowings}
+                  )
+                </Menu.Item>
+                <Menu.Item key="bookmarks">
+                  BOOKMARKS (
+                  {countBookmarks}
+                  )
+                </Menu.Item>
                 <Menu.Item key="mentor">MENTOR</Menu.Item>
               </Menu>
             </div>

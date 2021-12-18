@@ -1,14 +1,5 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
-import "./styles.scss";
 import {
   Layout,
   Menu,
@@ -18,10 +9,12 @@ import {
   message,
   Avatar,
   Space,
-  Spin,
   Divider,
+  Spin,
 } from "antd";
-import { DownOutlined, LikeOutlined } from "@ant-design/icons";
+import { DownOutlined, LikeFilled,
+  DeleteOutlined,
+  EditOutlined } from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -30,6 +23,7 @@ import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
 import SidebarRight from "../../../components/SidebarRight/SidebarRight";
 import Footer from "../../../components/Footer/Footer";
 import ListComment from "../Comment/ListComment";
+import "./styles.scss";
 
 const { Content } = Layout;
 
@@ -62,7 +56,7 @@ const DetailQuestion = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/questions/${selectedId}`,
-          requestOptions
+          requestOptions,
         );
         const responseJSON = await response.json();
         setCountLike(responseJSON.data.like);
@@ -70,7 +64,7 @@ const DetailQuestion = () => {
         setUser(responseJSON.user);
         setSpin(false);
       } catch (error) {
-        console.log("Failed fetch this question", error.message);
+        console.log("Failed fetch list Posts", error.message);
       }
     }
 
@@ -88,7 +82,7 @@ const DetailQuestion = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/questions/checklike`,
-          requestOptions
+          requestOptions,
         );
         const responseJSON = await response.json();
         console.log(responseJSON);
@@ -103,7 +97,7 @@ const DetailQuestion = () => {
     }
     checkLike();
     getQuestionData();
-  }, []);
+  }, [selectedId]);
 
   async function handleLike() {
     const token = sessionStorage.getItem("token");
@@ -119,7 +113,7 @@ const DetailQuestion = () => {
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/user/questions/like`,
-        requestOptions
+        requestOptions,
       );
       const responseJSON = await response.json();
       console.log(responseJSON);
@@ -151,7 +145,7 @@ const DetailQuestion = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/questions/${selectedId}`,
-          requestOptions
+          requestOptions,
         );
         const responseJSON = await response.json();
         console.log(responseJSON);
@@ -186,10 +180,22 @@ const DetailQuestion = () => {
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={handleEdit}>
+      <Menu.Item
+        key="1"
+        onClick={handleEdit}
+        icon={(
+          <EditOutlined />
+        )}
+      >
         Edit
       </Menu.Item>
-      <Menu.Item key="2" onClick={showModal}>
+      <Menu.Item
+        key="2"
+        onClick={showModal}
+        icon={(
+          <DeleteOutlined />
+        )}
+      >
         Delete
       </Menu.Item>
     </Menu>
@@ -227,23 +233,23 @@ const DetailQuestion = () => {
       <Header />
       <Layout>
         <SidebarLeft />
-        <Layout>
-          <Content>
-            <Modal
-              title="Confirm"
-              visible={visible}
-              onOk={handleOk}
-              confirmLoading={confirmLoading}
-              onCancel={handleCancel}
-            >
-              <p>{modalText}</p>
-            </Modal>
-            <div className="container">
-              {spin ? (
-                <div className="spin">
-                  <Spin size="large" />
-                </div>
-              ) : (
+        <Content>
+          <Modal
+            title="Confirm"
+            visible={visible}
+            onOk={handleOk}
+            confirmLoading={confirmLoading}
+            onCancel={handleCancel}
+          >
+            <p>{modalText}</p>
+          </Modal>
+          <div className="container">
+            {spin ? (
+              <div className="spin">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div className="content">
                 <div className="postDetail-container">
                   <div className="postDetail-author">
                     <Avatar
@@ -261,7 +267,7 @@ const DetailQuestion = () => {
                     {formatDate(selectedQuestion.updated_at)}
                   </div>
                   <div className="postDetail-hastag">
-                    <a href="#">
+                    <a href={`/search/${selectedQuestion.hashtag.replace("#", "")}`}>
                       <span>{selectedQuestion.hashtag}</span>
                     </a>
                   </div>
@@ -270,7 +276,8 @@ const DetailQuestion = () => {
                     <div className="postDetail-dropdown">
                       <Dropdown overlay={menu}>
                         <Button>
-                          Option <DownOutlined />
+                          Option
+                          <DownOutlined />
                         </Button>
                       </Dropdown>
                     </div>
@@ -290,7 +297,7 @@ const DetailQuestion = () => {
                   <Divider />
                   <div className="postDetail-icons">
                     <Space direction="vertical" style={{ lineHeight: "3px" }}>
-                      <LikeOutlined
+                      <LikeFilled
                         style={{ fontSize: "30px", color: colorLike }}
                         onClick={handleLike}
                       />
@@ -299,14 +306,12 @@ const DetailQuestion = () => {
                       </p>
                     </Space>
                   </div>
+                  <ListComment />
                 </div>
-              )}
-            </div>
-          </Content>
-          <Layout style={{ backgroundColor: "#fff", padding: "0 10px" }}>
-            <ListComment />
-          </Layout>
-        </Layout>
+              </div>
+            )}
+          </div>
+        </Content>
         <SidebarRight />
       </Layout>
       <Footer />

@@ -1,26 +1,27 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect } from "react";
-import { Comment, Form, Button, List, Input } from "antd";
+import { Comment, Form, Button, List, Input, Divider, Row, Col } from "antd";
+import { LikeFilled } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
 
-const { TextArea } = Input;
 const ListComment = () => {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [listComment, setListComment] = useState([]);
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
 
-  let comment = "";
+  const [comment, setComment] = useState("");
   // lấy list comment
   async function getListComment() {
     const token = sessionStorage.getItem("token");
-    const fm = new FormData();
-    fm.append("question_id", selectedId);
+    const formData = new FormData();
+    formData.append("question_id", selectedId);
     const requestOptions = {
       method: "POST",
-      body: fm,
+      body: formData,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -45,12 +46,12 @@ const ListComment = () => {
   async function createComment() {
     setLoading(true);
     const token = sessionStorage.getItem("token");
-    const fm = new FormData();
-    fm.append("question_id", selectedId);
-    fm.append("comment", comment);
+    const formData = new FormData();
+    formData.append("question_id", selectedId);
+    formData.append("comment", comment);
     const requestOptions = {
       method: "POST",
-      body: fm,
+      body: formData,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -61,10 +62,10 @@ const ListComment = () => {
         requestOptions
       );
       const responseJSON = await response.json();
-      console.log(responseJSON);
+      if (responseJSON.status === "success") {
+        onReset();
+      }
       getListComment();
-
-      comment = "";
     } catch (error) {
       console.log("Failed fetch create comment", error.message);
     }
@@ -82,28 +83,40 @@ const ListComment = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-  console.log(listComment);
-
+  const onReset = () => {
+    form.resetFields();
+  };
   return (
     <div>
-      <Form.Item>
-        <TextArea
-          rows={1}
-          onChange={(e) => {
-            comment = e.target.value;
-          }}
-        />
-      </Form.Item>
-      <Form.Item>
-        <Button
-          htmlType="submit"
-          type="primary"
-          onClick={createComment}
-          loading={loading}
-        >
-          Add Comment
-        </Button>
-      </Form.Item>
+      <Divider orientation="left">Comment</Divider>
+      <Form name="input-comment" form={form}>
+        <Row>
+          <Col span={18}>
+            <Form.Item name="comment" form={form}>
+              <Input.TextArea
+                style={{ height: "42px" }}
+                placeholder="Type a comment..."
+                onChange={(e) => {
+                  setComment(e.target.value);
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={5}>
+            <Form.Item>
+              <Button
+                style={{ float: "right", marginRight: "20px" }}
+                type="primary"
+                onClick={createComment}
+                loading={loading}
+                size="large"
+              >
+                Add Comment
+              </Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
       {listComment ? (
         <List
           className="comment-list"

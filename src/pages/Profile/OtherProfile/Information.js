@@ -39,10 +39,10 @@ const Information = () => {
         );
         const responseJSON = await response.json();
         if (responseJSON.status === "followed") {
-          setFollow("Following");
+          setFollow("Unfollow");
         }
         if (responseJSON.status === "follow") {
-          setFollow("Unfollowing");
+          setFollow("Follow");
         }
       } catch (error) {
         console.log("Faild fetch this user : ", error.message);
@@ -91,10 +91,10 @@ const Information = () => {
       .then((response) => response.json())
       .then((result) => {
         if (result.type === "follow") {
-          setFollow("Following");
+          setFollow("Unfollow");
           openNotificationWithIcon("success", `Following ${user.full_name}`);
         } else {
-          setFollow("Unfollowing");
+          setFollow("Follow");
           openNotificationWithIcon("success", `Unfollowing ${user.full_name}`);
         }
       })
@@ -120,7 +120,12 @@ const Information = () => {
   return (
     <div>
       <div className="personal-profile content">
-        <Descriptions bordered column={1} title="Personal information">
+        <Descriptions
+          bordered
+          column={1}
+          title="PERSONAL INFORMATION"
+          style={{ color: "#1890FF" }}
+        >
           <Descriptions.Item label="Image">
             <Image width={200} src={`http://127.0.0.1:8000/${user.image}`} />
           </Descriptions.Item>
@@ -138,12 +143,12 @@ const Information = () => {
         </Descriptions>
         <Button
           size="large"
-          type={follow ? "primary" : "default"}
+          type={follow === "Follow" ? "primary" : "default"}
           style={{
             marginTop: "50px",
           }}
           onClick={handleFollow}
-          icon={follow === "Following" ? <HeartTwoTone /> : <UserAddOutlined />}
+          icon={follow === "Unfollow" ? <HeartTwoTone /> : <UserAddOutlined />}
         >
           {`${follow}`}
         </Button>

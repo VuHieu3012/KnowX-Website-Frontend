@@ -2,10 +2,10 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-shadow */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Form, Input, Button, Checkbox, Divider } from "antd";
-import { GoogleOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import "./styles.scss";
 import AuthRight from "../../../../components/AuthRight";
 import images from "../../../../assets/images";
@@ -118,6 +118,7 @@ const Signin = () => {
                 onChange={(e) => {
                   loginData.email = e.target.value;
                 }}
+                style={{ borderRadius: "10px" }}
               />
             </Form.Item>
             <Form.Item
@@ -140,6 +141,7 @@ const Signin = () => {
                 onChange={(e) => {
                   loginData.password = e.target.value;
                 }}
+                style={{ borderRadius: "10px" }}
               />
             </Form.Item>
             <p className="errMsgStyl">{errMsg}</p>

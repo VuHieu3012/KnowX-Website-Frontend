@@ -6,8 +6,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
-import "./styles.scss";
-import { Layout, List, Avatar, Space, Spin } from "antd";
+import { Layout, List, Avatar, Space, Spin, Divider } from "antd";
 import { MessageOutlined, LikeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -47,7 +46,6 @@ const MyQuestions = () => {
         );
         const responseJSON = await response.json();
         setUser(responseJSON.data);
-        console.log("personal: ", user);
       } catch (error) {
         console.log("Faild fetch user : ", error.message);
       }
@@ -88,65 +86,57 @@ const MyQuestions = () => {
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
 
-  let data;
-
-  if (listQuestions.length === 0) {
-    data = <p>Give your question...</p>;
-  } else {
-    data = (
-      <div>
-        <List
-          itemLayout="vertical"
-          size="large"
-          pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
-            pageSize: 5,
-          }}
-          dataSource={listQuestions}
-          renderItem={(item) => (
-            <List.Item
-              actions={[
-                <IconText
-                  icon={LikeOutlined}
-                  text={item.like}
-                  key="list-vertical-like-o"
-                />,
-                <IconText
-                  icon={MessageOutlined}
-                  text={item.comment}
-                  key="list-vertical-message"
-                />,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={
-                  <Link to="/profile">
-                    <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
-                  </Link>
-                }
-                title={<Link to="/profile">{user.full_name}</Link>}
-                description={
-                  <a href={`/question/detail/${item.id}`}>
-                    <h6>{item.title}</h6>
-                  </a>
-                }
-              />
-
-              {`${formatDate(item.updated_at)}  |  `}
-              {
-                <a href="#">
-                  <span>{item.hashtag}</span>
+  const data = (
+    <div>
+      <List
+        itemLayout="vertical"
+        size="large"
+        pagination={{
+          pageSize: 5,
+        }}
+        dataSource={listQuestions}
+        renderItem={(item) => (
+          <List.Item
+            className="list"
+            actions={[
+              <IconText
+                icon={LikeOutlined}
+                text={item.like}
+                key="list-vertical-like-o"
+              />,
+              <IconText
+                icon={MessageOutlined}
+                text={item.comment}
+                key="list-vertical-message"
+              />,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <Link to="/profile">
+                  <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
+                </Link>
+              }
+              title={<Link to="/profile">{user.full_name}</Link>}
+              description={
+                <a href={`/question/detail/${item.id}`}>
+                  <h6>{item.title}</h6>
                 </a>
               }
-            </List.Item>
-          )}
-        />
-        ,
-      </div>
-    );
-  }
+            />
+
+            {`${formatDate(item.updated_at)}  |  `}
+            {
+              <a href={`/search/${item.hashtag.replace("#", "")}`}>
+                <span>{item.hashtag}</span>
+              </a>
+            }
+          </List.Item>
+        )}
+      />
+      ,
+    </div>
+  );
 
   return (
     <Layout>
@@ -155,23 +145,19 @@ const MyQuestions = () => {
         <SidebarLeft />
         <Content>
           <div className="container">
-            <div>
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  marginRight: "25px",
-                }}
-              >
-                MY QUESTIONS
-              </span>
-            </div>
             {spin ? (
               <div className="spin">
                 <Spin size="large" />
               </div>
             ) : (
-              data
+              <div className="content">
+                <div>
+                  <Divider orientation="left">
+                    <h5 style={{ color: "#00358E" }}>MY QUESTIONS</h5>
+                  </Divider>
+                </div>
+                {data}
+              </div>
             )}
           </div>
         </Content>

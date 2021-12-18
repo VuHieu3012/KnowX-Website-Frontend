@@ -7,7 +7,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { List, Avatar, Space, Spin } from "antd";
+import { List, Avatar, Space, Spin, Typography } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -114,6 +114,7 @@ const ListPost = () => {
         dataSource={listPost}
         renderItem={(item) => (
           <List.Item
+            className="list"
             actions={[
               <IconText
                 icon={LikeOutlined}
@@ -143,7 +144,7 @@ const ListPost = () => {
               title={<Link to="/profile">{user.full_name}</Link>}
               description={
                 <a href={`/post/detail/${item.id}`}>
-                  <h6>{item.title}</h6>
+                  <Typography.Title level={4}>{item.title}</Typography.Title>
                 </a>
               }
             />

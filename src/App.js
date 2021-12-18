@@ -34,7 +34,7 @@ function App() {
             <Route path="/chat" component={ChatRoom} />
             <Route path="/meeting" component={MeetingOption} />
             <Route path="/jobs" component={Job} />
-            <Route path="/search/:id" component={Search} />
+            <Route exact path="/search/:id" component={Search} />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

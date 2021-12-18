@@ -11,7 +11,7 @@ import {
   GoogleOutlined,
 } from "@ant-design/icons";
 import "./styles.scss";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import AuthRight from "../../../../components/AuthRight";
 import images from "../../../../assets/images";
 
@@ -40,6 +40,12 @@ const Signup = () => {
     console.log("Received values of form: ", values);
   };
   const onSubmitHandler = (e) => {
+    setErrMsgFistName("");
+    setErrMsgLastName("");
+    setErrMsgPhone("");
+    setErrMsgEmail("");
+    setSuccessMsg("");
+    setErrMsgPassword("");
     setLoading(true);
     e.preventDefault();
     const formData = new FormData();
@@ -146,7 +152,7 @@ const Signup = () => {
                   message: "Please input your first name!",
                 },
               ]}
-              validateStatus={error ? "error" : error === false}
+              validateStatus={errMsgFirstName !== "" ? "error" : "validating"}
               help={error ? errMsgFirstName : ""}
             >
               <Input
@@ -166,7 +172,7 @@ const Signup = () => {
                   message: "Please input your last name!",
                 },
               ]}
-              validateStatus={error ? "error" : error === false}
+              validateStatus={errMsgLastName !== "" ? "error" : error === false}
               help={error ? errMsgLastName : ""}
             >
               <Input
@@ -186,7 +192,7 @@ const Signup = () => {
                   message: "Please input your phone number!",
                 },
               ]}
-              validateStatus={error ? "error" : error === false}
+              validateStatus={errMsgPhone !== "" ? "error" : error === false}
               help={error ? errMsgPhone : ""}
             >
               <Input
@@ -211,7 +217,7 @@ const Signup = () => {
                   message: "Please input your E-mail!",
                 },
               ]}
-              validateStatus={error ? "error" : error === false}
+              validateStatus={errMsgEmail !== "" ? "error" : error === false}
               help={error ? errMsgEmail : ""}
             >
               <Input
@@ -232,7 +238,7 @@ const Signup = () => {
                   message: "Please input your Password!",
                 },
               ]}
-              validateStatus={error ? "error" : error === false}
+              validateStatus={errMsgPassword !== "" ? "error" : error === false}
               help={error ? errMsgPassword : ""}
             >
               <Input.Password

@@ -32,7 +32,9 @@ const Mentor = () => {
           itemLayout="horizontal"
           dataSource={subjectMentor}
           renderItem={(item) => (
-            <List.Item>
+            <List.Item
+              className="list"
+            >
               <List.Item.Meta
                 title={<a href="https://ant.design">{item.subject_name}</a>}
                 description={item.description}

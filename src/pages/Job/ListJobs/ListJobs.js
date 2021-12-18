@@ -9,7 +9,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 // import "./styles.scss";\
 import "./styles.scss";
-import { Layout, List, Avatar, Spin } from "antd";
+import { Layout, List, Avatar, Spin, Divider } from "antd";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header/Header";
@@ -70,15 +70,9 @@ const ListJobs = () => {
         <Content>
           <div className="container">
             <div>
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  marginRight: "25px",
-                }}
-              >
-                JOBS
-              </span>
+              <Divider orientation="left">
+                <h5 style={{ color: "#00358E" }}>JOBS</h5>
+              </Divider>
             </div>
             {spin ? (
               <div className="spin">

@@ -55,7 +55,9 @@ const Followings = () => {
         dataSource={listFollowing}
         renderItem={(item) => (
           <div>
-            <List.Item>
+            <List.Item
+              className="list"
+            >
               <List.Item.Meta
                 avatar={<Avatar src={`http://127.0.0.1:8000/${item.image}`} />}
                 title={

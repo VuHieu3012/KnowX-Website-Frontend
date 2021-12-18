@@ -1,12 +1,13 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable import/no-unresolved */
 import "antd/dist/antd.css";
-import { Layout, Menu, Input } from "antd";
+import { Menu, Input, message, Layout } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import "./styles.scss";
-import { Link, Redirect } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
 
 const { SubMenu } = Menu;
@@ -14,19 +15,20 @@ const { Search } = Input;
 
 const Header = () => {
   const [data, setData] = useState("");
-  const [redirect, setRedirect] = useState(false);
+  const history = useHistory();
 
   const handleClick = () => {
     <Link to="/post" />;
   };
 
   const onSearch = () => {
-    setRedirect(true);
+    if (data === "") {
+      message.error("Please enter anything to search!", 4);
+    } else {
+      history.push(`/search/${data.replace("#", "")}`);
+      location.reload();
+    }
   };
-
-  if (redirect) {
-    return <Redirect to={`/search/${data}`} />;
-  }
 
   return (
     <Layout className="layout-header">
@@ -64,6 +66,7 @@ const Header = () => {
               <Link to="/post/create">Create post</Link>
             </Menu.Item>
           </SubMenu>
+
           <SubMenu key="Question" title="Question">
             <Menu.Item>
               <Link to="/question/myquestions">My Questions</Link>

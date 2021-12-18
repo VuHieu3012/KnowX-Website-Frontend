@@ -9,7 +9,7 @@ const Followers = () => {
   const [listFollowing, setListFollowing] = useState([]);
   const [spin, setSpin] = useState(true);
   useEffect(() => {
-    async function getListFollowingUsers() {
+    async function getListFollowers() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
         method: "GET",
@@ -27,13 +27,13 @@ const Followers = () => {
         console.log(responseJSON);
         if (responseJSON.status === "success") {
           setListFollowing(responseJSON.data);
-          setSpin(false);
         }
+        setSpin(false);
       } catch (error) {
         console.log("Faild fetch list followers ", error.message);
       }
     }
-    getListFollowingUsers();
+    getListFollowers();
     console.log("list: ", listFollowing);
   }, []);
 
@@ -56,7 +56,7 @@ const Followers = () => {
         dataSource={listFollowing}
         renderItem={(item) => (
           <div>
-            <List.Item>
+            <List.Item className="list">
               <List.Item.Meta
                 avatar={<Avatar src={`http://127.0.0.1:8000/${item.image}`} />}
                 title={

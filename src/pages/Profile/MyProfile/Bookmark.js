@@ -7,7 +7,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { List, Avatar, Space, Spin } from "antd";
+import { List, Avatar, Space, Spin, Typography } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ const Bookmark = () => {
   );
 
   useEffect(() => {
-    async function getPostData() {
+    async function getListBookmark() {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
         method: "POST",
@@ -46,7 +46,7 @@ const Bookmark = () => {
       }
     }
 
-    getPostData();
+    getListBookmark();
   }, []);
 
   // convert timestams to date
@@ -76,6 +76,7 @@ const Bookmark = () => {
         dataSource={listPost}
         renderItem={(item) => (
           <List.Item
+            className="list"
             actions={[
               <IconText
                 icon={LikeOutlined}
@@ -105,21 +106,20 @@ const Bookmark = () => {
               title={<Link to="/profile">{item.full_name}</Link>}
               description={
                 <a href={`/post/detail/${item.post_id}`}>
-                  <h6>{item.title}</h6>
+                  <Typography.Title level={4}>{item.title}</Typography.Title>
                 </a>
               }
             />
 
             {`${formatDate(item.updated_at)}  |  `}
             {
-              <a href="#">
+              <a href={`/search/${item.hashtag.replace("#", "")}`}>
                 <span>{item.hashtag}</span>
               </a>
             }
           </List.Item>
         )}
       />
-      ,
     </div>
   );
 

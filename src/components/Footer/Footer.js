@@ -41,8 +41,15 @@ const Footer = () => (
         </Col>
         <Col span={6}>
           <div className="mt--12 mb-10">CONTACT US</div>
-          <FacebookOutlined style={{ marginRight: "20px" }} />
-          <MailOutlined />
+          <FacebookOutlined
+            style={{ marginRight: "20px" }}
+            onClick={() => {
+              window.open("https://www.facebook.com/groups/363505891936830");
+            }}
+          />
+          <a href="mailto: knowx.dtu@gmail.com">
+            <MailOutlined style={{ color: "#fff" }} />
+          </a>
         </Col>
         <Col span={6}> </Col>
       </Row>

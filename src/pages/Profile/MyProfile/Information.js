@@ -8,6 +8,7 @@
 // eslint-disable-next-line import/no-unresolved
 import axios from "axios";
 import { useEffect, useState } from "react";
+import moment from "moment";
 import "./styles.scss";
 import {
   Form,
@@ -20,18 +21,27 @@ import {
   Image,
   Spin,
   message,
+  DatePicker,
+  Typography,
+  Select,
 } from "antd";
 
+import { SettingFilled } from "@ant-design/icons";
+
+const { Title } = Typography;
+const { Option } = Select;
+
 const Information = () => {
+  const [info, setInfo] = useState("");
   const [picture, setPicture] = useState();
   const [editMode, setEditMode] = useState(false);
   const [user, setUser] = useState({});
-  const [changePassword, setChangePassword] = useState({
-    old_password: "",
-    new_password: "",
-    confirm_password: "",
-  });
   const [spin, setSpin] = useState(true);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
 
   useEffect(() => {
     async function getPersonal() {
@@ -62,9 +72,9 @@ const Information = () => {
   function handleChangePassword() {
     const token = sessionStorage.getItem("token");
     const data = new FormData();
-    data.append("old_password", changePassword.old_password);
-    data.append("new_password", changePassword.new_password);
-    data.append("confirm_password", changePassword.confirm_password);
+    data.append("old_password", oldPassword);
+    data.append("new_password", newPassword);
+    data.append("confirm_password", confirmPassword);
     axios
       .post("http://127.0.0.1:8000/api/user/change-password", data, {
         headers: {
@@ -76,8 +86,8 @@ const Information = () => {
         if (response.data.status === "success") {
           onReset();
           message.success(`${response.data.message}`);
-          setVisible(false);
-          setChangePassword(null);
+          setVisible(true);
+          handleCancel();
         }
         if (response.data.status === "failed") {
           message.error("Old password does not matched", 3);
@@ -123,6 +133,7 @@ const Information = () => {
   };
 
   async function handleEdit() {
+    console.log(user);
     setLoading(true);
     setUser(tmpInforData);
     const token = sessionStorage.getItem("token");
@@ -150,11 +161,10 @@ const Information = () => {
           requestOptions
         );
         const responseJSON = await response.json();
-        console.log(responseJSON);
         if (responseJSON.status === "success") {
-          console.log("new data:", responseJSON.data);
           setUser(responseJSON.data);
           setEditMode(false);
+          setInfo("");
           openNotificationWithIcon("success", "Information updated!");
           // window.location.reload(true);
         } else {
@@ -184,6 +194,7 @@ const Information = () => {
   };
 
   const tmpInforData = { ...user };
+
   const editInfo = (
     <div>
       <Form
@@ -209,7 +220,7 @@ const Information = () => {
           >
             <div className="input-group mb-3">
               <input
-                style={{ marginLeft: "91px" }}
+                style={{ marginLeft: "120px" }}
                 type="file"
                 className="form-control"
                 onChange={handleImage}
@@ -225,6 +236,7 @@ const Information = () => {
           >
             <Input
               width="100px"
+              disabled
               onChange={(e) => {
                 tmpInforData.email = e.target.value;
               }}
@@ -261,11 +273,24 @@ const Information = () => {
             name="gender"
             initialValue={tmpInforData.gender}
           >
-            <Input
+            {/* <Input
               onChange={(e) => {
                 tmpInforData.gender = e.target.value;
               }}
-            />
+            /> */}
+            <div style={{ marginLeft: "100px" }}>
+              <Select
+                defaultValue="Male"
+                style={{ width: 300, marginleft: "108px" }}
+                onChange={(value) => {
+                  tmpInforData.gender = value;
+                  console.log(value);
+                }}
+              >
+                <Option value="Male">Male</Option>
+                <Option value="Female">Female</Option>
+              </Select>
+            </div>
           </Form.Item>
           <Form.Item
             label="Phone"
@@ -283,13 +308,23 @@ const Information = () => {
             label="Birthday"
             rules={[{ required: true }]}
             name="birthday"
-            initialValue={tmpInforData.birthday}
           >
-            <Input
+            {/* <Input
               onChange={(e) => {
                 tmpInforData.birthday = e.target.value;
               }}
-            />
+            /> */}
+            <div>
+              <DatePicker
+                size="large"
+                defaultValue={moment(tmpInforData.birthday, dateFormatList[0])}
+                format={dateFormatList}
+                style={{ width: "300px", marginLeft: "92px" }}
+                onChange={(date, dateString) => {
+                  tmpInforData.birthday = dateString;
+                }}
+              />
+            </div>
           </Form.Item>
           <Form.Item
             label="Topic"
@@ -316,7 +351,7 @@ const Information = () => {
             />
           </Form.Item>
           <Form.Item>
-            <div style={{ marginTop: "55px", textAlign: "center" }}>
+            <div style={{ textAlign: "center" }}>
               <Space size={20}>
                 <Button
                   size="medium"
@@ -333,6 +368,7 @@ const Information = () => {
                   style={{ width: "100px" }}
                   onClick={() => {
                     setEditMode(false);
+                    setInfo("");
                   }}
                 >
                   CANCEL
@@ -345,152 +381,186 @@ const Information = () => {
     </div>
   );
 
-  if (spin) {
-    return (
-      <div className="spin">
-        <Spin size="large" />
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div className="personal-profile content">
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: "16px",
-            marginRight: "25px",
-            marginTop: "25px",
-            paddingBottom: "25px",
-          }}
-        >
-          Personal information
-        </span>
-        <Button
-          style={{ marginBottom: "20px" }}
-          type="primary"
-          onClick={() => {
-            setEditMode(true);
-          }}
-        >
-          Edit
-        </Button>
-        {editMode ? editInfo : null}
+    <div className="container">
+      {spin ? (
+        <div className="spin">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div className=" content">
+          <div style={{ height: "100%", overflow: "auto" }}>
+            <div className="personal-profile">
+              {/* <span
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  marginRight: "25px",
+                  marginTop: "25px",
+                  paddingBottom: "25px",
+                }}
+              >
+                Personal information
+              </span> */}
+              <Title level={5} style={{ marginRight: "20px" }}>
+                INFORMATION
+              </Title>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setInfo("none");
+                  setEditMode(true);
+                }}
+                icon={<SettingFilled />}
+              >
+                EDIT
+              </Button>
 
-        <Descriptions bordered column={1}>
-          <Descriptions.Item label="Image">
-            <Image height={150} src={`http://127.0.0.1:8000/${user.image}`} />
-          </Descriptions.Item>
-          <Descriptions.Item label="Name">{user.full_name}</Descriptions.Item>
-          <Descriptions.Item label="Birthday">
-            {user.birthday}
-          </Descriptions.Item>
-          <Descriptions.Item label="Gender">{user.gender}</Descriptions.Item>
-          <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
-          <Descriptions.Item label="Phone">{user.phone}</Descriptions.Item>
-          <Descriptions.Item label="Topic">{user.topic}</Descriptions.Item>
-          <Descriptions.Item label="Description">
-            {user.description}
-          </Descriptions.Item>
-        </Descriptions>
-      </div>
-      <div className="account-info content">
-        <span className="title-account-info">Account information</span>
-        <Form name="basic">
-          <Form.Item style={{ marginBottom: 0 }} name="email" label="Email">
-            <span className="">{user.email}</span>
-          </Form.Item>
-          <Form.Item
-            style={{ marginBottom: 0 }}
-            name="password"
-            label="Password"
-          >
-            <span className="">********</span>
-          </Form.Item>
-        </Form>
-        <Button type="primary" onClick={showModal}>
-          Change Password
-        </Button>
-        <Modal
-          visible={visible}
-          title="Change Password"
-          onOk={handleOk}
-          onCancel={handleCancel}
-          footer={[
-            <Button key="back" onClick={handleCancel}>
-              Return
-            </Button>,
-            <Button
-              key="submit"
-              type="primary"
-              loading={loading}
-              onClick={handleOk}
-            >
-              Change
-            </Button>,
-          ]}
-        >
-          <Form name="changepassword" form={form}>
-            <Form.Item
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your old password!",
-                },
-              ]}
-              name="old-password"
-              label="Old Password"
-            >
-              <Input.Password
-                maxLength={30}
-                placeholder="Old Password"
-                onChange={(e) => {
-                  changePassword.old_password = e.target.value;
-                }}
-                style={{ marginLeft: "26px", width: "337px" }}
-              />
-            </Form.Item>
-            <Form.Item
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your new password!",
-                },
-              ]}
-              name="new-password"
-              label="New Password"
-            >
-              <Input.Password
-                maxLength={30}
-                placeholder="New Password"
-                onChange={(e) => {
-                  changePassword.new_password = e.target.value;
-                }}
-                style={{ marginLeft: "20px", width: "338px" }}
-              />
-            </Form.Item>
-            <Form.Item
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your confirm new password!",
-                },
-              ]}
-              name="confirm-password"
-              label="Confirm Password"
-            >
-              <Input.Password
-                maxLength={30}
-                placeholder="Confirm password"
-                onChange={(e) => {
-                  changePassword.confirm_password = e.target.value;
-                }}
-              />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </div>
+              {editMode ? editInfo : null}
+
+              <Descriptions
+                bordered
+                column={1}
+                style={{ display: `${info}`, marginTop: "20px" }}
+              >
+                <Descriptions.Item label="Image">
+                  <Image
+                    width={200}
+                    src={`http://127.0.0.1:8000/${user.image}`}
+                  />
+                </Descriptions.Item>
+                <Descriptions.Item label="Name">
+                  {user.full_name}
+                </Descriptions.Item>
+                <Descriptions.Item label="Birthday">
+                  {user.birthday}
+                </Descriptions.Item>
+                <Descriptions.Item label="Gender">
+                  {user.gender}
+                </Descriptions.Item>
+                <Descriptions.Item label="Email">
+                  {user.email}
+                </Descriptions.Item>
+                <Descriptions.Item label="Phone">
+                  {user.phone}
+                </Descriptions.Item>
+                <Descriptions.Item label="Topic">
+                  {user.topic}
+                </Descriptions.Item>
+                <Descriptions.Item label="Description">
+                  {user.description}
+                </Descriptions.Item>
+              </Descriptions>
+            </div>
+            <div>
+              <Title
+                className="title-account-info"
+                level={5}
+                style={{ marginTop: "20px" }}
+              >
+                ACCOUNT
+              </Title>
+              <Form name="basic">
+                <Form.Item
+                  style={{ marginBottom: 0 }}
+                  name="email"
+                  label="Email"
+                >
+                  <span className="">{user.email}</span>
+                </Form.Item>
+                <Form.Item
+                  style={{ marginBottom: 0 }}
+                  name="password"
+                  label="Password"
+                >
+                  <span className="">********</span>
+                </Form.Item>
+              </Form>
+              <Button type="primary" onClick={showModal}>
+                Change Password
+              </Button>
+              <Modal
+                visible={visible}
+                title="Change Password"
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                  <Button key="back" onClick={handleCancel}>
+                    Return
+                  </Button>,
+                  <Button
+                    key="submit"
+                    type="primary"
+                    loading={loading}
+                    onClick={handleOk}
+                  >
+                    Change
+                  </Button>,
+                ]}
+              >
+                <Form name="changepassword" form={form}>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your old password!",
+                      },
+                    ]}
+                    name="old-password"
+                    label="Old Password"
+                  >
+                    <Input.Password
+                      maxLength={30}
+                      placeholder="Old Password"
+                      onChange={(e) => {
+                        setOldPassword(e.target.value);
+                      }}
+                      style={{ marginLeft: "26px", width: "337px" }}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your new password!",
+                      },
+                    ]}
+                    name="new-password"
+                    label="New Password"
+                  >
+                    <Input.Password
+                      maxLength={30}
+                      placeholder="New Password"
+                      onChange={(e) => {
+                        setNewPassword(e.target.value);
+                      }}
+                      style={{ marginLeft: "20px", width: "338px" }}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your confirm new password!",
+                      },
+                    ]}
+                    name="confirm-password"
+                    label="Confirm Password"
+                  >
+                    <Input.Password
+                      maxLength={30}
+                      placeholder="Confirm password"
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                      }}
+                    />
+                  </Form.Item>
+                </Form>
+              </Modal>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

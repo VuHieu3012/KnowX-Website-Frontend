@@ -1,15 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable radix */
-/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/button-has-type */
+/* eslint-disable radix */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
 import {
   Layout,
@@ -24,7 +15,13 @@ import {
   Divider,
   Spin,
 } from "antd";
-import { DownOutlined, BookOutlined, LikeOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  LikeFilled,
+  BookFilled,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
@@ -44,7 +41,12 @@ const DetailPost = () => {
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
 
-  const [selectedPost, setSelectedPost] = useState({});
+  const [selectedPost, setSelectedPost] = useState({
+    title: "",
+    hashtag: "",
+    content: "",
+    image: "",
+  });
   const [user, setUser] = useState({});
   const [redirect, setRedirect] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
@@ -185,12 +187,11 @@ const DetailPost = () => {
           requestOptions
         );
         const responseJSON = await response.json();
-        if (responseJSON.status === "success") {
-          setUser(responseJSON.user);
-          setSelectedPost(responseJSON.data);
-          setCountLike(responseJSON.data.like);
-        }
         setSpin(false);
+        setCountLike(responseJSON.data.like);
+        console.log(responseJSON.data.like);
+        setSelectedPost(responseJSON.data);
+        setUser(responseJSON.user);
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
@@ -198,7 +199,7 @@ const DetailPost = () => {
     checkLike();
     checkBookmark();
     getPostData();
-  }, []);
+  }, [selectedId]);
 
   async function handleDelete() {
     // eslint-disable-next-line no-restricted-globals
@@ -242,17 +243,20 @@ const DetailPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-
   const showModal = () => {
     setVisible(true);
   };
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={handleEdit}>
+      <Menu.Item
+        key="1"
+        onClick={handleEdit}
+        icon={<EditOutlined style={{ marginTop: "2px" }} />}
+      >
         Edit
       </Menu.Item>
-      <Menu.Item key="2" onClick={showModal}>
+      <Menu.Item key="2" onClick={showModal} icon={<DeleteOutlined />}>
         Delete
       </Menu.Item>
     </Menu>
@@ -261,7 +265,6 @@ const DetailPost = () => {
   if (redirect) {
     return <Redirect to="/post/myposts" />;
   }
-
   if (isEditMode) {
     return <Redirect to={`/post/edit/${selectedId}`} />;
   }
@@ -284,29 +287,28 @@ const DetailPost = () => {
   const success = () => {
     message.success("Success. Post deleted!", 5);
   };
-
   return (
     <Layout>
       <Header />
       <Layout>
         <SidebarLeft />
-        <Layout>
-          <Content>
-            <Modal
-              title="Confirm"
-              visible={visible}
-              onOk={handleOk}
-              confirmLoading={confirmLoading}
-              onCancel={handleCancel}
-            >
-              <p>{modalText}</p>
-            </Modal>
-            <div className="container">
-              {spin ? (
-                <div className="spin">
-                  <Spin size="large" />
-                </div>
-              ) : (
+        <Content>
+          <Modal
+            title="Confirm"
+            visible={visible}
+            onOk={handleOk}
+            confirmLoading={confirmLoading}
+            onCancel={handleCancel}
+          >
+            <p>{modalText}</p>
+          </Modal>
+          <div className="container">
+            {spin ? (
+              <div className="spin">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div className="content">
                 <div className="postDetail-container">
                   <div className="postDetail-author">
                     <Avatar
@@ -324,7 +326,9 @@ const DetailPost = () => {
                     {formatDate(selectedPost.updated_at)}
                   </div>
                   <div className="postDetail-hastag">
-                    <a href="#">
+                    <a
+                      href={`/search/${selectedPost.hashtag.replace("#", "")}`}
+                    >
                       <span>{selectedPost.hashtag}</span>
                     </a>
                   </div>
@@ -334,7 +338,8 @@ const DetailPost = () => {
                       <div className="postDetail-dropdown">
                         <Dropdown overlay={menu}>
                           <Button>
-                            Option <DownOutlined />
+                            Option
+                            <DownOutlined />
                           </Button>
                         </Dropdown>
                       </div>
@@ -359,15 +364,19 @@ const DetailPost = () => {
                   <Divider />
                   <div className="postDetail-icons">
                     <Space direction="vertical" style={{ lineHeight: "3px" }}>
-                      <LikeOutlined
+                      <LikeFilled
                         style={{ fontSize: "30px", color: colorLike }}
                         onClick={handleLike}
                       />
+                      {/* <HeartOutlined
+                      style={{ fontSize: "30px", color: colorLike }}
+                      onClick={handleLike}
+                    /> */}
                       <p style={{ display: "flex", justifyContent: "center" }}>
                         {countLike}
                       </p>
                     </Space>
-                    <BookOutlined
+                    <BookFilled
                       style={{
                         fontSize: "30px",
                         color: colorBookmark,
@@ -375,17 +384,23 @@ const DetailPost = () => {
                       }}
                       onClick={createBookmark}
                     />
+                    {/* <StarOutlined
+                    style={{
+                      fontSize: "30px",
+                      color: colorBookmark,
+                      marginLeft: "20px",
+                    }}
+                    onClick={createBookmark}
+                  /> */}
                   </div>
+                  {/* <VerticalAlignTopOutlined />
+                </BackTop> */}
+                  <ListComment />
                 </div>
-              )}
-            </div>
-          </Content>
-          {spin ? null : (
-            <Layout style={{ backgroundColor: "#fff", padding: "0 10px" }}>
-              <ListComment />
-            </Layout>
-          )}
-        </Layout>
+              </div>
+            )}
+          </div>
+        </Content>
         <SidebarRight />
       </Layout>
       <Footer />

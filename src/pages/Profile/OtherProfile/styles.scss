@@ -2,6 +2,10 @@
 //   background-image: url(./banner_profile.png);
 // }
 .container {
+  .list:hover{
+    background-color: rgb(221, 221, 221);
+    border-radius: 2px;
+  }
   .navigation-profile {
   }
   .personal-profile {

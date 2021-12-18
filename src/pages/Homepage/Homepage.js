@@ -8,7 +8,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, List, Avatar, Space, Spin, Divider } from "antd";
+import { Layout, List, Avatar, Space, Spin, Divider, Image, Typography } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -63,7 +63,6 @@ const Homepage = () => {
   // convert timestams to date
   const formatDate = (timestams) => {
     const options = {
-      year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
@@ -78,7 +77,9 @@ const Homepage = () => {
         <SidebarLeft />
         <Content>
           <div className="container">
-            <Divider orientation="left">RECOMMENT FOR YOU</Divider>
+            <Divider orientation="left">
+              <h5 style={{ color: "#00358E" }}>RECOMMENT FOR YOU</h5>
+            </Divider>
             {spin ? (
               <div className="spin">
                 <Spin size="large" />
@@ -97,6 +98,7 @@ const Homepage = () => {
                   dataSource={listPost}
                   renderItem={(item) => (
                     <List.Item
+                      className="list"
                       actions={[
                         <IconText
                           icon={LikeOutlined}
@@ -110,8 +112,10 @@ const Homepage = () => {
                         />,
                       ]}
                       extra={
-                        <img
+                        <Image
                           height={168}
+                          width={300}
+                          style={{ objectFit: "contain" }}
                           alt="logo"
                           src={`http://127.0.0.1:8000/${item.image}`}
                         />
@@ -144,16 +148,16 @@ const Homepage = () => {
                         }
                         description={
                           <a href={`/post/detail/${item.id}`}>
-                            <h6>{item.title}</h6>
+                            <Typography.Title level={4}>{item.title}</Typography.Title>
                           </a>
                         }
                       />
 
                       {`${formatDate(item.updated_at)}  |  `}
                       {
-                        <a href="#">
+                        <Link to={`/search/${item.hashtag}`}>
                           <span>{item.hashtag}</span>
-                        </a>
+                        </Link>
                       }
                     </List.Item>
                   )}

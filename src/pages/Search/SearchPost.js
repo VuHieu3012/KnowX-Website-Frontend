@@ -40,7 +40,7 @@ const SearchPost = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-
+      console.log(data);
       try {
         const response = await fetch(
           "http://127.0.0.1:8000/api/user/posts/search",
@@ -71,9 +71,6 @@ const SearchPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
-
-  console.log(listPost);
-  let posts;
 
   // eslint-disable-next-line prefer-const
 
@@ -135,14 +132,13 @@ const SearchPost = () => {
 
             {`${formatDate(item.updated_at)}  |  `}
             {
-              <a href="#">
+              <a href={`/search/${item.hashtag.replace("#", "")}`}>
                 <span>{item.hashtag}</span>
               </a>
             }
           </List.Item>
         )}
       />
-      ,
     </div>
   );
 };

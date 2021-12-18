@@ -6,8 +6,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/react-in-jsx-scope */
-import "./styles.scss";
-import { Layout, List, Avatar, Space, Spin } from "antd";
+import { Layout, List, Avatar, Space, Spin, Typography, Divider } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -88,72 +87,66 @@ const MyPosts = () => {
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
 
-  let data;
-
-  if (listPost.length === 0) {
-    data = <p>Create post now!</p>;
-  } else {
-    data = (
-      <div>
-        <List
-          itemLayout="vertical"
-          size="large"
-          pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
-            pageSize: 3,
-          }}
-          dataSource={listPost}
-          renderItem={(item) => (
-            <List.Item
-              actions={[
-                <IconText
-                  icon={LikeOutlined}
-                  text={item.like}
-                  key="list-vertical-like-o"
-                />,
-                <IconText
-                  icon={MessageOutlined}
-                  text={item.comment}
-                  key="list-vertical-message"
-                />,
-              ]}
-              extra={
-                <img
-                  height={168}
-                  alt="logo"
-                  src={`http://127.0.0.1:8000/${item.image}`}
-                />
-              }
-            >
-              <List.Item.Meta
-                avatar={
-                  <Link to="/profile">
-                    <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
-                  </Link>
-                }
-                title={<Link to="/profile">{user.full_name}</Link>}
-                description={
-                  <a href={`/post/detail/${item.id}`}>
-                    <h6>{item.title}</h6>
-                  </a>
-                }
+  const data = (
+    <div>
+      <List
+        itemLayout="vertical"
+        size="large"
+        pagination={{
+          pageSize: 4,
+        }}
+        dataSource={listPost}
+        renderItem={(item) => (
+          <List.Item
+            className="list"
+            actions={[
+              <IconText
+                icon={LikeOutlined}
+                text={item.like}
+                key="list-vertical-like-o"
+              />,
+              <IconText
+                icon={MessageOutlined}
+                text={item.comment}
+                key="list-vertical-message"
+              />,
+            ]}
+            extra={
+              <img
+                height={168}
+                width={300}
+                style={{ objectFit: "contain" }}
+                alt="logo"
+                src={`http://127.0.0.1:8000/${item.image}`}
               />
-
-              {`${formatDate(item.updated_at)}  |  `}
-              {
-                <a href="#">
-                  <span>{item.hashtag}</span>
+            }
+          >
+            <List.Item.Meta
+              avatar={
+                <Link to="/profile">
+                  <Avatar src={`http://127.0.0.1:8000/${user.image}`} />
+                </Link>
+              }
+              title={<Link to="/profile">{user.full_name}</Link>}
+              description={
+                <a href={`/post/detail/${item.id}`}>
+                  <Typography.Title level={4}>{item.title}</Typography.Title>
                 </a>
               }
-            </List.Item>
-          )}
-        />
-        ,
-      </div>
-    );
-  }
+            />
+
+            {`${formatDate(item.updated_at)}  |  `}
+            {
+              <a href={`/search/${item.hashtag.replace("#", "")}`}>
+                <span>{item.hashtag}</span>
+              </a>
+            }
+          </List.Item>
+        )}
+      />
+      ,
+    </div>
+  );
   return (
     <Layout>
       <Header />
@@ -161,26 +154,19 @@ const MyPosts = () => {
         <SidebarLeft />
         <Content>
           <div className="container">
-            <div>
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  marginRight: "25px",
-                }}
-              >
-                MY POSTS
-              </span>
-            </div>
             {spin ? (
-              <div
-                className="spin"
-                style={{ textAlign: "center", marginTop: "50px" }}
-              >
+              <div className="spin">
                 <Spin size="large" />
               </div>
             ) : (
-              data
+              <div className="content">
+                <div>
+                  <Divider orientation="left">
+                    <h5 style={{ color: "#00358E" }}>MY POSTS</h5>
+                  </Divider>
+                </div>
+                {data}
+              </div>
             )}
           </div>
         </Content>

@@ -8,7 +8,7 @@ import { Layout, Input, Button, Space, Form, message } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useEffect, useState, React } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useLocation, useHistory } from "react-router-dom";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import SidebarLeft from "../../../components/SidebarLeft/SidebarLeft";
@@ -21,12 +21,13 @@ const EditPost = () => {
   const selectedId = arr[arr.length - 1];
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [picture, setPicture] = useState("");
   const [postData, setPostData] = useState({
     title: "",
     hashtag: "",
     content: "",
   });
+
+  const history = useHistory();
 
   useEffect(() => {
     async function getPostData() {
@@ -52,46 +53,59 @@ const EditPost = () => {
     getPostData();
   }, [selectedId]);
 
+  const tmpPostData = { ...postData };
   async function handleEdit() {
-    setLoading(true);
-    setPostData(tmpPostData);
-    const token = sessionStorage.getItem("token");
-    const urlencode = new URLSearchParams();
-    urlencode.append("title", tmpPostData.title);
-    urlencode.append("hashtag", tmpPostData.hashtag);
-    urlencode.append("content", tmpPostData.content);
-    urlencode.append("image", picture);
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    const requestOptions = {
-      method: "PUT",
-      body: urlencode,
-      headers: myHeaders,
-    };
-    setTimeout(async () => {
+    if (tmpPostData.title === "") {
+      error("The title field is required!");
+    }
+    if (tmpPostData.hashtag === "") {
+      error("The hashtag field is required!");
+    }
+    if (tmpPostData.content === "") {
+      error("The content field is required!");
+    }
+    if (
+      tmpPostData.title !== ""
+      && tmpPostData.hashtag !== ""
+      && tmpPostData.content !== ""
+    ) {
+      setLoading(true);
+      const token = sessionStorage.getItem("token");
+      const urlencode = new URLSearchParams();
+      urlencode.append("title", tmpPostData.title);
+      urlencode.append("hashtag", tmpPostData.hashtag);
+      urlencode.append("content", tmpPostData.content);
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+      const requestOptions = {
+        method: "PUT",
+        body: urlencode,
+        headers: myHeaders,
+      };
+
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/posts/${selectedId}`,
           requestOptions
         );
         const responseJSON = await response.json();
+        console.log(responseJSON);
         if (responseJSON.status === "success") {
           setRedirect(true);
           success();
         }
-        if (responseJSON.status === "error") {
-          setLoading(false);
-          error();
-        }
+        // if (responseJSON.status === "error") {
+
+        // }
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         console.log("Failed edit post", error.message);
       }
-    }, 2000);
+    }
   }
 
-  const tmpPostData = { ...postData };
   if (redirect) {
     return <Redirect to={`/post/detail/${selectedId}`} />;
   }
@@ -100,12 +114,8 @@ const EditPost = () => {
     message.success("Success. Post Updated!", 5);
   };
 
-  const error = () => {
-    message.error("Error. Post update failed!", 5);
-  };
-
-  const handleImage = (e) => {
-    setPicture(e.target.files[0]);
+  const error = (msg) => {
+    message.error(msg, 5);
   };
 
   return (
@@ -120,8 +130,9 @@ const EditPost = () => {
                 <Form
                   name="basic"
                   initialValue={{
-                    title: tmpPostData.title,
-                    hashtag: tmpPostData.hashtag,
+                    title: postData.title,
+                    hashtag: postData.hashtag,
+                    content: postData.content,
                   }}
                 >
                   <Form.Item>
@@ -137,32 +148,14 @@ const EditPost = () => {
                       EDIT POST
                     </span>
                   </Form.Item>
-                  <Form.Item name="image">
-                    <div className="input-group mb-3">
-                      <label className="input-group-text">Upload Image</label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={handleImage}
-                      />
-                    </div>
-                  </Form.Item>
-                  <Form.Item
-                    rules={[{ required: true }]}
-                    name="title"
-                    initialValue={tmpPostData.title}
-                  >
+                  <Form.Item name="title" initialValue={postData.title}>
                     <Input
                       onChange={(e) => {
                         tmpPostData.title = e.target.value;
                       }}
                     />
                   </Form.Item>
-                  <Form.Item
-                    rules={[{ required: true }]}
-                    name="hashtag"
-                    initialValue={tmpPostData.hashtag}
-                  >
+                  <Form.Item name="hashtag" initialValue={postData.hashtag}>
                     <Input
                       onChange={(e) => {
                         tmpPostData.hashtag = e.target.value;
@@ -173,7 +166,7 @@ const EditPost = () => {
                     <CKEditor
                       name="content"
                       editor={ClassicEditor}
-                      data={tmpPostData.content}
+                      data={postData.content}
                       onChange={(event, editor) => {
                         const data = editor.getData();
                         tmpPostData.content = data;
@@ -197,6 +190,9 @@ const EditPost = () => {
                           size="large"
                           type="primary"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            history.goBack();
+                          }}
                         >
                           CANCEL
                         </Button>
