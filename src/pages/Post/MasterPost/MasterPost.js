@@ -1,11 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable radix */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { Layout, List, Avatar, Space, Spin, Typography, Divider } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -107,7 +100,7 @@ const MasterPost = () => {
                             key="list-vertical-message"
                           />,
                         ]}
-                        extra={(
+                        extra={
                           <img
                             height={168}
                             width={300}
@@ -115,10 +108,10 @@ const MasterPost = () => {
                             alt="logo"
                             src={`http://127.0.0.1:8000/${item.image}`}
                           />
-                        )}
+                        }
                       >
                         <List.Item.Meta
-                          avatar={(
+                          avatar={
                             <Link
                               to={
                                 item.user_id === parseInt(userId)
@@ -130,8 +123,8 @@ const MasterPost = () => {
                                 src={`http://127.0.0.1:8000/${item.user_image}`}
                               />
                             </Link>
-                          )}
-                          title={(
+                          }
+                          title={
                             <Link
                               to={
                                 item.user_id === parseInt(userId)
@@ -141,12 +134,14 @@ const MasterPost = () => {
                             >
                               {item.full_name}
                             </Link>
-                          )}
-                          description={(
+                          }
+                          description={
                             <a href={`/post/detail/${item.id}`}>
-                              <Typography.Title level={4}>{item.title}</Typography.Title>
+                              <Typography.Title level={4}>
+                                {item.title}
+                              </Typography.Title>
                             </a>
-                          )}
+                          }
                         />
 
                         {`${formatDate(item.updated_at)}  |  `}

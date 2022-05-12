@@ -1,9 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable comma-dangle */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import "antd/dist/antd.css";
 import "./styles.scss";
 import React, { useState, useEffect } from "react";
@@ -22,19 +16,23 @@ import {
   ReadFilled,
   BellFilled,
   MessageFilled,
-  GoldFilled,
+  FileFilled
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 const { Title } = Typography;
 
 const SidebarLeft = () => {
   const [user, setUser] = useState({});
   const [numberMessages, setNumberMessages] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisibleClass, setIsModalVisibleClass] = useState(false);
   const [messageData, setMessageData] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [className, setClassName] = useState("");
+
+  const history = useHistory();
 
   function isValidHttpUrl(string) {
     let url;
@@ -54,6 +52,14 @@ const SidebarLeft = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const showModalClass = () => {
+    setIsModalVisibleClass(true);
+  };
+
+  const handleCancelClass = () => {
+    setIsModalVisibleClass(false);
   };
 
   const modal = (
@@ -149,6 +155,7 @@ const SidebarLeft = () => {
     }
     getUnseenMessages();
     getPersonal();
+    getListClass();
   }, []);
 
   const logout = () => {
@@ -173,9 +180,72 @@ const SidebarLeft = () => {
       .catch((error) => console.log("error", error));
   };
 
+  const getListClass = async () => {
+    const token = sessionStorage.getItem("token");
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/user/class/getclass",
+        requestOptions
+      );
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+      setClasses(responseJSON.data);
+    } catch (error) {
+      console.log("Faild fetch messages : ", error.message);
+    }
+  };
+
+  const formatDate = (timestams) => {
+    const options = {
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return new Date(timestams).toLocaleDateString(undefined, options);
+  };
+
+  const modalClass = (
+    <Modal
+      title="My class"
+      visible={isModalVisibleClass}
+      onCancel={handleCancelClass}
+      footer={null}
+    >
+      <List
+        itemLayout="horizontal"
+        dataSource={classes}
+        renderItem={(item) => (
+          <List.Item>
+            <List.Item.Meta
+              title={<a href={`/class/${item.id}`}>{item.name}</a>}
+              description={`Created at ${formatDate(item.created_at)}`}
+            />
+            <Button
+              type="primary"
+              // onClick={() => {
+              //   history.push(`/class/${item.id}`);
+              // }}
+            >
+              <a href={`/class/${item.id}`}>Join</a>
+            </Button>
+          </List.Item>
+        )}
+      />
+    </Modal>
+  );
+
   return (
     <div className="layout-sidebar-left">
       {modal}
+      {modalClass}
       <Sider width={200} className="site-layout-background">
         <div className="sidebar-profile">
           <div className="sidebar-profile-img">
@@ -190,22 +260,20 @@ const SidebarLeft = () => {
           </div>
         </div>
         <Menu mode="inline" style={{ height: "100%", borderRight: 0 }}>
-          <SubMenu
-            key="class"
-            icon={<ReadFilled className="fontSize-24" />}
-            title={<Typography style={{ fontWeight: "600" }}>CLASS</Typography>}
-          >
-            <Menu.Item key="1">
-              <Typography style={{ fontWeight: "600" }}>
-                Create Class
-              </Typography>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Typography style={{ fontWeight: "600" }}>Join Class</Typography>
-            </Menu.Item>
-          </SubMenu>
-          <Menu.Item key="3" icon={<GoldFilled className="fontSize-24" />}>
-            <Typography style={{ fontWeight: "600" }}>CERTIFICATES</Typography>
+          <Menu.Item key="2" icon={<ReadFilled className="fontSize-24" />}>
+            <Typography style={{ fontWeight: "600" }} onClick={showModalClass}>
+              MY CLASS
+            </Typography>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<FileFilled className="fontSize-24" />}>
+            <Typography
+              style={{ fontWeight: "600" }}
+              onClick={() => {
+                history.push("/reference");
+              }}
+            >
+              REFERENCE
+            </Typography>
           </Menu.Item>
           <Menu.Item key="4" icon={<MessageFilled className="fontSize-24" />}>
             {numberMessages === 0 ? (

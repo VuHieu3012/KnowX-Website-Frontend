@@ -1,5 +1,4 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { useState, useEffect } from "react";
 import "./styles.scss";
 import { Layout, Menu } from "antd";
@@ -127,27 +126,19 @@ const Search = () => {
                 selectedKeys={key}
               >
                 <Menu.Item key="post">
-                  POSTS
-                  {' '}
-                  (
+                  POSTS (
                   {countPosts}
                   )
                 </Menu.Item>
                 <Menu.Item key="question">
-                  QUESTIONS
-                  {' '}
-                  (
+                  QUESTIONS (
                   {countQuestions}
                   )
-
                 </Menu.Item>
                 <Menu.Item key="user">
-                  USERS
-                  {' '}
-                  (
+                  USERS (
                   {countUsers}
                   )
-
                 </Menu.Item>
               </Menu>
             </div>

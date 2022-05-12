@@ -1,6 +1,3 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable radix */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import "./styles.scss";
 import {
   Layout,
@@ -14,6 +11,7 @@ import {
   Space,
   Divider,
   Spin,
+  Tooltip,
 } from "antd";
 import {
   DownOutlined,
@@ -41,17 +39,12 @@ const DetailPost = () => {
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
 
-  const [selectedPost, setSelectedPost] = useState({
-    title: "",
-    hashtag: "",
-    content: "",
-    image: "",
-  });
+  const [selectedPost, setSelectedPost] = useState({});
   const [user, setUser] = useState({});
   const [redirect, setRedirect] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
-  const [colorBookmark, setColorBookmark] = useState("");
-  const [colorLike, setColorLike] = useState("");
+  const [colorBookmark, setColorBookmark] = useState("#c7dfe2");
+  const [colorLike, setColorLike] = useState("#c7dfe2");
   const [countLike, setCountLike] = useState(0);
   const [spin, setSpin] = useState(true);
 
@@ -137,7 +130,7 @@ const DetailPost = () => {
         if (responseJSON.result === true) {
           setColorBookmark("#08c");
         } else {
-          setColorBookmark("black");
+          setColorBookmark("#c7dfe2");
         }
       } catch (error) {
         console.log("Failed fetch bookmark", error.message);
@@ -165,14 +158,14 @@ const DetailPost = () => {
         if (responseJSON.result === true) {
           setColorLike("#08c");
         } else {
-          setColorLike("black");
+          setColorLike("#c7dfe2");
         }
       } catch (error) {
         console.log("Failed fetch check like", error.message);
       }
     }
 
-    async function getPostData() {
+    const getPostData = async () => {
       const token = sessionStorage.getItem("token");
       const requestOptions = {
         method: "GET",
@@ -195,14 +188,14 @@ const DetailPost = () => {
       } catch (error) {
         console.log("Failed fetch list Posts", error.message);
       }
-    }
+    };
+
     checkLike();
     checkBookmark();
     getPostData();
   }, [selectedId]);
 
   async function handleDelete() {
-    // eslint-disable-next-line no-restricted-globals
     const token = sessionStorage.getItem("token");
     const requestOptions = {
       method: "DELETE",
@@ -243,6 +236,7 @@ const DetailPost = () => {
     };
     return new Date(timestams).toLocaleDateString(undefined, options);
   };
+
   const showModal = () => {
     setVisible(true);
   };
@@ -252,11 +246,16 @@ const DetailPost = () => {
       <Menu.Item
         key="1"
         onClick={handleEdit}
-        icon={<EditOutlined style={{ marginTop: "2px" }} />}
+        icon={<EditOutlined style={{ marginTop: "6px" }} />}
       >
         Edit
       </Menu.Item>
-      <Menu.Item key="2" onClick={showModal} icon={<DeleteOutlined />}>
+      <Menu.Item
+        key="2"
+        style={{ color: "red" }}
+        onClick={showModal}
+        icon={<DeleteOutlined style={{ marginTop: "6px" }} />}
+      >
         Delete
       </Menu.Item>
     </Menu>
@@ -326,11 +325,7 @@ const DetailPost = () => {
                     {formatDate(selectedPost.updated_at)}
                   </div>
                   <div className="postDetail-hastag">
-                    <a
-                      href={`/search/${selectedPost.hashtag.replace("#", "")}`}
-                    >
-                      <span>{selectedPost.hashtag}</span>
-                    </a>
+                    <span>{selectedPost.hashtag}</span>
                   </div>
                   <div className="postDetail-title">
                     <h5>{selectedPost.title}</h5>
@@ -364,37 +359,27 @@ const DetailPost = () => {
                   <Divider />
                   <div className="postDetail-icons">
                     <Space direction="vertical" style={{ lineHeight: "3px" }}>
-                      <LikeFilled
-                        style={{ fontSize: "30px", color: colorLike }}
-                        onClick={handleLike}
-                      />
-                      {/* <HeartOutlined
-                      style={{ fontSize: "30px", color: colorLike }}
-                      onClick={handleLike}
-                    /> */}
+                      <Tooltip title="Like">
+                        <LikeFilled
+                          style={{ fontSize: "30px", color: colorLike }}
+                          onClick={handleLike}
+                        />
+                      </Tooltip>
                       <p style={{ display: "flex", justifyContent: "center" }}>
                         {countLike}
                       </p>
                     </Space>
-                    <BookFilled
-                      style={{
-                        fontSize: "30px",
-                        color: colorBookmark,
-                        marginLeft: "20px",
-                      }}
-                      onClick={createBookmark}
-                    />
-                    {/* <StarOutlined
-                    style={{
-                      fontSize: "30px",
-                      color: colorBookmark,
-                      marginLeft: "20px",
-                    }}
-                    onClick={createBookmark}
-                  /> */}
+                    <Tooltip title="Add to Bookmark">
+                      <BookFilled
+                        style={{
+                          fontSize: "30px",
+                          color: colorBookmark,
+                          marginLeft: "20px",
+                        }}
+                        onClick={createBookmark}
+                      />
+                    </Tooltip>
                   </div>
-                  {/* <VerticalAlignTopOutlined />
-                </BackTop> */}
                   <ListComment />
                 </div>
               </div>

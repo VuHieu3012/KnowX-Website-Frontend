@@ -1,7 +1,4 @@
-/* eslint-disable import/order */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable object-curly-newline */
+
 import images from "../../assets/images";
 import "./styles.scss";
 import { Layout, Row, Col } from "antd";

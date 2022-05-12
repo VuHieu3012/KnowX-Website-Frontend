@@ -1,11 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
+
 import "./styles.scss";
 import { List, Avatar, Space, Spin, Skeleton } from "antd";
 import { useLocation } from "react-router-dom";
@@ -81,9 +74,7 @@ const SearchQuestion = () => {
         dataSource={listUser}
         renderItem={(item) => (
           <List.Item
-            actions={[
-              <a href={`/otherprofile/${item.id}`}>See Detail</a>,
-            ]}
+            actions={[<a href={`/otherprofile/${item.id}`}>See Detail</a>]}
           >
             <Skeleton avatar title={false} loading={item.loading} active>
               <List.Item.Meta

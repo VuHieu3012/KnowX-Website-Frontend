@@ -14,7 +14,7 @@ const Mentor = () => {
       };
       const response = await fetch(
         "http://127.0.0.1:8000/api/user/mentor/mymentor",
-        requestOptions,
+        requestOptions
       );
       const responseJSON = await response.json();
       setSubjectMentor(responseJSON.data);
@@ -32,9 +32,7 @@ const Mentor = () => {
           itemLayout="horizontal"
           dataSource={subjectMentor}
           renderItem={(item) => (
-            <List.Item
-              className="list"
-            >
+            <List.Item className="list">
               <List.Item.Meta
                 title={<a href="https://ant.design">{item.subject_name}</a>}
                 description={item.description}

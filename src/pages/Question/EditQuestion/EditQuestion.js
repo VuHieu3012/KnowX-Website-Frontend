@@ -1,7 +1,4 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable object-curly-newline */
+
 import { Layout, Input, Button, Space, Form, message } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -61,9 +58,9 @@ const EditQuestion = () => {
       error("The content field is required!");
     }
     if (
-      tmpQuestionData.title !== ""
-      && tmpQuestionData.hashtag !== ""
-      && tmpQuestionData.content !== ""
+      tmpQuestionData.title !== "" &&
+      tmpQuestionData.hashtag !== "" &&
+      tmpQuestionData.content !== ""
     ) {
       setLoading(true);
       setQuestionData(tmpQuestionData);

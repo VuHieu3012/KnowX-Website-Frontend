@@ -1,7 +1,4 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable camelcase */
-/* eslint-disable no-shadow */
-/* eslint-disable react/react-in-jsx-scope */
+
 import "./styles.scss";
 import {
   Layout,
@@ -31,9 +28,7 @@ const MeetingOption = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [followingUsers, setFollowingUsers] = useState([]);
-  const [rec_id, setRec_id] = useState("");
-  const [mes, setMes] = useState("");
-  const [isInvited, setIsInvited] = useState(false);
+  let listInvited = [];
 
   const showModal = () => {
     if (room === "") {
@@ -45,7 +40,6 @@ const MeetingOption = () => {
 
   const handleOk = () => {
     setIsModalVisible(false);
-    setRec_id(followingUsers[0].id);
   };
 
   const handleCancel = () => {
@@ -57,13 +51,14 @@ const MeetingOption = () => {
     setMeeting(true);
   };
 
-  const sendLink = async () => {
+  const sendLink = async (id, msg) => {
+    console.log(followingUsers);
     const token = sessionStorage.getItem("token");
     const fm = new FormData();
-    fm.append("receiver_id", rec_id);
-    fm.append("message", mes);
+    fm.append("receiver_id", id);
+    fm.append("message", msg);
     const requestOptions = {
-      method: "POST", // goi api co dieu kien gui di
+      method: "POST",
       body: fm,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -72,13 +67,12 @@ const MeetingOption = () => {
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/user/sendlink`,
-        requestOptions,
+        requestOptions
       );
       const responseJSON = await response.json();
       if (responseJSON.status === "success") {
-        setIsInvited(true);
+        message.success("Sent link!", 1.5);
       }
-      console.log(responseJSON);
     } catch (error) {
       console.log("Failed fetch send link", error.message);
     }
@@ -90,11 +84,11 @@ const MeetingOption = () => {
       visible={isModalVisible}
       onOk={handleOk}
       onCancel={handleCancel}
-      footer={(
-        <Button type="primary" onClick={handleStart}>
+      footer={
+        <Button type="primary" onClick={handleStart} shape="round">
           Start Meeting
         </Button>
-      )}
+      }
     >
       {" "}
       <List
@@ -108,26 +102,22 @@ const MeetingOption = () => {
               description={item.is_online === 1 ? "online" : "offline"}
             />
             <Button
-              onClick={() => {
-                setRec_id(item.id);
-                setMes(`https://meet.jit.si/${room}`);
-                sendLink();
+              onClick={async () => {
+                await sendLink(item.id, `https://meet.jit.si/${room}`);
                 followingUsers.forEach((el) => {
                   if (el.id === item.id) {
-                    Object.assign(el, { isInvite: true });
+                    el.isInvited = true;
+                    listInvited.push({ ...el });
                   }
                 });
               }}
-              disabled={followingUsers.find((el) => el.id === item.id).isInvite}
-              type={
-                followingUsers.find((el) => el.id === item.id).isInvite
-                  ? "default"
-                  : "primary"
+              type="primary"
+              ghost
+              disabled={
+                followingUsers.find((el) => el.id === item.id).isInvited
               }
             >
-              {followingUsers.find((el) => el.id === item.id).isInvite
-                ? "Invited"
-                : "Invite"}
+              Invite
             </Button>
           </List.Item>
         )}
@@ -148,7 +138,7 @@ const MeetingOption = () => {
       try {
         const response = await fetch(
           "http://127.0.0.1:8000/api/user",
-          requestOptions,
+          requestOptions
         );
         const responseJSON = await response.json();
         setUser(responseJSON.data);
@@ -169,11 +159,16 @@ const MeetingOption = () => {
       try {
         const response = await fetch(
           "http://127.0.0.1:8000/api/user/following",
-          requestOptions,
+          requestOptions
         );
         const responseJSON = await response.json();
         if (responseJSON.status === "success") {
-          setFollowingUsers(responseJSON.data);
+          setFollowingUsers(
+            responseJSON.data.map((el) => ({
+              ...el,
+              isInvited: false,
+            }))
+          );
         }
       } catch (error) {
         console.log("Faild fetch list following users ", error.message);
@@ -191,56 +186,62 @@ const MeetingOption = () => {
 
   return (
     <div>
-      {meeting ? (
-        <Meeting room={room} imageUrl={imageUrl} userName={user.full_name} />
-      ) : (
+      <Layout>
+        <Header />
         <Layout>
-          <Header />
-          <Layout>
-            <SidebarLeft />
-            <Content>
-              <div className="container">
-                {modal}
-                <Divider
-                  orientation="left"
-                  style={{ fontSize: "18px", color: "#3F51B5" }}
-                >
-                  KNOWX MEETING
-                </Divider>
-                <Space
-                  size="large"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "100px",
-                  }}
-                >
-                  <Input
-                    placeholder="Enter name of meeting..."
-                    size="large"
-                    onChange={onChangehandler}
-                  />
-                  <Button
-                    type="primary"
-                    size="large"
-                    onClick={showModal}
-                    icon={(
-                      <VideoCameraAddOutlined
-                        className="video-camera"
-                        style={{ fontSize: "20px", marginBottom: "5px" }}
-                      />
-                    )}
+          <SidebarLeft />
+          <Content>
+            <div className="container">
+              {meeting ? (
+                <Meeting
+                  room={room}
+                  imageUrl={imageUrl}
+                  userName={user.full_name}
+                />
+              ) : (
+                <div>
+                  {modal}
+                  <Divider
+                    orientation="left"
+                    style={{ fontSize: "18px", color: "#3F51B5" }}
                   >
-                    NEW MEETING
-                  </Button>
-                </Space>
-              </div>
-            </Content>
-            <SidebarRight />
-          </Layout>
-          <Footer />
+                    KNOWX MEETING
+                  </Divider>
+                  <Space
+                    size="large"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "100px",
+                    }}
+                  >
+                    <Input
+                      placeholder="Enter name of meeting..."
+                      size="large"
+                      onChange={onChangehandler}
+                    />
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={showModal}
+                      icon={
+                        <VideoCameraAddOutlined
+                          className="video-camera"
+                          style={{ fontSize: "20px", marginBottom: "5px" }}
+                        />
+                      }
+                    >
+                      NEW MEETING
+                    </Button>
+                  </Space>
+                </div>
+              )}
+            </div>
+          </Content>
+          <SidebarRight />
         </Layout>
-      )}
+        <Footer />
+      </Layout>
     </div>
   );
 };

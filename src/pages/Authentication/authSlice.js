@@ -1,6 +1,4 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-empty-pattern */
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({

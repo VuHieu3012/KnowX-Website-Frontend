@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -49,11 +49,7 @@ const Meeting = (props) => {
     }
   }, []);
 
-  return (
-    <>
-      <div id="jitsi-iframe" />
-    </>
-  );
+  return <div id="jitsi-iframe" />;
 };
 
 export default Meeting;

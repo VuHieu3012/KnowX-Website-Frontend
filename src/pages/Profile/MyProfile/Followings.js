@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable comma-dangle */
-/* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect } from "react";
 import { List, Avatar, Button, Spin } from "antd";
 import { Link } from "react-router-dom";
@@ -55,9 +52,7 @@ const Followings = () => {
         dataSource={listFollowing}
         renderItem={(item) => (
           <div>
-            <List.Item
-              className="list"
-            >
+            <List.Item className="list">
               <List.Item.Meta
                 avatar={<Avatar src={`http://127.0.0.1:8000/${item.image}`} />}
                 title={

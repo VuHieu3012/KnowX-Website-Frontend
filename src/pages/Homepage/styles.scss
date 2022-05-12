@@ -11,7 +11,6 @@
   }
   
   .content {
-    height: 100%;
     margin-top: 23px;
     border: 1px solid #f1f1f1;
     box-shadow: 0px 2px 2px #efefef;
@@ -19,6 +18,7 @@
     padding: 21px;
     font-style: normal;
     font-family: Segoe UI;
+    height: 100%;
 
     .user-profile {
       .avatar {

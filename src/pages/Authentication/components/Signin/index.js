@@ -1,7 +1,4 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-shadow */
+
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Form, Input, Button, Checkbox, Divider } from "antd";
@@ -44,6 +41,8 @@ const Signin = () => {
           sessionStorage.setItem("token", result.token);
           sessionStorage.setItem("userName", loginData.email);
           sessionStorage.setItem("user_id", result.user_id);
+          sessionStorage.setItem("role", result.role);
+          sessionStorage.setItem("avatar", result.avatar);
           sessionStorage.setItem("isLoggedIn", true);
           setLoading(false);
         }
@@ -57,9 +56,9 @@ const Signin = () => {
           setErrMsgPassword(result.validation_errors.password[0]);
           setErrMsgEmail(result.validation_errors.email[0]);
         }
-        if (result.error === false) {
-          setRedirect(true);
-        }
+        // if (result.error === false) {
+        //   setRedirect(true);
+        // }
       })
       .catch((error) => {
         console.log("Error", error);
@@ -68,11 +67,14 @@ const Signin = () => {
 
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
 
-  if (redirect) {
-    return <Redirect to="/homepage" />;
+  // if (redirect) {
+  //   return <Redirect to="/homepage" />;
+  // }
+  if (isLoggedIn && sessionStorage.getItem("role") === "admin") {
+    return <Redirect to="/admin" />;
   }
 
-  if (isLoggedIn) {
+  if (isLoggedIn && sessionStorage.getItem("role") === "student") {
     return <Redirect to="/homepage" />;
   }
 

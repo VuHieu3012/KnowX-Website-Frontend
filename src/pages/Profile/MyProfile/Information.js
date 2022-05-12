@@ -1,11 +1,3 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable comma-dangle */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/react-in-jsx-scope */
-// eslint-disable-next-line import/no-unresolved
 import axios from "axios";
 import { useEffect, useState } from "react";
 import moment from "moment";
@@ -25,7 +17,6 @@ import {
   Typography,
   Select,
 } from "antd";
-
 import { SettingFilled } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -220,7 +211,7 @@ const Information = () => {
           >
             <div className="input-group mb-3">
               <input
-                style={{ marginLeft: "120px" }}
+                style={{ marginLeft: "105px" }}
                 type="file"
                 className="form-control"
                 onChange={handleImage}
@@ -402,7 +393,10 @@ const Information = () => {
               >
                 Personal information
               </span> */}
-              <Title level={5} style={{ marginRight: "20px" }}>
+              <Title
+                level={5}
+                style={{ display: "inline-block", marginRight: "20px" }}
+              >
                 INFORMATION
               </Title>
               <Button
@@ -421,11 +415,11 @@ const Information = () => {
               <Descriptions
                 bordered
                 column={1}
-                style={{ display: `${info}`, marginTop: "20px" }}
+                style={{ display: `${info}`, marginTop: "0px" }}
               >
                 <Descriptions.Item label="Image">
                   <Image
-                    width={200}
+                    width={182}
                     src={`http://127.0.0.1:8000/${user.image}`}
                   />
                 </Descriptions.Item>

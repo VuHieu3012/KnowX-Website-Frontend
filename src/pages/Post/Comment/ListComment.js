@@ -1,14 +1,32 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable comma-dangle */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { useState, useEffect } from "react";
-import { Comment, Form, Button, List, Input, Divider, Row, Col } from "antd";
+import {
+  Comment,
+  Form,
+  Button,
+  List,
+  Input,
+  Divider,
+  Row,
+  Col,
+  Dropdown,
+  Menu,
+  message,
+  Modal,
+} from "antd";
+import { SmallDashOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
 
 const ListComment = () => {
+  const userId = sessionStorage.getItem("user_id");
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [listComment, setListComment] = useState([]);
+  const [commentId, setCommentId] = useState("");
+  const [modalText, setModalText] = useState("Accept delete this comment?");
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+
   const location = useLocation();
   const arr = location.pathname.split("/");
   const selectedId = arr[arr.length - 1];
@@ -85,8 +103,77 @@ const ListComment = () => {
   const onReset = () => {
     form.resetFields();
   };
+
+  const handleOk = async () => {
+    await handleDelete();
+    setConfirmLoading(true);
+    setVisible(false);
+    setConfirmLoading(false);
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setVisible(false);
+  };
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleDelete = async () => {
+    console.log(commentId);
+    // eslint-disable-next-line no-restricted-globals
+    const token = sessionStorage.getItem("token");
+    const fm = new FormData();
+    fm.append("id", commentId);
+    const requestOptions = {
+      method: "POST",
+      body: fm,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/user/posts/comment/delete`,
+        requestOptions
+      );
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+      if (responseJSON.status === "success") {
+        message.success("Delete this comment successfully");
+        getListComment();
+      }
+    } catch (error) {
+      console.log("Faild fetch delete post : ", error.message);
+    }
+  };
+
+  const menu = (
+    <Menu>
+      <Menu.Item
+        key="1"
+        onClick={showModal}
+        style={{ color: "red" }}
+        icon={<DeleteOutlined style={{ color: "red", marginTop: "6px" }} />}
+      >
+        Delete
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <div>
+      <Modal
+        title="Confirm"
+        visible={visible}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
       <Divider orientation="left">Comment</Divider>
       <Form name="input-comment" form={form}>
         <Row>
@@ -123,14 +210,34 @@ const ListComment = () => {
           itemLayout="horizontal"
           dataSource={listComment}
           renderItem={(item) => (
-            <li>
-              <Comment
-                author={item.full_name}
-                avatar={`http://127.0.0.1:8000/${item.image}`}
-                content={item.comment}
-                datetime={formatDate(item.updated_at)}
-              />
-            </li>
+            <div style={{ display: "flex" }}>
+              <li>
+                <Comment
+                  author={item.full_name}
+                  avatar={`http://127.0.0.1:8000/${item.image}`}
+                  content={item.comment}
+                  datetime={formatDate(item.updated_at)}
+                />
+              </li>
+              {item.user_id === parseInt(userId) ? (
+                <Dropdown
+                  style={{ height: "10px" }}
+                  overlay={menu}
+                  onClick={() => {
+                    setCommentId(item.id);
+                    console.log(commentId);
+                  }}
+                >
+                  <SmallDashOutlined
+                    style={{
+                      marginLeft: "50px",
+                      marginTop: "18px",
+                      marginBottom: "35px",
+                    }}
+                  />
+                </Dropdown>
+              ) : null}
+            </div>
           )}
         />
       ) : null}

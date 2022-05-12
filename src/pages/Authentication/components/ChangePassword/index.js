@@ -1,10 +1,5 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-undef */
-/* eslint-disable camelcase */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
+
 import React, { useState } from "react";
-// eslint-disable-next-line object-curly-newline
 import { TextField, Button, Box, Stack } from "@material-ui/core";
 import { Container } from "reactstrap";
 import { Link, Redirect } from "react-router-dom";

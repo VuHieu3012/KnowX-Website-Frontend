@@ -1,11 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { Layout, List, Avatar, Space, Spin, Divider } from "antd";
 import { MessageOutlined, LikeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -21,6 +14,7 @@ const MyQuestions = () => {
   const [listQuestions, setList] = useState([]);
   const [user, setUser] = useState({});
   const [spin, setSpin] = useState(true);
+  const [count, setCount] = useState(0);
 
   const IconText = ({ icon, text }) => (
     <Space>
@@ -66,6 +60,7 @@ const MyQuestions = () => {
           requestOptions
         );
         const responseJSON = await response.json();
+        setCount(responseJSON.count);
         setList(responseJSON.data);
         setSpin(false);
       } catch (error) {
@@ -153,7 +148,11 @@ const MyQuestions = () => {
               <div className="content">
                 <div>
                   <Divider orientation="left">
-                    <h5 style={{ color: "#00358E" }}>MY QUESTIONS</h5>
+                    <h5 style={{ color: "#00358E" }}>
+                      MY QUESTIONS (
+                      {count}
+                      )
+                    </h5>
                   </Divider>
                 </div>
                 {data}

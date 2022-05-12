@@ -1,12 +1,4 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-plusplus */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/react-in-jsx-scope */
+
 import "./styles.scss";
 import {
   Button,
@@ -28,7 +20,7 @@ import {
   notification,
 } from "antd";
 import {
-  CloseOutlined,
+  DeleteFilled,
   SendOutlined,
   SearchOutlined,
   UserAddOutlined,
@@ -397,6 +389,7 @@ const FindBuddy = () => {
                             style={{ marginTop: "25px" }}
                             size="large"
                             type="primary"
+                            shape="round"
                             loading={loading}
                             onClick={handleFindBuddy}
                             icon={
@@ -430,25 +423,23 @@ const FindBuddy = () => {
                               handleGetListBuddy();
                             }}
                           >
-                            [
-                            {item.subject_name}
-                            ]
-                          </Typography.Title>
-                          {" "}
-                          <i>Description: </i>
-                          {' '}
-                          {item.description}
+                            [{item.subject_name}]
+                          </Typography.Title>{" "}
+                          <i>Description: </i> {item.description}
                           <Tooltip title="delete">
                             <Button
-                              shape="circle"
-                              icon={<CloseOutlined />}
-                              style={{ float: "right", padding: "2px" }}
+                              // shape="circle"
+                              icon={<DeleteFilled />}
+                              danger
+                              style={{ float: "right" }}
                               size="small"
                               onClick={() => {
                                 setDeletingSubject(item.subject_id);
                                 showModal();
                               }}
-                            />
+                            >
+                              Remove
+                            </Button>
                           </Tooltip>
                         </List.Item>
                       )}
@@ -470,37 +461,40 @@ const FindBuddy = () => {
                     bordered
                     size="small"
                     pagination={{
-                      pageSize: 4,
+                      pageSize: 6,
                     }}
                     renderItem={(item) => (
                       <List.Item
                         className="list"
                         key={item.id}
                         actions={[
-                          <a
+                          <Button
+                            ghost
                             key={`a-${item.id}`}
-                            onClick={() => {
-                              showDrawer(item);
-                              setSelectedId(item.user_id);
-                              checkFollow();
+                            onClick={async () => {
+                              await showDrawer(item);
+                              await setSelectedId(item.user_id);
+                              await checkFollow();
                             }}
+                            type="primary"
+                            shape="round"
                           >
                             View Detail
-                          </a>,
+                          </Button>,
                         ]}
                       >
                         <List.Item.Meta
-                          avatar={(
+                          avatar={
                             <Avatar
                               size={64}
                               src={`http://127.0.0.1:8000/${item.image}`}
                             />
-                          )}
-                          title={(
+                          }
+                          title={
                             <a href={`otherprofile/${item.user_id}`}>
                               {item.full_name}
                             </a>
-                          )}
+                          }
                           description={item.subject[0].name}
                         />
                       </List.Item>
@@ -588,8 +582,8 @@ const FindBuddy = () => {
             icon={<SendOutlined style={{ marginRight: "10px" }} />}
             size="large"
             type="primary"
-            style={{ float: "right" }}
             shape="round"
+            style={{ float: "right" }}
             onClick={() => {
               window.open("http://127.0.0.1:8000/chat");
             }}

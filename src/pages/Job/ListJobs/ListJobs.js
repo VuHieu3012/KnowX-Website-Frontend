@@ -1,13 +1,4 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/prop-types */
-/* eslint-disable radix */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
-// import "./styles.scss";\
+
 import "./styles.scss";
 import { Layout, List, Avatar, Spin, Divider } from "antd";
 import { Link } from "react-router-dom";

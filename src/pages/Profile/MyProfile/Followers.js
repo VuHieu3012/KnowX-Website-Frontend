@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable comma-dangle */
-/* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect } from "react";
 import { List, Avatar, Button, Spin } from "antd";
 import { Link } from "react-router-dom";

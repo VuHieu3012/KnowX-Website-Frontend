@@ -1,7 +1,4 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable radix */
+
 import React, { useState } from "react";
 import { Form, Input, Button, notification } from "antd";
 import {
@@ -63,6 +60,7 @@ const Signup = () => {
     fetch("http://127.0.0.1:8000/api/user/register", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log(result);
         if (result.status === "success") {
           openNotificationWithIcon("success");
           setRedirect(true);
@@ -267,8 +265,8 @@ const Signup = () => {
                     }
                     return Promise.reject(
                       new Error(
-                        "The two passwords that you entered do not match!",
-                      ),
+                        "The two passwords that you entered do not match!"
+                      )
                     );
                   },
                 }),

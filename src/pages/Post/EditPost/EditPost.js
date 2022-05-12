@@ -1,8 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable comma-dangle */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable object-curly-newline */
+
 import "./styles.scss";
 import { Layout, Input, Button, Space, Form, message } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -65,9 +61,9 @@ const EditPost = () => {
       error("The content field is required!");
     }
     if (
-      tmpPostData.title !== ""
-      && tmpPostData.hashtag !== ""
-      && tmpPostData.content !== ""
+      tmpPostData.title !== "" &&
+      tmpPostData.hashtag !== "" &&
+      tmpPostData.content !== ""
     ) {
       setLoading(true);
       const token = sessionStorage.getItem("token");

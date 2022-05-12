@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
 import { Layout, Input, Button, Space, message, Form, Divider } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";

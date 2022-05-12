@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import Homepage from "../Homepage/Homepage";
 import DetailJob from './DetailJob/DetailJob';
 import ListJobs from './ListJobs/ListJobs';
 

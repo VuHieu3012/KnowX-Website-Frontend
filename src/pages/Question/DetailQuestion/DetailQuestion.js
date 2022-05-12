@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/react-in-jsx-scope */
+
 import {
   Layout,
   Menu,
@@ -12,9 +11,12 @@ import {
   Divider,
   Spin,
 } from "antd";
-import { DownOutlined, LikeFilled,
+import {
+  DownOutlined,
+  LikeFilled,
   DeleteOutlined,
-  EditOutlined } from "@ant-design/icons";
+  EditOutlined,
+} from "@ant-design/icons";
 import { useLocation, Redirect, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -56,7 +58,7 @@ const DetailQuestion = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/questions/${selectedId}`,
-          requestOptions,
+          requestOptions
         );
         const responseJSON = await response.json();
         setCountLike(responseJSON.data.like);
@@ -82,7 +84,7 @@ const DetailQuestion = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/questions/checklike`,
-          requestOptions,
+          requestOptions
         );
         const responseJSON = await response.json();
         console.log(responseJSON);
@@ -113,7 +115,7 @@ const DetailQuestion = () => {
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/user/questions/like`,
-        requestOptions,
+        requestOptions
       );
       const responseJSON = await response.json();
       console.log(responseJSON);
@@ -145,7 +147,7 @@ const DetailQuestion = () => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/user/questions/${selectedId}`,
-          requestOptions,
+          requestOptions
         );
         const responseJSON = await response.json();
         console.log(responseJSON);
@@ -180,22 +182,10 @@ const DetailQuestion = () => {
 
   const menu = (
     <Menu>
-      <Menu.Item
-        key="1"
-        onClick={handleEdit}
-        icon={(
-          <EditOutlined />
-        )}
-      >
+      <Menu.Item key="1" onClick={handleEdit} icon={<EditOutlined />}>
         Edit
       </Menu.Item>
-      <Menu.Item
-        key="2"
-        onClick={showModal}
-        icon={(
-          <DeleteOutlined />
-        )}
-      >
+      <Menu.Item key="2" onClick={showModal} icon={<DeleteOutlined />}>
         Delete
       </Menu.Item>
     </Menu>
@@ -261,13 +251,28 @@ const DetailQuestion = () => {
                       style={{ fontSize: "16px", lineHeight: "42px" }}
                     >
                       {user.full_name}
+                      {selectedQuestion.className ? (
+                        <b style={{ color: "black", fontWeight: "400" }}>
+                          {" To "}
+                          [
+                          {' '}
+                          {selectedQuestion.className}
+                          {' '}
+                          ]
+                        </b>
+                      ) : null}
                     </Link>
                   </div>
                   <div className="postDetail-date">
                     {formatDate(selectedQuestion.updated_at)}
                   </div>
                   <div className="postDetail-hastag">
-                    <a href={`/search/${selectedQuestion.hashtag.replace("#", "")}`}>
+                    <a
+                      href={`/search/${selectedQuestion.hashtag.replace(
+                        "#",
+                        ""
+                      )}`}
+                    >
                       <span>{selectedQuestion.hashtag}</span>
                     </a>
                   </div>

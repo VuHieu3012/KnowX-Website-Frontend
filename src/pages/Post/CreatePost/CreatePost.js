@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
+
 import "./styles.scss";
 import { Layout, Input, Button, Space, message, Form, Divider } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -27,6 +26,7 @@ const CreatePost = () => {
   const tmpPostData = { ...postData };
 
   async function create() {
+    console.log(picture);
     setLoading(true);
     setPostData(tmpPostData);
     const token = sessionStorage.getItem("token");
@@ -54,7 +54,6 @@ const CreatePost = () => {
             requestOptions
           );
           const responseJSON = await response.json();
-          console.log(responseJSON);
           setLoading(false);
           if (responseJSON.status === "success") {
             success();
@@ -132,9 +131,9 @@ const CreatePost = () => {
                 </Form.Item>
                 <Form.Item name="image">
                   <div className="input-group mb-3">
-                    <label className="input-group-text">Upload Image</label>
                     <input
                       type="file"
+                      id="image"
                       className="form-control"
                       onChange={handleImage}
                     />
@@ -168,6 +167,7 @@ const CreatePost = () => {
                 <Form.Item name="content">
                   <Divider orientation="left">Content</Divider>
                   <CKEditor
+                    style={{ height: "600px", overflow: "auto" }}
                     name="content"
                     editor={ClassicEditor}
                     data="<p></p>"

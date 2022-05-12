@@ -1,6 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable import/no-named-as-default-member */
+
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Signin from "./components/Signin";

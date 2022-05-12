@@ -1,5 +1,4 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable react/react-in-jsx-scope */
+
 import "./styles.scss";
 
 const AuthRight = () => (

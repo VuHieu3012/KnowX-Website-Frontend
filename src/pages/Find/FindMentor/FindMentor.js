@@ -1,13 +1,4 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-plusplus */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/react-in-jsx-scope */
+
 import {
   Button,
   Col,
@@ -64,10 +55,10 @@ const FindMentor = () => {
       const responseJSON = await response.json();
       console.log(responseJSON);
       if (responseJSON.status === "followed") {
-        setFollow("Unfollow");
+        setFollow("Follow");
       }
       if (responseJSON.status === "follow") {
-        setFollow("Follow");
+        setFollow("Unfollow");
       }
     } catch (error) {
       console.log("Faild fetch this user : ", error.message);
@@ -255,6 +246,7 @@ const FindMentor = () => {
                       size="large"
                       type="primary"
                       loading={loading}
+                      shape="round"
                       onClick={handleGetListMentor}
                       icon={<SearchOutlined style={{ marginBottom: "9px" }} />}
                     >
@@ -280,23 +272,26 @@ const FindMentor = () => {
                     bordered
                     size="small"
                     pagination={{
-                      pageSize: 5,
+                      pageSize: 7,
                     }}
                     renderItem={(item) => (
                       <List.Item
                         className="list"
                         key={item.id}
                         actions={[
-                          <a
+                          <Button
+                            ghost
+                            shape="round"
                             key={`a-${item.id}`}
                             onClick={() => {
                               showDrawer(item);
                               setSelectedId(item.user_id);
                               checkFollow();
                             }}
+                            type="primary"
                           >
                             View Detail
-                          </a>,
+                          </Button>,
                         ]}
                       >
                         <List.Item.Meta

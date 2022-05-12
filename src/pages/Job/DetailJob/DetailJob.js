@@ -1,17 +1,4 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-useless-concat */
-/* eslint-disable react/prop-types */
-/* eslint-disable radix */
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/button-has-type */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
+
 import "./styles.scss";
 import { Layout, Avatar, Typography, Button, Spin } from "antd";
 import { MailOutlined } from "@ant-design/icons";
@@ -87,7 +74,10 @@ const DetailJob = () => {
                   <Spin size="large" />
                 </div>
               ) : (
-                <div className="postDetail-container">
+                <div
+                  className="postDetail-container content"
+                  style={{ overflow: "auto", height: "1000px" }}
+                >
                   <div className="postDetail-author">
                     <Avatar
                       src={`http://127.0.0.1:8000/${user.image}`}

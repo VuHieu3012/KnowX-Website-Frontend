@@ -1,11 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable radix */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { Layout, List, Avatar, Space, Spin, Divider } from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -110,7 +103,7 @@ const NewestQuestion = () => {
                         ]}
                       >
                         <List.Item.Meta
-                          avatar={(
+                          avatar={
                             <Link
                               to={
                                 item.user_id === parseInt(userId)
@@ -122,8 +115,8 @@ const NewestQuestion = () => {
                                 src={`http://127.0.0.1:8000/${item.user_image}`}
                               />
                             </Link>
-                          )}
-                          title={(
+                          }
+                          title={
                             <Link
                               to={
                                 item.user_id === parseInt(userId)
@@ -133,12 +126,12 @@ const NewestQuestion = () => {
                             >
                               {item.full_name}
                             </Link>
-                          )}
-                          description={(
+                          }
+                          description={
                             <a href={`/question/detail/${item.id}`}>
                               <h6>{item.title}</h6>
                             </a>
-                          )}
+                          }
                         />
 
                         {`${formatDate(item.updated_at)}  |  `}

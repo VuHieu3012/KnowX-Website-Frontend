@@ -1,9 +1,4 @@
-/* eslint-disable indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable comma-dangle */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { useEffect, useState } from "react";
 import "./styles.scss";
 import { Descriptions, Image, Spin, Button, notification } from "antd";

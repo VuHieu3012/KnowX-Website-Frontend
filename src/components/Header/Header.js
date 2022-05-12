@@ -1,8 +1,4 @@
-/* eslint-disable no-restricted-globals */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable import/no-unresolved */
+
 import "antd/dist/antd.css";
 import { Menu, Input, message, Layout } from "antd";
 import { HomeOutlined } from "@ant-design/icons";

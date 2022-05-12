@@ -1,9 +1,4 @@
-/* eslint-disable indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable comma-dangle */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/react-in-jsx-scope */
+
 import { useState, useEffect } from "react";
 import "./styles.scss";
 import { Layout, Menu } from "antd";
@@ -100,15 +95,9 @@ const Profile = () => {
                 onClick={handleClick}
                 selectedKeys={key}
               >
-                <Menu.Item key="post">
-                  POST (
-                  {countPosts}
-                  )
-                </Menu.Item>
+                <Menu.Item key="post">POST ({countPosts})</Menu.Item>
                 <Menu.Item key="question">
-                  QUESTION (
-                  {countQuestions}
-                  )
+                  QUESTION ({countQuestions})
                 </Menu.Item>
                 <Menu.Item key="information">INFORMATION</Menu.Item>
               </Menu>

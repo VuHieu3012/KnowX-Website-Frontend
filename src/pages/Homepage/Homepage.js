@@ -1,16 +1,16 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/prop-types */
-/* eslint-disable radix */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable comma-dangle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/react-in-jsx-scope */
 import "./styles.scss";
-import { Layout, List, Avatar, Space, Spin, Divider, Image, Typography } from "antd";
+import {
+  Layout,
+  List,
+  Avatar,
+  Space,
+  Spin,
+  Divider,
+  Image,
+  Typography,
+} from "antd";
 import { LikeOutlined, MessageOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/Header";
 import SidebarLeft from "../../components/SidebarLeft/SidebarLeft";
@@ -20,6 +20,10 @@ import Footer from "../../components/Footer/Footer";
 const { Content } = Layout;
 
 const Homepage = () => {
+  const history = useHistory();
+  if (sessionStorage.getItem("token") === null) {
+    history.push("/");
+  }
   const [listPost, setList] = useState([]);
   const userId = sessionStorage.getItem("user_id");
   const [spin, setSpin] = useState(true);
@@ -55,9 +59,7 @@ const Homepage = () => {
         console.log("Failed fetch list newest Posts", error.message);
       }
     }
-    setTimeout(() => {
-      getPostData();
-    }, 2000);
+    getPostData();
   }, []);
 
   // convert timestams to date
@@ -148,7 +150,9 @@ const Homepage = () => {
                         }
                         description={
                           <a href={`/post/detail/${item.id}`}>
-                            <Typography.Title level={4}>{item.title}</Typography.Title>
+                            <Typography.Title level={4}>
+                              {item.title}
+                            </Typography.Title>
                           </a>
                         }
                       />
